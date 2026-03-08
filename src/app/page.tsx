@@ -7,6 +7,7 @@ import { Experience } from '@/components/sections/Experience';
 import { Certifications } from '@/components/sections/Certifications';
 import { Testimonials } from '@/components/sections/Testimonials';
 import { Projects } from '@/components/sections/Projects';
+import { Hobbies } from '@/components/Hobbies';
 
 export default function HomePage() {
   return (
@@ -20,6 +21,7 @@ export default function HomePage() {
         <Testimonials />
         <Certifications />
         <Projects />
+        <Hobbies />
       </main>
       <Footer />
     </>

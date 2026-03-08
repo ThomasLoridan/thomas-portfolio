@@ -47,7 +47,7 @@ const BLOCKS: Block[] = [
     id: 'amazon-tpm-innovation',
     pattern: 'A',
     label: 'AMAZON · AUG 2025–PRESENT · LUXEMBOURG',
-    role: 'Technical Program Manager — Tech & Innovation Portfolio',
+    role: 'Technical Program Manager — **Tech & Innovation Portfolio**',
     description:
       'Own product strategy for the Tech & Innovation portfolio supporting 30-country EU Intermodal and Expansion. Drive the €30M ARR roadmap across analytics platforms and automation systems.',
     highlights: [
@@ -57,8 +57,8 @@ const BLOCKS: Block[] = [
     ],
     accentColor: '#FF9900',
     media: {
-      type: 'image',
-      src: '/images/companies/amazon-dark.jpg',
+      type: 'gif',
+      src: '/images/companies/amazon-arrow.gif',
       fit: 'contain',
       bg: '#0a0a0a',
     },
@@ -67,7 +67,7 @@ const BLOCKS: Block[] = [
     id: 'amazon-ba-emea',
     pattern: 'B',
     label: 'AMAZON · DEC 2024–AUG 2025 · LUXEMBOURG',
-    role: 'Performance Business Analyst — Transportation EMEA',
+    role: '**Performance** Business Analyst — **Transportation EMEA**',
     description:
       'Built real-time monitoring and AI-assisted audit workflows for 30+ L5–L7 leaders. Consolidated fragmented reporting across 35 countries into a single source of truth.',
     highlights: [
@@ -87,7 +87,7 @@ const BLOCKS: Block[] = [
     id: 'amazon-tpm-reliability',
     pattern: 'A',
     label: 'AMAZON · APR 2024–DEC 2024 · BARCELONA',
-    role: 'Technical Program Manager — Global Strategic Reliability',
+    role: 'Technical Program Manager — **Global Strategic Reliability**',
     description:
       'Drove product development for operational analytics platforms across 2,300 global fulfillment sites. Built 3 strategic data platforms with senior engineers.',
     highlights: [
@@ -97,8 +97,8 @@ const BLOCKS: Block[] = [
     ],
     accentColor: '#FF9900',
     media: {
-      type: 'gif',
-      src: '/images/companies/amazon-arrow.gif',
+      type: 'image',
+      src: '/images/companies/amazon-dark.jpg',
       fit: 'contain',
       bg: '#0a0a0a',
     },
@@ -126,7 +126,7 @@ const BLOCKS: Block[] = [
     id: 'loreal-freelance',
     pattern: 'A',
     label: "L'ORÉAL · MAR 2023–MAR 2024 · PARIS",
-    role: "Business Analyst — Global CDMO, Consumer Product Division",
+    role: "Business Analyst — **Global CDMO, Consumer Product Division**",
     description:
       'Led global data governance engagement across 50+ countries. Standardized reporting and designed bi-weekly COMEX dashboards for C-suite product roadmap alignment.',
     highlights: [
@@ -136,7 +136,7 @@ const BLOCKS: Block[] = [
     accentColor: '#C8A951',
     media: {
       type: 'image',
-      src: '/images/loreal/loreal-grand-public.jpg',
+      src: '/images/loreal/loreal-water.webp',
       fit: 'cover',
       bg: '#1a1300',
     },
@@ -145,7 +145,7 @@ const BLOCKS: Block[] = [
     id: 'loreal-delivery',
     pattern: 'B',
     label: "L'ORÉAL · SEP 2022–MAR 2023 · PARIS",
-    role: 'Technical Delivery Manager — Global Data Team',
+    role: 'Technical Delivery Manager — **Global Data Team**',
     description:
       'Built global B2B analytics platform supporting billion-euro product decisions across Europe, China, and the US. Re-engineered IT delivery workflows.',
     highlights: [
@@ -164,7 +164,7 @@ const BLOCKS: Block[] = [
     id: 'loreal-pm',
     pattern: 'A',
     label: "L'ORÉAL · FEB 2022–SEP 2022 · PARIS",
-    role: 'Technical Project Manager — Digital EMEA',
+    role: 'Technical Project Manager — **Digital EMEA**',
     description:
       'Delivered 12 automated customer journeys across 3 UK divisions. Scaled web stack across 120 websites, unlocking €100M ARR opportunity.',
     highlights: [
@@ -173,8 +173,8 @@ const BLOCKS: Block[] = [
     ],
     accentColor: '#C8A951',
     media: {
-      type: 'image',
-      src: '/images/loreal/loreal-water.webp',
+      type: 'gif',
+      src: '/images/loreal/loreal-luxe-portrait.gif',
       fit: 'cover',
       bg: '#111',
     },
@@ -183,7 +183,7 @@ const BLOCKS: Block[] = [
     id: 'familyad',
     pattern: 'B',
     label: 'FAMILYAD · SEP 2021–MAR 2022 · PARIS',
-    role: 'Co-Founder, CEO & CFO',
+    role: 'Co-Founder, **CEO & CFO**',
     description:
       'Launched ad-tech platform from zero to pre-Series A engagement. Led product design, customer discovery, and financial modeling. Pitched at Station F.',
     highlights: [
@@ -376,7 +376,7 @@ function ExperienceBlock({ block }: { block: Block }) {
                 lineHeight: 1.2,
               }}
             >
-              {block.role}
+              <Highlight text={block.role} color="#5AC8FA" />
             </h3>
 
             <p
