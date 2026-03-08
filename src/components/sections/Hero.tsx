@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import { ExternalLink } from 'lucide-react';
 import { profile } from '@/data/profile';
 
@@ -39,7 +38,7 @@ export function Hero() {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 2.5, ease: [0.16, 1, 0.3, 1] }}
         style={{
           position: 'absolute',
           bottom: 0,
@@ -49,20 +48,24 @@ export function Hero() {
           width: '60vw',
           maxWidth: '900px',
           zIndex: 1,
+          display: 'flex',
+          alignItems: 'flex-end',
+          justifyContent: 'center',
           maskImage: 'linear-gradient(to top, black 55%, transparent 100%)',
           WebkitMaskImage: 'linear-gradient(to top, black 55%, transparent 100%)',
         }}
       >
-        <Image
-          src={profile.photo}
-          alt={profile.name}
-          fill
-          priority
+        <img
+          src="/images/profile.png"
+          alt="Thomas Loridan"
           style={{
+            height: '92vh',
+            width: 'auto',
+            maxWidth: '100%',
             objectFit: 'contain',
             objectPosition: 'bottom center',
+            display: 'block',
           }}
-          sizes="60vw"
         />
       </motion.div>
 
@@ -79,7 +82,7 @@ export function Hero() {
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          transition={{ duration: 1.2, delay: 0.6 }}
           style={{
             color: 'rgba(255,255,255,0.5)',
             fontSize: '0.95rem',
@@ -93,7 +96,7 @@ export function Hero() {
         <motion.h1
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.45 }}
+          transition={{ duration: 1.2, delay: 0.9 }}
           style={{
             fontSize: 'clamp(2.8rem, 5.5vw, 5.5rem)',
             fontWeight: 800,
@@ -113,7 +116,7 @@ export function Hero() {
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.7 }}
+          transition={{ duration: 1.2, delay: 1.3 }}
           style={{
             color: 'rgba(255,255,255,0.6)',
             fontSize: 'clamp(0.95rem, 1.1vw, 1.1rem)',
@@ -128,7 +131,7 @@ export function Hero() {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.9 }}
+          transition={{ duration: 1.2, delay: 1.6 }}
           style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}
         >
           <button
