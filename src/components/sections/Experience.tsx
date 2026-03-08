@@ -10,15 +10,26 @@ type MediaConfig =
   | { type: 'gif'; src: string; fit?: 'contain' | 'cover'; bg?: string }
   | { type: 'orbs'; gradient: string };
 
+interface KPI {
+  value: string;
+  label: string;
+}
+
 interface Block {
   id: string;
-  pattern: 'A' | 'B'; // A = image left/text right, B = text left/image right
+  pattern: 'A' | 'B';
   label: string;
   role: string;
   description: string;
-  highlights: string[];
+  kpis: KPI[];
   accentColor: string;
   media: MediaConfig;
+}
+
+interface CompanyGroup {
+  company: string;
+  period: string;
+  blockIds: string[];
 }
 
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
@@ -46,14 +57,14 @@ const BLOCKS: Block[] = [
   {
     id: 'amazon-tpm-innovation',
     pattern: 'A',
-    label: 'AMAZON · AUG 2025–PRESENT · LUXEMBOURG',
+    label: 'AUG 2025–PRESENT · LUXEMBOURG',
     role: 'Technical Program Manager — **Tech & Innovation Portfolio**',
     description:
       'Own product strategy for the Tech & Innovation portfolio supporting 30-country EU Intermodal and Expansion. Drive the €30M ARR roadmap across analytics platforms and automation systems.',
-    highlights: [
-      '**€13.3M ARR** from SONAR automation — 4 hours → 5 minutes cycle time',
-      '**50+ stakeholders** aligned across 4 L6 managers and 1 L7 director',
-      '**€30M portfolio** managed across 4 technical pillars',
+    kpis: [
+      { value: '€13.3M', label: 'SONAR automation' },
+      { value: '50+', label: 'stakeholders aligned' },
+      { value: '€30M', label: 'portfolio managed' },
     ],
     accentColor: '#FF9900',
     media: {
@@ -66,14 +77,14 @@ const BLOCKS: Block[] = [
   {
     id: 'amazon-ba-emea',
     pattern: 'B',
-    label: 'AMAZON · DEC 2024–AUG 2025 · LUXEMBOURG',
+    label: 'DEC 2024–AUG 2025 · LUXEMBOURG',
     role: '**Performance** Business Analyst — **Transportation EMEA**',
     description:
       'Built real-time monitoring and AI-assisted audit workflows for 30+ L5–L7 leaders. Consolidated fragmented reporting across 35 countries into a single source of truth.',
-    highlights: [
-      '**80+ ETL pipelines** consolidating 530 lanes across 35 countries',
-      '**€1.5M/quarter** in rail capacity planning savings',
-      '**45% volume increase** on UK high-speed rail expansion',
+    kpis: [
+      { value: '80+', label: 'ETL pipelines' },
+      { value: '€1.5M/q', label: 'capacity savings' },
+      { value: '45%', label: 'volume increase' },
     ],
     accentColor: '#FF9900',
     media: {
@@ -86,14 +97,14 @@ const BLOCKS: Block[] = [
   {
     id: 'amazon-tpm-reliability',
     pattern: 'A',
-    label: 'AMAZON · APR 2024–DEC 2024 · BARCELONA',
+    label: 'APR 2024–DEC 2024 · BARCELONA',
     role: 'Technical Program Manager — **Global Strategic Reliability**',
     description:
       'Drove product development for operational analytics platforms across 2,300 global fulfillment sites. Built 3 strategic data platforms with senior engineers.',
-    highlights: [
-      '**25% downtime reduction** across 2,300 fulfillment sites',
-      '**10,000+ daily users** on 3 strategic data platforms',
-      '**€8.9M** operational costs benchmarked across 25 fulfillment centers',
+    kpis: [
+      { value: '25%', label: 'downtime reduction' },
+      { value: '10K+', label: 'daily users' },
+      { value: '€8.9M', label: 'costs benchmarked' },
     ],
     accentColor: '#FF9900',
     media: {
@@ -106,13 +117,13 @@ const BLOCKS: Block[] = [
   {
     id: 'auchan',
     pattern: 'B',
-    label: 'AUCHAN RETAIL · SEP 2023–MAR 2024 · LILLE',
+    label: 'SEP 2023–MAR 2024 · LILLE',
     role: '**Strategy Consultant** — DSI',
     description:
       'Analyzed €250M IT portfolio and led strategic benchmarking across major retail groups. Delivered risk-adjusted roadmap prioritization for executive leadership.',
-    highlights: [
-      '**€250M IT portfolio** — tech debt analysis and prioritization',
-      '**4 companies** benchmarked: CGI, EDF, Decathlon, 3 Mousquetaires',
+    kpis: [
+      { value: '€250M', label: 'IT portfolio' },
+      { value: '4', label: 'companies benchmarked' },
     ],
     accentColor: '#E2001A',
     media: {
@@ -125,13 +136,13 @@ const BLOCKS: Block[] = [
   {
     id: 'loreal-freelance',
     pattern: 'A',
-    label: "L'ORÉAL · MAR 2023–MAR 2024 · PARIS",
-    role: "Business Analyst — **Global CDMO, Consumer Product Division**",
+    label: 'MAR 2023–MAR 2024 · PARIS',
+    role: 'Business Analyst — **Global CDMO, Consumer Product Division**',
     description:
       'Led global data governance engagement across 50+ countries. Standardized reporting and designed bi-weekly COMEX dashboards for C-suite product roadmap alignment.',
-    highlights: [
-      '**50+ countries** data governance standardized',
-      '**20% data quality improvement** presented to CDMO leadership',
+    kpis: [
+      { value: '50+', label: 'countries' },
+      { value: '20%', label: 'data quality lift' },
     ],
     accentColor: '#C8A951',
     media: {
@@ -144,13 +155,13 @@ const BLOCKS: Block[] = [
   {
     id: 'loreal-delivery',
     pattern: 'B',
-    label: "L'ORÉAL · SEP 2022–MAR 2023 · PARIS",
+    label: 'SEP 2022–MAR 2023 · PARIS',
     role: 'Technical Delivery Manager — **Global Data Team**',
     description:
       'Built global B2B analytics platform supporting billion-euro product decisions across Europe, China, and the US. Re-engineered IT delivery workflows.',
-    highlights: [
-      '**Europe, China & US** markets covered by B2B platform',
-      '**25% lead time reduction** via IT delivery re-engineering',
+    kpis: [
+      { value: '3', label: 'markets covered' },
+      { value: '25%', label: 'lead time reduction' },
     ],
     accentColor: '#C8A951',
     media: {
@@ -163,13 +174,13 @@ const BLOCKS: Block[] = [
   {
     id: 'loreal-pm',
     pattern: 'A',
-    label: "L'ORÉAL · FEB 2022–SEP 2022 · PARIS",
+    label: 'FEB 2022–SEP 2022 · PARIS',
     role: 'Technical Project Manager — **Digital EMEA**',
     description:
       'Delivered 12 automated customer journeys across 3 UK divisions. Scaled web stack across 120 websites, unlocking €100M ARR opportunity.',
-    highlights: [
-      '**€1.75M ARR** from 12 UK automated customer journeys',
-      '**€100M ARR** unlocked via 120-website web stack scaling',
+    kpis: [
+      { value: '€1.75M', label: 'UK journeys ARR' },
+      { value: '€100M', label: 'web stack opportunity' },
     ],
     accentColor: '#C8A951',
     media: {
@@ -182,13 +193,13 @@ const BLOCKS: Block[] = [
   {
     id: 'familyad',
     pattern: 'B',
-    label: 'FAMILYAD · SEP 2021–MAR 2022 · PARIS',
+    label: 'SEP 2021–MAR 2022 · PARIS',
     role: 'Co-Founder, **CEO & CFO**',
     description:
       'Launched ad-tech platform from zero to pre-Series A engagement. Led product design, customer discovery, and financial modeling. Pitched at Station F.',
-    highlights: [
-      '**Station F finalist** — pitched to venture partners',
-      '**MVP launched** — product design, discovery, financial modeling',
+    kpis: [
+      { value: 'Station F', label: 'finalist' },
+      { value: 'MVP', label: 'launched' },
     ],
     accentColor: '#6366f1',
     media: {
@@ -197,6 +208,139 @@ const BLOCKS: Block[] = [
     },
   },
 ];
+
+const GROUPS: CompanyGroup[] = [
+  {
+    company: 'Amazon',
+    period: 'April 2024 – Present',
+    blockIds: ['amazon-tpm-innovation', 'amazon-ba-emea', 'amazon-tpm-reliability'],
+  },
+  {
+    company: 'Auchan Retail',
+    period: 'Sep 2023 – Mar 2024',
+    blockIds: ['auchan'],
+  },
+  {
+    company: "L'Oréal",
+    period: 'Feb 2022 – Mar 2024',
+    blockIds: ['loreal-freelance', 'loreal-delivery', 'loreal-pm'],
+  },
+  {
+    company: 'Familyad',
+    period: 'Sep 2021 – Mar 2022',
+    blockIds: ['familyad'],
+  },
+];
+
+const BLOCK_MAP = Object.fromEntries(BLOCKS.map((b) => [b.id, b]));
+
+/* ─── KPI stat row ────────────────────────────────────────── */
+function KPIStats({ kpis }: { kpis: KPI[] }) {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        borderTop: '1px solid rgba(255,255,255,0.12)',
+        marginTop: '28px',
+        paddingTop: '20px',
+      }}
+    >
+      {kpis.map((kpi, i) => (
+        <div
+          key={i}
+          style={{
+            flex: 1,
+            paddingRight: i < kpis.length - 1 ? '20px' : 0,
+            paddingLeft: i > 0 ? '20px' : 0,
+            borderRight: i < kpis.length - 1 ? '1px solid rgba(255,255,255,0.12)' : 'none',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '5px',
+          }}
+        >
+          <p
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.62rem',
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.38)',
+              lineHeight: 1.2,
+            }}
+          >
+            {kpi.label}
+          </p>
+          <p
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontWeight: 700,
+              fontSize: 'clamp(1.15rem, 1.8vw, 1.6rem)',
+              color: '#5AC8FA',
+              lineHeight: 1.1,
+            }}
+          >
+            {kpi.value}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ─── Company group header ────────────────────────────────── */
+function GroupHeader({ group }: { group: CompanyGroup }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-10%' });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 16 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+      style={{
+        maxWidth: '1152px',
+        margin: '0 auto',
+        padding: '0 24px',
+        paddingTop: 'clamp(56px, 9vh, 96px)',
+        paddingBottom: '0',
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <span
+          style={{
+            fontFamily: 'var(--font-heading)',
+            fontWeight: 700,
+            fontSize: '0.95rem',
+            color: 'rgba(255,255,255,0.9)',
+            letterSpacing: '0.01em',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {group.company}
+        </span>
+        <span
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.7rem',
+            color: 'rgba(255,255,255,0.32)',
+            letterSpacing: '0.08em',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {group.period}
+        </span>
+        <div
+          style={{
+            flex: 1,
+            height: '1px',
+            background: 'rgba(255,255,255,0.1)',
+          }}
+        />
+      </div>
+    </motion.div>
+  );
+}
 
 /* ─── Media panel ─────────────────────────────────────────── */
 function MediaPanel({ media }: { media: MediaConfig }) {
@@ -315,7 +459,7 @@ function ExperienceBlock({ block }: { block: Block }) {
         minHeight: '60vh',
         display: 'flex',
         alignItems: 'center',
-        padding: 'clamp(48px, 8vh, 80px) 0',
+        padding: 'clamp(40px, 7vh, 72px) 0',
       }}
     >
       {/* Timeline dot */}
@@ -341,7 +485,7 @@ function ExperienceBlock({ block }: { block: Block }) {
               : 'md:grid-cols-[38fr_62fr] md:[&>*:first-child]:order-2 md:[&>*:last-child]:order-1'
           }`}
         >
-          {/* Image panel — zoom reveal */}
+          {/* Image panel */}
           <motion.div
             {...mediaMotion}
             style={{ borderRadius: '16px', overflow: 'hidden', minHeight: '480px' }}
@@ -358,10 +502,11 @@ function ExperienceBlock({ block }: { block: Block }) {
             <p
               style={{
                 fontFamily: 'var(--font-mono)',
-                fontSize: '0.78rem',
-                letterSpacing: '0.12em',
+                fontSize: '0.72rem',
+                letterSpacing: '0.14em',
                 textTransform: 'uppercase',
-                color: 'rgba(255,255,255,0.5)',
+                color: '#5AC8FA',
+                fontWeight: 500,
               }}
             >
               {block.label}
@@ -381,33 +526,16 @@ function ExperienceBlock({ block }: { block: Block }) {
 
             <p
               style={{
-                color: 'rgba(255,255,255,0.7)',
-                fontSize: '1rem',
-                lineHeight: 1.7,
+                color: 'rgba(255,255,255,0.65)',
+                fontSize: 'clamp(1rem, 1.2vw, 1.1rem)',
+                lineHeight: 1.8,
+                fontWeight: 300,
               }}
             >
               {block.description}
             </p>
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '20px' }}>
-              {block.highlights.map((h, i) => (
-                <div
-                  key={i}
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    padding: '10px 18px',
-                    background: 'rgba(255,255,255,0.06)',
-                    border: '1px solid rgba(255,255,255,0.12)',
-                    borderRadius: '980px',
-                    fontSize: '0.88rem',
-                    color: 'rgba(255,255,255,0.85)',
-                  }}
-                >
-                  <Highlight text={h} color="#5AC8FA" />
-                </div>
-              ))}
-            </div>
+            <KPIStats kpis={block.kpis} />
           </motion.div>
         </div>
       </div>
@@ -447,10 +575,10 @@ export function Experience() {
             style={{
               fontFamily: 'var(--font-heading)',
               fontWeight: 800,
-              fontSize: 'clamp(2.8rem, 5.5vw, 5.5rem)',
+              fontSize: 'clamp(3rem, 6vw, 6rem)',
               color: '#ffffff',
               lineHeight: 1.0,
-              letterSpacing: '-0.02em',
+              letterSpacing: '-0.025em',
             }}
           >
             Where I&apos;ve made{' '}
@@ -459,45 +587,34 @@ export function Experience() {
         </motion.div>
       </div>
 
-      {/* Experience blocks */}
-      {BLOCKS.map((block, i) => (
-        <div key={block.id}>
-          <ExperienceBlock block={block} />
-          {/* Separator (skip last) */}
-          {i < BLOCKS.length - 1 && (
-            <div
-              style={{
-                maxWidth: '1152px',
-                margin: '0 auto',
-                padding: '0 24px',
-              }}
-            >
-              <div
-                style={{
-                  height: '1px',
-                  background: 'rgba(255,255,255,0.08)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'relative',
-                }}
-              >
-                <span
-                  style={{
-                    position: 'absolute',
-                    background: '#000000',
-                    padding: '0 16px',
-                    fontSize: '0.7rem',
-                    fontFamily: 'var(--font-mono)',
-                    color: 'rgba(255,255,255,0.25)',
-                    letterSpacing: '0.1em',
-                  }}
-                >
-                  — {BLOCKS[i + 1]?.label.split(' · ')[0]} —
-                </span>
+      {/* Grouped blocks */}
+      {GROUPS.map((group) => (
+        <div key={group.company}>
+          <GroupHeader group={group} />
+          {group.blockIds.map((id, i) => {
+            const block = BLOCK_MAP[id];
+            return (
+              <div key={id}>
+                <ExperienceBlock block={block} />
+                {i < group.blockIds.length - 1 && (
+                  <div
+                    style={{
+                      maxWidth: '1152px',
+                      margin: '0 auto',
+                      padding: '0 24px',
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: '1px',
+                        background: 'rgba(255,255,255,0.06)',
+                      }}
+                    />
+                  </div>
+                )}
               </div>
-            </div>
-          )}
+            );
+          })}
         </div>
       ))}
 

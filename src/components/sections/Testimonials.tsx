@@ -41,11 +41,11 @@ export function Testimonials() {
         >
           <p
             style={{
-              fontSize: '0.78rem',
-              fontFamily: 'var(--font-body)',
+              fontSize: '0.82rem',
+              fontFamily: 'var(--font-mono)',
               fontWeight: 500,
-              color: 'rgba(255,255,255,0.45)',
-              letterSpacing: '0.14em',
+              color: '#5AC8FA',
+              letterSpacing: '0.16em',
               textTransform: 'uppercase',
               marginBottom: '24px',
             }}
@@ -56,10 +56,10 @@ export function Testimonials() {
             style={{
               fontFamily: 'var(--font-heading)',
               fontWeight: 800,
-              fontSize: 'clamp(2.8rem, 5.5vw, 5.5rem)',
+              fontSize: 'clamp(3rem, 6vw, 6rem)',
               color: '#ffffff',
               lineHeight: 1.0,
-              letterSpacing: '-0.02em',
+              letterSpacing: '-0.025em',
             }}
           >
             &ldquo;Product instinct.{' '}

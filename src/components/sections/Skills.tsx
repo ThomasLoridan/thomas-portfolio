@@ -186,10 +186,10 @@ export function Skills() {
               style={{
                 fontFamily: 'var(--font-heading)',
                 fontWeight: 800,
-                fontSize: 'clamp(2.8rem, 5.5vw, 5.5rem)',
+                fontSize: 'clamp(3rem, 6vw, 6rem)',
                 color: '#0a0a0a',
                 lineHeight: 1.0,
-                letterSpacing: '-0.02em',
+                letterSpacing: '-0.025em',
                 marginBottom: '12px',
               }}
             >
@@ -233,10 +233,10 @@ export function Skills() {
               style={{
                 fontFamily: 'var(--font-heading)',
                 fontWeight: 800,
-                fontSize: 'clamp(2.8rem, 5.5vw, 5.5rem)',
+                fontSize: 'clamp(3rem, 6vw, 6rem)',
                 color: '#0a0a0a',
                 lineHeight: 1.0,
-                letterSpacing: '-0.02em',
+                letterSpacing: '-0.025em',
               }}
             >
               How I work.

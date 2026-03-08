@@ -1,6 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState, useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 import Image from 'next/image';
 
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
@@ -137,10 +138,17 @@ function ImagePanel({ images }: { images: PassionImage[] }) {
 
 function PassionBloc({ passion }: { passion: Passion }) {
   const isA = passion.pattern === 'A';
-  const textXInit = isA ? 40 : -40;
+  const [isHovered, setIsHovered] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-20%' });
+
+  const textShift = isA ? 12 : -12;
 
   return (
     <div
+      ref={ref}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       style={{
         minHeight: '70vh',
         display: 'flex',
@@ -163,9 +171,12 @@ function PassionBloc({ passion }: { passion: Passion }) {
         {/* Image side — 55% */}
         <motion.div
           initial={{ opacity: 0, scale: 1.08 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: '-20%' }}
-          transition={{ duration: 1, ease: EASE }}
+          animate={
+            inView
+              ? { opacity: 1, scale: isHovered ? 1.08 : 1 }
+              : { opacity: 0, scale: 1.08 }
+          }
+          transition={{ duration: 0.6, ease: EASE }}
           style={{ flex: '0 0 55%' }}
         >
           <ImagePanel images={passion.images} />
@@ -173,20 +184,24 @@ function PassionBloc({ passion }: { passion: Passion }) {
 
         {/* Text side — 45% */}
         <motion.div
-          initial={{ opacity: 0, x: textXInit }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: '-20%' }}
-          transition={{ duration: 0.7, delay: 0.2, ease: EASE }}
+          initial={{ opacity: 0, x: isA ? 40 : -40 }}
+          animate={
+            inView
+              ? { opacity: 1, x: isHovered ? textShift : 0 }
+              : { opacity: 0, x: isA ? 40 : -40 }
+          }
+          transition={{ duration: 0.5, ease: EASE }}
           style={{ flex: '0 0 45%', padding: 'clamp(24px, 4vw, 60px)' }}
         >
           <p
             style={{
-              color: 'rgba(255,255,255,0.4)',
-              fontSize: '0.75rem',
-              letterSpacing: '0.12em',
+              color: '#5AC8FA',
+              fontSize: '0.82rem',
+              letterSpacing: '0.16em',
               textTransform: 'uppercase',
               marginBottom: '16px',
               fontFamily: 'var(--font-mono)',
+              fontWeight: 500,
             }}
           >
             {passion.eyebrow}
@@ -194,10 +209,11 @@ function PassionBloc({ passion }: { passion: Passion }) {
           <h3
             style={{
               fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: 'clamp(1.8rem, 3vw, 2.8rem)',
+              fontWeight: 800,
+              fontSize: 'clamp(2.2rem, 4vw, 4rem)',
               color: '#ffffff',
               lineHeight: 1.1,
+              letterSpacing: '-0.02em',
               marginBottom: '20px',
             }}
           >
@@ -206,8 +222,9 @@ function PassionBloc({ passion }: { passion: Passion }) {
           <p
             style={{
               color: 'rgba(255,255,255,0.65)',
-              fontSize: '1rem',
-              lineHeight: 1.75,
+              fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
+              lineHeight: 1.8,
+              fontWeight: 300,
               maxWidth: '400px',
             }}
           >
@@ -239,12 +256,13 @@ export function Hobbies() {
       >
         <p
           style={{
-            color: 'rgba(255,255,255,0.4)',
-            fontSize: '0.8rem',
-            letterSpacing: '0.14em',
+            color: '#5AC8FA',
+            fontSize: '0.82rem',
+            letterSpacing: '0.16em',
             textTransform: 'uppercase',
             marginBottom: '16px',
-            fontWeight: 400,
+            fontWeight: 500,
+            fontFamily: 'var(--font-mono)',
           }}
         >
           BEYOND WORK
@@ -256,6 +274,7 @@ export function Hobbies() {
             fontSize: 'clamp(3rem, 6vw, 6rem)',
             color: '#ffffff',
             lineHeight: 1.0,
+            letterSpacing: '-0.025em',
             marginBottom: '20px',
           }}
         >
@@ -265,9 +284,10 @@ export function Hobbies() {
           style={{
             color: 'rgba(255,255,255,0.6)',
             fontWeight: 300,
-            fontSize: '1.1rem',
+            fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
             maxWidth: '500px',
             margin: '0 auto',
+            lineHeight: 1.8,
           }}
         >
           The things I read, watch, and obsess over outside of work.
