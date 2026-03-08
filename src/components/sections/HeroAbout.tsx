@@ -85,8 +85,9 @@ export function HeroAbout() {
             bottom: 0,
             left: '50%',
             transform: 'translateX(-50%)',
-            height: '92vh',
-            width: 'clamp(280px, 40vw, 540px)',
+            height: '90vh',
+            width: 'auto',
+            maxWidth: 'none',
             WebkitMaskImage:
               'linear-gradient(to top, black 55%, transparent 100%)',
             maskImage:
