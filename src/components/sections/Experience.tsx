@@ -107,7 +107,7 @@ const BLOCKS: Block[] = [
     id: 'auchan',
     pattern: 'B',
     label: 'AUCHAN RETAIL · SEP 2023–MAR 2024 · LILLE',
-    role: 'Strategy Consultant — DSI',
+    role: '**Strategy Consultant** — DSI',
     description:
       'Analyzed €250M IT portfolio and led strategic benchmarking across major retail groups. Delivered risk-adjusted roadmap prioritization for executive leadership.',
     highlights: [
@@ -389,23 +389,25 @@ function ExperienceBlock({ block }: { block: Block }) {
               {block.description}
             </p>
 
-            <ul className="flex flex-col gap-3">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '20px' }}>
               {block.highlights.map((h, i) => (
-                <li
+                <div
                   key={i}
                   style={{
-                    color: 'rgba(255,255,255,0.75)',
-                    fontSize: '1.05rem',
-                    lineHeight: 1.6,
-                    display: 'flex',
-                    gap: '10px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    padding: '10px 18px',
+                    background: 'rgba(255,255,255,0.06)',
+                    border: '1px solid rgba(255,255,255,0.12)',
+                    borderRadius: '980px',
+                    fontSize: '0.88rem',
+                    color: 'rgba(255,255,255,0.85)',
                   }}
                 >
-                  <span style={{ color: block.accentColor, flexShrink: 0, marginTop: '2px' }}>→</span>
-                  <Highlight text={h} color={block.accentColor} />
-                </li>
+                  <Highlight text={h} color="#5AC8FA" />
+                </div>
               ))}
-            </ul>
+            </div>
           </motion.div>
         </div>
       </div>
@@ -444,10 +446,11 @@ export function Experience() {
           <h2
             style={{
               fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: 'clamp(2.8rem, 5vw, 5rem)',
+              fontWeight: 800,
+              fontSize: 'clamp(2.8rem, 5.5vw, 5.5rem)',
               color: '#ffffff',
-              lineHeight: 1.05,
+              lineHeight: 1.0,
+              letterSpacing: '-0.02em',
             }}
           >
             Where I&apos;ve made{' '}

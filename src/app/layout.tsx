@@ -57,7 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
       className={`${plusJakartaSans.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
-      <body className="min-h-screen antialiased bg-white text-[#0a0a0a]">
+      <body className="min-h-screen antialiased bg-white text-[#0a0a0a]" style={{ overflowX: 'hidden', maxWidth: '100%' }}>
         {children}
       </body>
     </html>
