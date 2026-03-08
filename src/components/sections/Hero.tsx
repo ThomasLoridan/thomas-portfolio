@@ -44,13 +44,7 @@ export function Hero() {
           bottom: 0,
           left: '50%',
           transform: 'translateX(-50%)',
-          height: '92vh',
-          width: '60vw',
-          maxWidth: '900px',
           zIndex: 1,
-          display: 'flex',
-          alignItems: 'flex-end',
-          justifyContent: 'center',
           maskImage: 'linear-gradient(to top, black 55%, transparent 100%)',
           WebkitMaskImage: 'linear-gradient(to top, black 55%, transparent 100%)',
         }}
@@ -61,10 +55,9 @@ export function Hero() {
           style={{
             height: '92vh',
             width: 'auto',
-            maxWidth: '100%',
+            display: 'block',
             objectFit: 'contain',
             objectPosition: 'bottom center',
-            display: 'block',
           }}
         />
       </motion.div>
