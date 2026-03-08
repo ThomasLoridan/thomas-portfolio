@@ -72,8 +72,8 @@ function SkillCard({
         background: '#ffffff',
         borderRadius: '20px',
         padding: '40px 36px',
-        border: '1px solid #e5e7eb',
-        boxShadow: '0 2px 16px rgba(0,0,0,0.06)',
+        border: 'none',
+        boxShadow: 'none',
         display: 'flex',
         flexDirection: 'column',
         gap: '16px',
@@ -254,8 +254,8 @@ export function Skills() {
                   background: '#ffffff',
                   borderRadius: '20px',
                   padding: '40px 36px',
-                  border: '1px solid #e5e7eb',
-                  boxShadow: '0 2px 12px rgba(0,0,0,0.05)',
+                  border: 'none',
+                  boxShadow: 'none',
                   minHeight: '280px',
                 }}
               >

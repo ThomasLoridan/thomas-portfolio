@@ -221,10 +221,10 @@ function PassionBloc({ passion }: { passion: Passion }) {
           </h3>
           <p
             style={{
-              color: 'rgba(255,255,255,0.65)',
+              color: 'rgba(245,245,247,0.88)',
               fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
               lineHeight: 1.8,
-              fontWeight: 300,
+              fontWeight: 400,
               maxWidth: '400px',
             }}
           >
@@ -240,7 +240,7 @@ export function Hobbies() {
   return (
     <section
       id="hobbies"
-      style={{ backgroundColor: '#000000', paddingTop: '120px', paddingBottom: '120px' }}
+      style={{ backgroundColor: '#1d1d1f', paddingTop: '120px', paddingBottom: '120px' }}
     >
       {/* Header */}
       <motion.div
@@ -282,8 +282,8 @@ export function Hobbies() {
         </h2>
         <p
           style={{
-            color: 'rgba(255,255,255,0.6)',
-            fontWeight: 300,
+            color: 'rgba(245,245,247,0.72)',
+            fontWeight: 400,
             fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
             maxWidth: '500px',
             margin: '0 auto',

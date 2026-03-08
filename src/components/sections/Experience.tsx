@@ -526,10 +526,10 @@ function ExperienceBlock({ block }: { block: Block }) {
 
             <p
               style={{
-                color: 'rgba(255,255,255,0.82)',
+                color: 'rgba(245,245,247,0.82)',
                 fontSize: 'clamp(1rem, 1.2vw, 1.1rem)',
                 lineHeight: 1.8,
-                fontWeight: 300,
+                fontWeight: 400,
               }}
             >
               {block.description}

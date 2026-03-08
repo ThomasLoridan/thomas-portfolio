@@ -139,10 +139,10 @@ export function Testimonials() {
                 <p
                   style={{
                     fontFamily: 'var(--font-body)',
-                    fontWeight: 300,
-                    fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
+                    fontWeight: 400,
+                    fontSize: 'clamp(1.05rem, 1.3vw, 1.2rem)',
                     lineHeight: 1.8,
-                    color: 'rgba(255,255,255,0.82)',
+                    color: 'rgba(245,245,247,0.9)',
                     fontStyle: 'italic',
                   }}
                 >
