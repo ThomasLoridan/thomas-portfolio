@@ -23,8 +23,17 @@ interface Passion {
 
 const PASSIONS: Passion[] = [
   {
-    id: 'asimov',
+    id: 'tennis',
     pattern: 'A',
+    eyebrow: 'SPORTS',
+    title: '10 years of tennis. Rowing. Swimming.',
+    body: 'Sport taught me discipline before I knew what discipline was. Tennis in particular — the mental game, the solo accountability, the split-second decisions — translates directly to how I perform under pressure.',
+    accent: 'mental game',
+    images: [{ src: '/images/hobbies/tennis.jpg', alt: 'Tennis' }],
+  },
+  {
+    id: 'asimov',
+    pattern: 'B',
     eyebrow: 'READING',
     title: 'Science fiction as a lens for the future.',
     body: "Isaac Asimov's Robot series and Foundation shaped how I think about systems, civilization, and the long arc of technology. Required reading for anyone building at scale.",
@@ -36,7 +45,7 @@ const PASSIONS: Passion[] = [
   },
   {
     id: 'dune',
-    pattern: 'B',
+    pattern: 'A',
     eyebrow: 'SCIENCE FICTION',
     title: 'Dune.',
     body: 'Politics, ecology, religion, and power — all compressed into one universe. Dune taught me that the best strategies are the ones that account for a generation, not a quarter.',
@@ -45,7 +54,7 @@ const PASSIONS: Passion[] = [
   },
   {
     id: 'suits',
-    pattern: 'A',
+    pattern: 'B',
     eyebrow: 'SERIES',
     title: 'Suits — negotiation as a craft.',
     body: "Harvey Specter's approach to preparation, framing, and leverage mirrors how I approach stakeholder management. Every conversation is a negotiation.",
@@ -54,7 +63,7 @@ const PASSIONS: Passion[] = [
   },
   {
     id: 'aktionnaire',
-    pattern: 'B',
+    pattern: 'A',
     eyebrow: 'FINANCE',
     title: 'Markets as a feedback loop.',
     body: 'Aktionnaire keeps me sharp on macro trends and company fundamentals. Understanding how capital flows helps me build better business cases and prioritize with sharper ROI instincts.',
@@ -63,21 +72,12 @@ const PASSIONS: Passion[] = [
   },
   {
     id: 'diary-ceo',
-    pattern: 'A',
+    pattern: 'B',
     eyebrow: 'PODCASTS',
     title: 'The Diary of a CEO.',
     body: "Steven Bartlett's interviews with founders and operators give me frameworks I apply directly to how I lead teams and manage uncertainty. Raw, honest, and consistently actionable.",
     accent: 'lead teams',
     images: [{ src: '/images/hobbies/diary-ceo.jpg', alt: 'The Diary of a CEO' }],
-  },
-  {
-    id: 'tennis',
-    pattern: 'B',
-    eyebrow: 'SPORTS',
-    title: '10 years of tennis. Rowing. Swimming.',
-    body: 'Sport taught me discipline before I knew what discipline was. Tennis in particular — the mental game, the solo accountability, the split-second decisions — translates directly to how I perform under pressure.',
-    accent: 'mental game',
-    images: [{ src: '/images/hobbies/tennis.jpg', alt: 'Tennis' }],
   },
   {
     id: 'claude',
@@ -103,28 +103,51 @@ function AccentText({ text, accent }: { text: string; accent: string }) {
 }
 
 function ImagePanel({ images }: { images: PassionImage[] }) {
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+
   if (images.length === 2) {
     return (
       <div style={{ display: 'flex', gap: '12px', height: '420px' }}>
-        {images.map((img) => (
-          <div
-            key={img.src}
-            style={{ flex: 1, position: 'relative', borderRadius: '12px', overflow: 'hidden' }}
-          >
-            <Image
-              src={img.src}
-              alt={img.alt}
-              fill
-              unoptimized={false}
-              style={{ objectFit: 'cover' }}
-            />
-          </div>
-        ))}
+        {images.map((img, idx) => {
+          const flexValue =
+            hoveredIdx === null ? 1 : hoveredIdx === idx ? 1.4 : 0.6;
+          return (
+            <div
+              key={img.src}
+              onMouseEnter={() => setHoveredIdx(idx)}
+              onMouseLeave={() => setHoveredIdx(null)}
+              style={{
+                flex: flexValue,
+                minWidth: 0,
+                position: 'relative',
+                borderRadius: '12px',
+                overflow: 'hidden',
+                transition: 'flex 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+              }}
+            >
+              <Image
+                src={img.src}
+                alt={img.alt}
+                fill
+                unoptimized={false}
+                style={{ objectFit: 'cover' }}
+              />
+            </div>
+          );
+        })}
       </div>
     );
   }
+
   return (
-    <div style={{ position: 'relative', height: '420px', borderRadius: '16px', overflow: 'hidden' }}>
+    <div
+      style={{
+        position: 'relative',
+        height: '420px',
+        borderRadius: '16px',
+        overflow: 'hidden',
+      }}
+    >
       <Image
         src={images[0].src}
         alt={images[0].alt}
@@ -138,17 +161,13 @@ function ImagePanel({ images }: { images: PassionImage[] }) {
 
 function PassionBloc({ passion }: { passion: Passion }) {
   const isA = passion.pattern === 'A';
-  const [isHovered, setIsHovered] = useState(false);
+  const [imageHovered, setImageHovered] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-20%' });
-
-  const textShift = isA ? 12 : -12;
 
   return (
     <div
       ref={ref}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
       style={{
         minHeight: '70vh',
         display: 'flex',
@@ -168,69 +187,78 @@ function PassionBloc({ passion }: { passion: Passion }) {
           alignItems: 'center',
         }}
       >
-        {/* Image side — 55% */}
-        <motion.div
-          initial={{ opacity: 0, scale: 1.08 }}
-          animate={
-            inView
-              ? { opacity: 1, scale: isHovered ? 1.08 : 1 }
-              : { opacity: 0, scale: 1.08 }
-          }
-          transition={{ duration: 0.6, ease: EASE }}
-          style={{ flex: '0 0 55%' }}
+        {/* Image side — hover here drives the flex push */}
+        <div
+          onMouseEnter={() => setImageHovered(true)}
+          onMouseLeave={() => setImageHovered(false)}
+          style={{
+            flexBasis: imageHovered ? '62%' : '55%',
+            flexShrink: 0,
+            transition: 'flex-basis 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+          }}
         >
-          <ImagePanel images={passion.images} />
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 1.08 }}
+            animate={inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.08 }}
+            transition={{ duration: 0.6, ease: EASE }}
+          >
+            <ImagePanel images={passion.images} />
+          </motion.div>
+        </div>
 
-        {/* Text side — 45% */}
-        <motion.div
-          initial={{ opacity: 0, x: isA ? 40 : -40 }}
-          animate={
-            inView
-              ? { opacity: 1, x: isHovered ? textShift : 0 }
-              : { opacity: 0, x: isA ? 40 : -40 }
-          }
-          transition={{ duration: 0.5, ease: EASE }}
-          style={{ flex: '0 0 45%', padding: 'clamp(24px, 4vw, 60px)' }}
+        {/* Text side — gets pushed when image is hovered */}
+        <div
+          style={{
+            flexBasis: imageHovered ? '38%' : '45%',
+            flexShrink: 0,
+            transition: 'flex-basis 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+          }}
         >
-          <p
-            style={{
-              color: 'rgba(245,245,247,0.5)',
-              fontSize: '0.82rem',
-              letterSpacing: '0.16em',
-              textTransform: 'uppercase',
-              marginBottom: '16px',
-              fontFamily: 'var(--font-mono)',
-              fontWeight: 500,
-            }}
+          <motion.div
+            initial={{ opacity: 0, x: isA ? 40 : -40 }}
+            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: isA ? 40 : -40 }}
+            transition={{ duration: 0.5, ease: EASE }}
+            style={{ padding: 'clamp(24px, 4vw, 60px)' }}
           >
-            {passion.eyebrow}
-          </p>
-          <h3
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 800,
-              fontSize: 'clamp(2.2rem, 4vw, 4rem)',
-              color: '#ffffff',
-              lineHeight: 1.1,
-              letterSpacing: '-0.02em',
-              marginBottom: '20px',
-            }}
-          >
-            {passion.title}
-          </h3>
-          <p
-            style={{
-              color: 'rgba(245,245,247,0.88)',
-              fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
-              lineHeight: 1.8,
-              fontWeight: 400,
-              maxWidth: '400px',
-            }}
-          >
-            <AccentText text={passion.body} accent={passion.accent} />
-          </p>
-        </motion.div>
+            <p
+              style={{
+                color: 'rgba(245,245,247,0.5)',
+                fontSize: '0.82rem',
+                letterSpacing: '0.16em',
+                textTransform: 'uppercase',
+                marginBottom: '16px',
+                fontFamily: 'var(--font-mono)',
+                fontWeight: 500,
+              }}
+            >
+              {passion.eyebrow}
+            </p>
+            <h3
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontWeight: 800,
+                fontSize: 'clamp(2.2rem, 4vw, 4rem)',
+                color: '#ffffff',
+                lineHeight: 1.1,
+                letterSpacing: '-0.02em',
+                marginBottom: '20px',
+              }}
+            >
+              {passion.title}
+            </h3>
+            <p
+              style={{
+                color: 'rgba(245,245,247,0.88)',
+                fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
+                lineHeight: 1.8,
+                fontWeight: 400,
+                maxWidth: '400px',
+              }}
+            >
+              <AccentText text={passion.body} accent={passion.accent} />
+            </p>
+          </motion.div>
+        </div>
       </div>
     </div>
   );

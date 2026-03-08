@@ -15,8 +15,31 @@ export function SocialSidebar() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 1500);
-    return () => clearTimeout(t);
+    const hero = document.getElementById('hero');
+    const contact = document.getElementById('contact');
+
+    const heroObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) setVisible(true);
+        else setVisible(false);
+      },
+      { threshold: 0 }
+    );
+
+    const contactObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setVisible(false);
+      },
+      { threshold: 0 }
+    );
+
+    if (hero) heroObserver.observe(hero);
+    if (contact) contactObserver.observe(contact);
+
+    return () => {
+      heroObserver.disconnect();
+      contactObserver.disconnect();
+    };
   }, []);
 
   return (

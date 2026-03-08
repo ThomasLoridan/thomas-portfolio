@@ -30,6 +30,7 @@ interface CompanyGroup {
   company: string;
   period: string;
   blockIds: string[];
+  accentColor: string;
 }
 
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
@@ -213,21 +214,25 @@ const GROUPS: CompanyGroup[] = [
   {
     company: 'Amazon',
     period: 'April 2024 – Present',
+    accentColor: '#FF9900',
     blockIds: ['amazon-tpm-innovation', 'amazon-ba-emea', 'amazon-tpm-reliability'],
   },
   {
     company: 'Auchan Retail',
     period: 'Sep 2023 – Mar 2024',
+    accentColor: '#E2001A',
     blockIds: ['auchan'],
   },
   {
     company: "L'Oréal",
     period: 'Feb 2022 – Mar 2024',
+    accentColor: '#C8A951',
     blockIds: ['loreal-freelance', 'loreal-delivery', 'loreal-pm'],
   },
   {
     company: 'Familyad',
     period: 'Sep 2021 – Mar 2022',
+    accentColor: '#6366f1',
     blockIds: ['familyad'],
   },
 ];
@@ -262,7 +267,7 @@ function KPIStats({ kpis }: { kpis: KPI[] }) {
             style={{
               fontFamily: 'var(--font-heading)',
               fontWeight: 700,
-              fontSize: 'clamp(1.2rem, 1.8vw, 1.65rem)',
+              fontSize: 'clamp(1.5rem, 2.2vw, 2rem)',
               color: '#5AC8FA',
               lineHeight: 1.05,
             }}
@@ -272,10 +277,10 @@ function KPIStats({ kpis }: { kpis: KPI[] }) {
           <p
             style={{
               fontFamily: 'var(--font-mono)',
-              fontSize: '0.6rem',
+              fontSize: '0.68rem',
               letterSpacing: '0.1em',
               textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.35)',
+              color: 'rgba(255,255,255,0.45)',
               lineHeight: 1.3,
             }}
           >
@@ -306,30 +311,48 @@ function GroupHeader({ group }: { group: CompanyGroup }) {
         paddingBottom: '0',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-        <span
+      <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        {/* Colored left accent bar */}
+        <div
           style={{
-            fontFamily: 'var(--font-heading)',
-            fontWeight: 700,
-            fontSize: '1.1rem',
-            color: '#ffffff',
-            letterSpacing: '-0.01em',
-            whiteSpace: 'nowrap',
+            width: '3px',
+            height: '52px',
+            borderRadius: '2px',
+            background: group.accentColor,
+            flexShrink: 0,
           }}
-        >
-          {group.company}
-        </span>
-        <span
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.72rem',
-            color: 'rgba(255,255,255,0.38)',
-            letterSpacing: '0.06em',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {group.period}
-        </span>
+        />
+
+        {/* Period above company name */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <span
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.72rem',
+              color: group.accentColor,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              fontWeight: 500,
+            }}
+          >
+            {group.period}
+          </span>
+          <span
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontWeight: 700,
+              fontSize: 'clamp(1.8rem, 2.8vw, 2.4rem)',
+              color: '#ffffff',
+              letterSpacing: '-0.02em',
+              lineHeight: 1.1,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {group.company}
+          </span>
+        </div>
+
+        {/* Hairline rule */}
         <div
           style={{
             flex: 1,
@@ -434,7 +457,15 @@ function MediaPanel({ media }: { media: MediaConfig }) {
 }
 
 /* ─── Single experience block ─────────────────────────────── */
-function ExperienceBlock({ block }: { block: Block }) {
+function ExperienceBlock({
+  block,
+  companyName,
+  companyAccent,
+}: {
+  block: Block;
+  companyName: string;
+  companyAccent: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-20%' });
   const isPatternA = block.pattern === 'A';
@@ -499,13 +530,35 @@ function ExperienceBlock({ block }: { block: Block }) {
             className="flex flex-col gap-5"
             style={{ padding: 'clamp(24px, 3vw, 48px)' }}
           >
+            {/* Company pill badge */}
+            <div style={{ marginBottom: '8px' }}>
+              <span
+                style={{
+                  display: 'inline-block',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.65rem',
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                  color: companyAccent,
+                  fontWeight: 600,
+                  padding: '3px 10px',
+                  borderRadius: '99px',
+                  border: `1px solid ${companyAccent}60`,
+                  background: `${companyAccent}12`,
+                }}
+              >
+                {companyName}
+              </span>
+            </div>
+
+            {/* Date / location label */}
             <p
               style={{
                 fontFamily: 'var(--font-mono)',
-                fontSize: '0.72rem',
+                fontSize: '0.78rem',
                 letterSpacing: '0.14em',
                 textTransform: 'uppercase',
-                color: 'rgba(245,245,247,0.52)',
+                color: 'rgba(245,245,247,0.72)',
                 fontWeight: 500,
               }}
             >
@@ -620,7 +673,11 @@ export function Experience() {
             const block = BLOCK_MAP[id];
             return (
               <div key={id}>
-                <ExperienceBlock block={block} />
+                <ExperienceBlock
+                    block={block}
+                    companyName={group.company}
+                    companyAccent={group.accentColor}
+                  />
                 {i < group.blockIds.length - 1 && (
                   <div
                     style={{
