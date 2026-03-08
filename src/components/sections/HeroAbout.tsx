@@ -84,13 +84,13 @@ export function HeroAbout() {
             position: 'absolute',
             bottom: 0,
             left: '50%',
-            transform: 'translateX(-40%)',
-            height: '95vh',
+            transform: 'translateX(-50%)',
+            height: '92vh',
             width: 'clamp(280px, 40vw, 540px)',
             WebkitMaskImage:
-              'linear-gradient(to top, black 60%, transparent 100%)',
+              'linear-gradient(to top, black 55%, transparent 100%)',
             maskImage:
-              'linear-gradient(to top, black 60%, transparent 100%)',
+              'linear-gradient(to top, black 55%, transparent 100%)',
             zIndex: 1,
           }}
         >
