@@ -255,31 +255,31 @@ function KPIStats({ kpis }: { kpis: KPI[] }) {
             borderRight: i < kpis.length - 1 ? '1px solid rgba(255,255,255,0.12)' : 'none',
             display: 'flex',
             flexDirection: 'column',
-            gap: '5px',
+            gap: '4px',
           }}
         >
           <p
             style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.62rem',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.38)',
-              lineHeight: 1.2,
-            }}
-          >
-            {kpi.label}
-          </p>
-          <p
-            style={{
               fontFamily: 'var(--font-heading)',
               fontWeight: 700,
-              fontSize: 'clamp(1.15rem, 1.8vw, 1.6rem)',
+              fontSize: 'clamp(1.2rem, 1.8vw, 1.65rem)',
               color: '#5AC8FA',
-              lineHeight: 1.1,
+              lineHeight: 1.05,
             }}
           >
             {kpi.value}
+          </p>
+          <p
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.6rem',
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.35)',
+              lineHeight: 1.3,
+            }}
+          >
+            {kpi.label}
           </p>
         </div>
       ))}
@@ -311,9 +311,9 @@ function GroupHeader({ group }: { group: CompanyGroup }) {
           style={{
             fontFamily: 'var(--font-heading)',
             fontWeight: 700,
-            fontSize: '0.95rem',
-            color: 'rgba(255,255,255,0.9)',
-            letterSpacing: '0.01em',
+            fontSize: '1.1rem',
+            color: '#ffffff',
+            letterSpacing: '-0.01em',
             whiteSpace: 'nowrap',
           }}
         >
@@ -322,9 +322,9 @@ function GroupHeader({ group }: { group: CompanyGroup }) {
         <span
           style={{
             fontFamily: 'var(--font-mono)',
-            fontSize: '0.7rem',
-            color: 'rgba(255,255,255,0.32)',
-            letterSpacing: '0.08em',
+            fontSize: '0.72rem',
+            color: 'rgba(255,255,255,0.38)',
+            letterSpacing: '0.06em',
             whiteSpace: 'nowrap',
           }}
         >
@@ -526,7 +526,7 @@ function ExperienceBlock({ block }: { block: Block }) {
 
             <p
               style={{
-                color: 'rgba(255,255,255,0.65)',
+                color: 'rgba(255,255,255,0.82)',
                 fontSize: 'clamp(1rem, 1.2vw, 1.1rem)',
                 lineHeight: 1.8,
                 fontWeight: 300,

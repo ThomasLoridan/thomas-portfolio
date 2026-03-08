@@ -21,30 +21,51 @@ export function SocialSidebar() {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: visible ? 1 : 0 }}
-      transition={{ duration: 0.7 }}
-      className="fixed left-6 top-1/2 -translate-y-1/2 z-50 hidden lg:flex flex-col items-center gap-3"
+      initial={{ opacity: 0, x: -16 }}
+      animate={{ opacity: visible ? 1 : 0, x: visible ? 0 : -16 }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className="fixed left-5 top-1/2 -translate-y-1/2 z-50 hidden lg:flex flex-col gap-2.5"
     >
-      {/* Decorative line above icons */}
-      <div className="w-px h-14 bg-gray-300/60" />
-
       {LINKS.map(({ icon: Icon, label, href }) => (
-        <div key={label} className="relative group">
-          <a
-            href={href}
-            target={href.startsWith('mailto') ? undefined : '_blank'}
-            rel={href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
-            aria-label={label}
-            className="w-10 h-10 rounded-full flex items-center justify-center bg-black/[0.05] text-gray-500 hover:bg-[#0075eb] hover:text-white transition-all duration-200 hover:scale-110"
-          >
-            <Icon size={15} />
-          </a>
-          {/* Tooltip */}
-          <span className="absolute left-12 top-1/2 -translate-y-1/2 text-xs font-medium text-gray-700 bg-white border border-gray-200 px-2 py-1 rounded-md shadow-sm opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-            {label}
-          </span>
-        </div>
+        <a
+          key={label}
+          href={href}
+          target={href.startsWith('mailto') ? undefined : '_blank'}
+          rel={href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
+          aria-label={label}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '9px',
+            background: 'rgba(18,18,20,0.88)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255,255,255,0.10)',
+            borderRadius: '99px',
+            padding: '10px 16px 10px 13px',
+            color: '#ffffff',
+            textDecoration: 'none',
+            fontSize: '0.8rem',
+            fontWeight: 500,
+            fontFamily: 'var(--font-body)',
+            letterSpacing: '0.01em',
+            transition: 'background 0.2s, border-color 0.2s, transform 0.2s',
+            whiteSpace: 'nowrap',
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLElement).style.background = '#0075eb';
+            (e.currentTarget as HTMLElement).style.borderColor = '#0075eb';
+            (e.currentTarget as HTMLElement).style.transform = 'translateX(4px)';
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLElement).style.background = 'rgba(18,18,20,0.88)';
+            (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.10)';
+            (e.currentTarget as HTMLElement).style.transform = 'translateX(0)';
+          }}
+        >
+          <Icon size={13} />
+          <span>{label}</span>
+        </a>
       ))}
     </motion.div>
   );

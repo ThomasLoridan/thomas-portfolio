@@ -5,21 +5,26 @@ import { motion, useInView } from 'framer-motion';
 
 const COLS = [
   {
-    role: 'Director of IT · Auchan',
+    role: 'Director of IT',
+    company: 'Auchan',
     quote:
       'Rare talent who goes from whiteboard strategy to a SQL query in the same afternoon. Thomas delivered clarity on a €250M portfolio nobody had managed to map before.',
   },
   {
-    role: 'L6 Manager · Amazon',
+    role: 'L6 Engineering Manager',
+    company: 'Amazon',
     quote:
       'His program management skills kept 50+ stakeholders aligned without a single escalation. He translated ambiguous directives into concrete delivery milestones every time.',
   },
   {
-    role: 'Engineering Lead · Amazon',
+    role: 'Engineering Lead',
+    company: 'Amazon',
     quote:
       'Thomas transformed how we think about data products. His ability to bridge engineering and business is rare — he shipped in weeks what I thought would take quarters.',
   },
 ];
+
+const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
 export function Testimonials() {
   const ref = useRef<HTMLDivElement>(null);
@@ -31,13 +36,13 @@ export function Testimonials() {
       style={{ background: '#1d1d1f', paddingBlock: 'clamp(5rem,10vw,8rem)' }}
     >
       <div className="max-w-6xl mx-auto px-6">
-        {/* Top — centered grand quote */}
+        {/* Header */}
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 24 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.65, ease: 'easeOut' }}
-          style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto 72px' }}
+          style={{ maxWidth: '680px', marginBottom: '72px' }}
         >
           <p
             style={{
@@ -47,7 +52,7 @@ export function Testimonials() {
               color: '#5AC8FA',
               letterSpacing: '0.16em',
               textTransform: 'uppercase',
-              marginBottom: '24px',
+              marginBottom: '20px',
             }}
           >
             Kind words
@@ -68,109 +73,90 @@ export function Testimonials() {
           </p>
         </motion.div>
 
-        {/* Bottom — 3 columns */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {COLS.map(({ role, quote }, i) => {
-            const parts = role.split(' · ');
-            const jobTitle = parts[0];
-            const company = parts[1] ?? '';
-
-            return (
-              <motion.div
-                key={role}
-                initial={{ opacity: 0, y: 20 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.55, delay: 0.1 + i * 0.1, ease: 'easeOut' }}
+        {/* Comparison list — inspired by Apple iPhone comparison layout */}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          {COLS.map(({ role, company, quote }, i) => (
+            <motion.div
+              key={role + company}
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.55, delay: 0.1 + i * 0.12, ease: 'easeOut' }}
+            >
+              {/* Model-name header row */}
+              <div
                 style={{
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.10)',
-                  borderRadius: '20px',
-                  padding: '36px 32px',
-                  backdropFilter: 'blur(8px)',
-                  WebkitBackdropFilter: 'blur(8px)',
                   display: 'flex',
-                  flexDirection: 'column',
-                  transition: 'border-color 0.2s ease, background 0.2s ease',
-                  cursor: 'default',
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.2)';
-                  (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.08)';
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.10)';
-                  (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.05)';
+                  alignItems: 'center',
+                  gap: '12px',
+                  paddingTop: i > 0 ? '40px' : '0',
+                  paddingBottom: '16px',
                 }}
               >
-                {/* Opening quote mark */}
-                <div
+                <span
                   style={{
-                    fontFamily: 'Georgia, serif',
-                    fontSize: '4rem',
-                    lineHeight: 1,
-                    color: '#5AC8FA',
-                    opacity: 0.6,
-                    marginBottom: '8px',
+                    fontFamily: 'var(--font-heading)',
+                    fontWeight: 700,
+                    fontSize: '1.05rem',
+                    color: '#ffffff',
+                    letterSpacing: '-0.01em',
                   }}
                 >
-                  &ldquo;
-                </div>
+                  {role}
+                </span>
+                <span
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.72rem',
+                    fontWeight: 500,
+                    color: '#5AC8FA',
+                    background: 'rgba(90,200,250,0.08)',
+                    border: '1px solid rgba(90,200,250,0.2)',
+                    padding: '3px 10px',
+                    borderRadius: '99px',
+                    letterSpacing: '0.04em',
+                  }}
+                >
+                  {company}
+                </span>
+                <div
+                  style={{
+                    flex: 1,
+                    height: '1px',
+                    background: 'rgba(255,255,255,0.08)',
+                  }}
+                />
+              </div>
 
-                {/* Quote text */}
+              {/* Quote card */}
+              <div
+                style={{
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: '16px',
+                  padding: 'clamp(24px, 3vw, 36px) clamp(24px, 3vw, 40px)',
+                }}
+              >
                 <p
                   style={{
                     fontFamily: 'var(--font-body)',
                     fontWeight: 300,
-                    fontSize: '1rem',
-                    lineHeight: 1.75,
-                    color: 'rgba(255,255,255,0.80)',
+                    fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
+                    lineHeight: 1.8,
+                    color: 'rgba(255,255,255,0.82)',
                     fontStyle: 'italic',
-                    flex: 1,
                   }}
                 >
-                  {quote}
+                  &ldquo;{quote}&rdquo;
                 </p>
-
-                {/* Attribution */}
-                <div
-                  style={{
-                    marginTop: '24px',
-                    borderTop: '1px solid rgba(255,255,255,0.08)',
-                    paddingTop: '16px',
-                  }}
-                >
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-body)',
-                      fontWeight: 600,
-                      fontSize: '0.85rem',
-                      color: '#ffffff',
-                      marginBottom: '2px',
-                    }}
-                  >
-                    {jobTitle}
-                  </p>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-body)',
-                      fontWeight: 400,
-                      fontSize: '0.8rem',
-                      color: 'rgba(255,255,255,0.45)',
-                    }}
-                  >
-                    {company}
-                  </p>
-                </div>
-              </motion.div>
-            );
-          })}
+              </div>
+            </motion.div>
+          ))}
         </div>
 
         {/* Disclaimer */}
         <p
           style={{
-            textAlign: 'center',
-            color: 'rgba(255,255,255,0.18)',
+            color: 'rgba(255,255,255,0.15)',
             fontSize: '0.7rem',
             fontFamily: 'var(--font-mono)',
             letterSpacing: '0.05em',

@@ -22,16 +22,15 @@ function CertCard({
       onClick={onClick}
       style={{
         flexShrink: 0,
-        width: '320px',
+        width: '400px',
         background: '#ffffff',
         border: '1px solid #e8e8e8',
         borderRadius: '20px',
-        padding: '32px 28px',
         marginRight: '16px',
         cursor: 'pointer',
         display: 'flex',
-        flexDirection: 'column',
-        gap: '16px',
+        flexDirection: 'row',
+        overflow: 'hidden',
         transition: 'box-shadow 0.2s, transform 0.2s',
       }}
       onMouseEnter={(e) => {
@@ -43,33 +42,29 @@ function CertCard({
         (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
       }}
     >
-      {/* Logo / award area */}
-      <div style={{ height: '52px', display: 'flex', alignItems: 'center' }}>
+      {/* Left — logo panel */}
+      <div
+        style={{
+          width: '120px',
+          flexShrink: 0,
+          background: cert.isAward ? `${cert.accentColor}10` : '#f5f5f7',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '24px 16px',
+        }}
+      >
         {cert.isAward ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{ fontSize: '40px', lineHeight: 1 }}>{cert.awardIcon}</span>
-            <span
-              style={{
-                background: `${cert.accentColor}20`,
-                color: cert.accentColor,
-                fontSize: '0.62rem',
-                padding: '4px 10px',
-                borderRadius: '99px',
-                fontWeight: 600,
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-              }}
-            >
-              Award
-            </span>
-          </div>
+          <span style={{ fontSize: '40px', lineHeight: 1 }}>{cert.awardIcon}</span>
         ) : isMcKinsey ? (
           <span
             style={{
               fontFamily: 'Georgia, serif',
-              fontSize: '0.95rem',
+              fontSize: '0.7rem',
               color: '#0C2340',
               fontWeight: 600,
+              textAlign: 'center',
+              lineHeight: 1.4,
             }}
           >
             McKinsey &amp; Company
@@ -80,21 +75,21 @@ function CertCard({
             width={cert.logoWidth}
             height={cert.logoHeight}
             alt={cert.issuer}
-            style={{ objectFit: 'contain', objectPosition: 'left' }}
+            style={{ objectFit: 'contain', maxWidth: '80px', maxHeight: '52px' }}
           />
         ) : (
           <div
             style={{
-              width: '48px',
-              height: '48px',
+              width: '52px',
+              height: '52px',
               borderRadius: '50%',
-              background: `${cert.accentColor}15`,
+              background: `${cert.accentColor}18`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: cert.accentColor,
               fontWeight: 700,
-              fontSize: '1rem',
+              fontSize: '1.1rem',
               fontFamily: 'var(--font-heading)',
             }}
           >
@@ -108,55 +103,65 @@ function CertCard({
         )}
       </div>
 
-      <div style={{ height: '1px', background: '#f0f0f0' }} />
-
-      <p
+      {/* Right — content */}
+      <div
         style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: '0.65rem',
-          letterSpacing: '0.12em',
-          color: cert.accentColor,
-          textTransform: 'uppercase',
-          fontWeight: 500,
-        }}
-      >
-        {cert.issuer}
-      </p>
-
-      <h3
-        style={{
-          fontFamily: 'var(--font-heading)',
-          fontWeight: 700,
-          fontSize: '1.05rem',
-          color: '#0a0a0a',
-          lineHeight: 1.3,
           flex: 1,
+          padding: '24px 20px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px',
+          borderLeft: '1px solid #f0f0f0',
         }}
       >
-        {cert.name}
-      </h3>
-
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span
+        <p
           style={{
             fontFamily: 'var(--font-mono)',
-            fontSize: '0.8rem',
-            color: '#9b9b9b',
+            fontSize: '0.6rem',
+            letterSpacing: '0.12em',
+            color: cert.accentColor,
+            textTransform: 'uppercase',
+            fontWeight: 500,
           }}
         >
-          {cert.year}
-        </span>
-        {cert.url && (
+          {cert.issuer}
+        </p>
+
+        <h3
+          style={{
+            fontFamily: 'var(--font-heading)',
+            fontWeight: 700,
+            fontSize: '0.95rem',
+            color: '#0a0a0a',
+            lineHeight: 1.3,
+            flex: 1,
+          }}
+        >
+          {cert.name}
+        </h3>
+
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '4px' }}>
           <span
             style={{
-              fontSize: '0.78rem',
-              fontWeight: 500,
-              color: cert.accentColor,
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.75rem',
+              color: '#9b9b9b',
             }}
           >
-            View →
+            {cert.year}
           </span>
-        )}
+          {cert.url && (
+            <span
+              style={{
+                fontSize: '0.75rem',
+                fontWeight: 500,
+                color: cert.accentColor,
+              }}
+            >
+              View →
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );
