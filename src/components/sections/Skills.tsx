@@ -173,7 +173,7 @@ export function Skills() {
     <section id="skills" className="skills-bg">
       {/* ── PART A: Skill cards ─────────────────────────── */}
       <div className="section-padding">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-5xl mx-auto px-6">
           {/* Header */}
           <motion.div
             ref={partARef}
@@ -182,19 +182,44 @@ export function Skills() {
             transition={{ duration: 0.6, ease: 'easeOut' }}
             className="mb-12"
           >
+            <p
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.82rem',
+                fontWeight: 500,
+                color: '#6e6e73',
+                letterSpacing: '0.16em',
+                textTransform: 'uppercase',
+                marginBottom: '16px',
+              }}
+            >
+              Skills
+            </p>
             <h2
               style={{
                 fontFamily: 'var(--font-heading)',
-                fontWeight: 800,
+                fontWeight: 700,
                 fontSize: 'clamp(3rem, 6vw, 6rem)',
                 color: '#0a0a0a',
                 lineHeight: 1.0,
                 letterSpacing: '-0.025em',
-                marginBottom: '12px',
+                marginBottom: '16px',
               }}
             >
               What I bring to the table.
             </h2>
+            <p
+              style={{
+                color: '#4b5563',
+                fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
+                lineHeight: 1.8,
+                fontWeight: 400,
+                maxWidth: '560px',
+                marginBottom: '20px',
+              }}
+            >
+              Technical depth, product thinking, and program leadership — the three pillars of everything I build.
+            </p>
             <a
               href="/resume.pdf"
               target="_blank"
@@ -221,7 +246,7 @@ export function Skills() {
 
       {/* ── PART B: Values cards ────────────────────────── */}
       <div className="bg-white section-padding">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-5xl mx-auto px-6">
           <motion.div
             ref={partBRef}
             initial={{ opacity: 0, y: 24 }}
@@ -232,7 +257,7 @@ export function Skills() {
             <h2
               style={{
                 fontFamily: 'var(--font-heading)',
-                fontWeight: 800,
+                fontWeight: 700,
                 fontSize: 'clamp(3rem, 6vw, 6rem)',
                 color: '#0a0a0a',
                 lineHeight: 1.0,

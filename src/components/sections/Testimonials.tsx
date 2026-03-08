@@ -5,22 +5,22 @@ import { motion, useInView } from 'framer-motion';
 
 const COLS = [
   {
-    role: 'Director of IT',
-    company: 'Auchan',
-    quote:
-      'Rare talent who goes from whiteboard strategy to a SQL query in the same afternoon. Thomas delivered clarity on a €250M portfolio nobody had managed to map before.',
-  },
-  {
-    role: 'L6 Engineering Manager',
+    role: 'Product Manager',
     company: 'Amazon',
     quote:
-      'His program management skills kept 50+ stakeholders aligned without a single escalation. He translated ambiguous directives into concrete delivery milestones every time.',
+      "Any business needs to use available technology to improve its efficiency, and any tech team needs to understand how the business works to apply that tech in the most useful way. During '25, Thomas became the bridge between those 2 worlds, increasing his business knowledge while actively engaging with the team to propose improvements to the existing mechanisms. He is organized and clean, which makes it easy to non-tech contributors to learn and even reuse his deliveries.",
   },
   {
-    role: 'Engineering Lead',
+    role: 'Program Manager',
     company: 'Amazon',
     quote:
-      'Thomas transformed how we think about data products. His ability to bridge engineering and business is rare — he shipped in weeks what I thought would take quarters.',
+      "Thomas consistently maintains high standards in his work by ensuring his solutions meet quality benchmarks and iterating on his outputs until they achieve the desired level of excellence. His curiosity-driven approach has resulted in improved automation processes and more effective business intelligence tools that benefit both the team's efficiency and our ability to serve customers better.",
+  },
+  {
+    role: 'Digital Manager',
+    company: "L'Oréal",
+    quote:
+      'Thomas has been a key element in my team. He is a fast learner and very volunteer for new challenges. Definitely a great added value to lead projects.',
   },
 ];
 
@@ -35,7 +35,7 @@ export function Testimonials() {
       id="testimonials"
       style={{ background: '#1d1d1f', paddingBlock: 'clamp(5rem,10vw,8rem)' }}
     >
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-5xl mx-auto px-6">
         {/* Header */}
         <motion.div
           ref={ref}
@@ -49,7 +49,7 @@ export function Testimonials() {
               fontSize: '0.82rem',
               fontFamily: 'var(--font-mono)',
               fontWeight: 500,
-              color: '#5AC8FA',
+              color: 'rgba(245,245,247,0.5)',
               letterSpacing: '0.16em',
               textTransform: 'uppercase',
               marginBottom: '20px',
@@ -60,16 +60,27 @@ export function Testimonials() {
           <p
             style={{
               fontFamily: 'var(--font-heading)',
-              fontWeight: 800,
+              fontWeight: 700,
               fontSize: 'clamp(3rem, 6vw, 6rem)',
               color: '#ffffff',
               lineHeight: 1.0,
               letterSpacing: '-0.025em',
+              marginBottom: '20px',
             }}
           >
             &ldquo;Product instinct.{' '}
             <span style={{ color: '#5AC8FA' }}>Technical depth.</span>{' '}
             Delivery.&rdquo;
+          </p>
+          <p
+            style={{
+              color: 'rgba(245,245,247,0.65)',
+              fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
+              lineHeight: 1.8,
+              fontWeight: 400,
+            }}
+          >
+            From the people I&apos;ve delivered with.
           </p>
         </motion.div>
 
@@ -108,9 +119,9 @@ export function Testimonials() {
                     fontFamily: 'var(--font-mono)',
                     fontSize: '0.72rem',
                     fontWeight: 500,
-                    color: '#5AC8FA',
-                    background: 'rgba(90,200,250,0.08)',
-                    border: '1px solid rgba(90,200,250,0.2)',
+                    color: 'rgba(245,245,247,0.6)',
+                    background: 'rgba(245,245,247,0.06)',
+                    border: '1px solid rgba(245,245,247,0.12)',
                     padding: '3px 10px',
                     borderRadius: '99px',
                     letterSpacing: '0.04em',
@@ -153,18 +164,6 @@ export function Testimonials() {
           ))}
         </div>
 
-        {/* Disclaimer */}
-        <p
-          style={{
-            color: 'rgba(255,255,255,0.15)',
-            fontSize: '0.7rem',
-            fontFamily: 'var(--font-mono)',
-            letterSpacing: '0.05em',
-            marginTop: '48px',
-          }}
-        >
-          * Illustrative — real quotes coming soon
-        </p>
       </div>
     </section>
   );

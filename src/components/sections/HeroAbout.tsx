@@ -184,9 +184,9 @@ export function HeroAbout() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.9 }}
             style={{
-              color: 'rgba(255,255,255,0.65)',
+              color: 'rgba(245,245,247,0.82)',
               fontSize: 'clamp(0.95rem, 1.1vw, 1.1rem)',
-              fontWeight: 300,
+              fontWeight: 400,
               lineHeight: 1.6,
               maxWidth: '400px',
               marginBottom: '28px',
@@ -208,23 +208,20 @@ export function HeroAbout() {
               style={{
                 padding: '10px 22px',
                 borderRadius: '980px',
-                background: 'rgba(255,255,255,0.12)',
-                color: '#ffffff',
+                background: '#f5f5f7',
+                color: '#0a0a0a',
                 fontSize: '0.9rem',
-                fontWeight: 400,
+                fontWeight: 500,
                 fontFamily: 'var(--font-body)',
-                border: '1px solid rgba(255,255,255,0.2)',
+                border: 'none',
                 cursor: 'pointer',
-                backdropFilter: 'blur(8px)',
-                transition: 'background 0.2s',
+                transition: 'opacity 0.2s',
               }}
               onMouseEnter={(e) =>
-                ((e.currentTarget as HTMLElement).style.background =
-                  'rgba(255,255,255,0.2)')
+                ((e.currentTarget as HTMLElement).style.opacity = '0.85')
               }
               onMouseLeave={(e) =>
-                ((e.currentTarget as HTMLElement).style.background =
-                  'rgba(255,255,255,0.12)')
+                ((e.currentTarget as HTMLElement).style.opacity = '1')
               }
             >
               View my work ↓
@@ -238,25 +235,18 @@ export function HeroAbout() {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '5px',
-                padding: '10px 22px',
-                borderRadius: '980px',
-                background: 'rgba(255,255,255,0.12)',
-                color: '#ffffff',
+                color: 'rgba(245,245,247,0.72)',
                 fontSize: '0.9rem',
                 fontWeight: 400,
                 fontFamily: 'var(--font-body)',
-                border: '1px solid rgba(255,255,255,0.2)',
                 textDecoration: 'none',
-                backdropFilter: 'blur(8px)',
-                transition: 'background 0.2s',
+                transition: 'color 0.2s',
               }}
               onMouseEnter={(e) =>
-                ((e.currentTarget as HTMLElement).style.background =
-                  'rgba(255,255,255,0.2)')
+                ((e.currentTarget as HTMLElement).style.color = '#ffffff')
               }
               onMouseLeave={(e) =>
-                ((e.currentTarget as HTMLElement).style.background =
-                  'rgba(255,255,255,0.12)')
+                ((e.currentTarget as HTMLElement).style.color = 'rgba(245,245,247,0.72)')
               }
             >
               LinkedIn <ExternalLink size={11} />
@@ -280,7 +270,7 @@ export function HeroAbout() {
           WHITE ABOUT (below fold)
       ══════════════════════════════════════════════════ */}
       <section id="about" className="bg-white pb-28">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-5xl mx-auto px-6">
 
           {/* Two-column: pull quote + bio */}
           <motion.div

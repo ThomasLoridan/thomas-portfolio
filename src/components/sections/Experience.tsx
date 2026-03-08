@@ -299,7 +299,7 @@ function GroupHeader({ group }: { group: CompanyGroup }) {
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5, ease: 'easeOut' }}
       style={{
-        maxWidth: '1152px',
+        maxWidth: '1024px',
         margin: '0 auto',
         padding: '0 24px',
         paddingTop: 'clamp(56px, 9vh, 96px)',
@@ -477,7 +477,7 @@ function ExperienceBlock({ block }: { block: Block }) {
         }}
       />
 
-      <div className="max-w-6xl mx-auto px-6 w-full">
+      <div className="max-w-5xl mx-auto px-6 w-full">
         <div
           className={`grid grid-cols-1 items-center gap-8 md:gap-12 ${
             isPatternA
@@ -505,7 +505,7 @@ function ExperienceBlock({ block }: { block: Block }) {
                 fontSize: '0.72rem',
                 letterSpacing: '0.14em',
                 textTransform: 'uppercase',
-                color: '#5AC8FA',
+                color: 'rgba(245,245,247,0.52)',
                 fontWeight: 500,
               }}
             >
@@ -564,26 +564,51 @@ export function Experience() {
       />
 
       {/* Section header */}
-      <div className="max-w-6xl mx-auto px-6 pt-28 pb-8">
+      <div className="max-w-5xl mx-auto px-6 pt-28 pb-8">
         <motion.div
           ref={headerRef}
           initial={{ opacity: 0, y: 28 }}
           animate={headerInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.65, ease: 'easeOut' }}
         >
+          <p
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.82rem',
+              fontWeight: 500,
+              color: 'rgba(245,245,247,0.5)',
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase',
+              marginBottom: '16px',
+            }}
+          >
+            Experience
+          </p>
           <h2
             style={{
               fontFamily: 'var(--font-heading)',
-              fontWeight: 800,
+              fontWeight: 700,
               fontSize: 'clamp(3rem, 6vw, 6rem)',
               color: '#ffffff',
               lineHeight: 1.0,
               letterSpacing: '-0.025em',
+              marginBottom: '16px',
             }}
           >
             Where I&apos;ve made{' '}
             <span style={{ color: '#5AC8FA' }}>an impact</span>
           </h2>
+          <p
+            style={{
+              color: 'rgba(245,245,247,0.65)',
+              fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
+              lineHeight: 1.8,
+              fontWeight: 400,
+              maxWidth: '560px',
+            }}
+          >
+            4 years across Amazon, L&apos;Oréal, Auchan, and a startup — from €250M portfolios to building a company from zero.
+          </p>
         </motion.div>
       </div>
 
@@ -599,7 +624,7 @@ export function Experience() {
                 {i < group.blockIds.length - 1 && (
                   <div
                     style={{
-                      maxWidth: '1152px',
+                      maxWidth: '1024px',
                       margin: '0 auto',
                       padding: '0 24px',
                     }}

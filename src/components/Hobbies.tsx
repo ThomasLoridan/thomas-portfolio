@@ -158,7 +158,7 @@ function PassionBloc({ passion }: { passion: Passion }) {
     >
       <div
         style={{
-          maxWidth: '1152px',
+          maxWidth: '1024px',
           margin: '0 auto',
           padding: '0 clamp(24px, 6vw, 80px)',
           width: '100%',
@@ -195,7 +195,7 @@ function PassionBloc({ passion }: { passion: Passion }) {
         >
           <p
             style={{
-              color: '#5AC8FA',
+              color: 'rgba(245,245,247,0.5)',
               fontSize: '0.82rem',
               letterSpacing: '0.16em',
               textTransform: 'uppercase',
@@ -256,7 +256,7 @@ export function Hobbies() {
       >
         <p
           style={{
-            color: '#5AC8FA',
+            color: 'rgba(245,245,247,0.5)',
             fontSize: '0.82rem',
             letterSpacing: '0.16em',
             textTransform: 'uppercase',
@@ -265,12 +265,12 @@ export function Hobbies() {
             fontFamily: 'var(--font-mono)',
           }}
         >
-          BEYOND WORK
+          Beyond work
         </p>
         <h2
           style={{
             fontFamily: 'var(--font-heading)',
-            fontWeight: 800,
+            fontWeight: 700,
             fontSize: 'clamp(3rem, 6vw, 6rem)',
             color: '#ffffff',
             lineHeight: 1.0,

@@ -355,7 +355,7 @@ export function Certifications() {
 
   return (
     <section id="certifications" className="section-padding certs-bg" style={{ overflow: 'hidden' }}>
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-5xl mx-auto px-6">
         {/* Header */}
         <motion.div
           ref={headerRef}
@@ -364,26 +364,42 @@ export function Certifications() {
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
           className="mb-12"
         >
+          <p
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.82rem',
+              fontWeight: 500,
+              color: '#6e6e73',
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase',
+              marginBottom: '16px',
+            }}
+          >
+            Certifications
+          </p>
           <h2
             style={{
               fontFamily: 'var(--font-heading)',
-              fontWeight: 800,
+              fontWeight: 700,
               fontSize: 'clamp(3rem, 6vw, 6rem)',
               color: '#0a0a0a',
               lineHeight: 1.0,
               letterSpacing: '-0.025em',
+              marginBottom: '16px',
             }}
           >
-            Continuous learning
+            Continuous learning.
           </h2>
           <p
             style={{
-              color: '#6b7280',
-              fontSize: '0.95rem',
-              marginTop: '8px',
+              color: '#6e6e73',
+              fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
+              lineHeight: 1.8,
+              fontWeight: 400,
+              maxWidth: '560px',
             }}
           >
-            Click any card to view the credential.
+            Google, AWS, McKinsey, and more. Staying at the frontier of what&apos;s possible.
           </p>
         </motion.div>
       </div>

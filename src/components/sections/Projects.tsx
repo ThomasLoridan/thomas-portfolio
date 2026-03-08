@@ -234,7 +234,7 @@ export function Projects() {
 
   return (
     <section id="projects" className="section-padding projects-bg">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-5xl mx-auto px-6">
         {/* Header */}
         <motion.div
           ref={ref}
@@ -243,18 +243,44 @@ export function Projects() {
           transition={{ duration: 0.6, ease: 'easeOut' }}
           className="mb-12"
         >
+          <p
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.82rem',
+              fontWeight: 500,
+              color: 'rgba(245,245,247,0.5)',
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase',
+              marginBottom: '16px',
+            }}
+          >
+            Projects
+          </p>
           <h2
             style={{
               fontFamily: 'var(--font-heading)',
               fontWeight: 700,
-              fontSize: 'clamp(2.5rem,5vw,4.5rem)',
+              fontSize: 'clamp(3rem, 6vw, 6rem)',
               color: '#ffffff',
-              lineHeight: 1.05,
+              lineHeight: 1.0,
+              letterSpacing: '-0.025em',
+              marginBottom: '16px',
             }}
           >
             Things I&apos;ve{' '}
-            <span style={{ color: '#5AC8FA' }}>shipped</span>
+            <span style={{ color: '#5AC8FA' }}>shipped</span>.
           </h2>
+          <p
+            style={{
+              color: 'rgba(245,245,247,0.65)',
+              fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
+              lineHeight: 1.8,
+              fontWeight: 400,
+              maxWidth: '560px',
+            }}
+          >
+            From €13.3M automation systems to open-source PM tools — built end-to-end.
+          </p>
         </motion.div>
 
         {/* 2×2 Bento Grid */}
