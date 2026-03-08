@@ -70,17 +70,18 @@ function SkillCard({
       transition={{ duration: 0.7, delay, ease: CARD_EASE }}
       style={{
         background: '#ffffff',
-        borderRadius: '18px',
-        padding: '32px',
+        borderRadius: '20px',
+        padding: '40px 36px',
         border: '1px solid #e5e7eb',
         boxShadow: '0 2px 16px rgba(0,0,0,0.06)',
         display: 'flex',
         flexDirection: 'column',
         gap: '16px',
+        minHeight: '280px',
       }}
     >
       {/* Icon */}
-      <Icon size={28} color={card.iconColor} />
+      <Icon size={36} color={card.iconColor} style={{ marginBottom: '4px' }} />
 
       {/* Title + toggle button */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px' }}>
@@ -88,7 +89,7 @@ function SkillCard({
           style={{
             fontFamily: 'var(--font-heading)',
             fontWeight: 700,
-            fontSize: '1.25rem',
+            fontSize: 'clamp(1.3rem, 1.8vw, 1.6rem)',
             color: '#0a0a0a',
             lineHeight: 1.2,
           }}
@@ -100,8 +101,8 @@ function SkillCard({
           aria-label={expanded ? 'Collapse' : 'Expand'}
           style={{
             flexShrink: 0,
-            width: '32px',
-            height: '32px',
+            width: '40px',
+            height: '40px',
             borderRadius: '50%',
             background: '#0a0a0a',
             color: '#ffffff',
@@ -110,7 +111,7 @@ function SkillCard({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '1.1rem',
+            fontSize: '1.2rem',
             lineHeight: 1,
             fontWeight: 300,
             transition: 'background 0.2s',
@@ -121,7 +122,7 @@ function SkillCard({
       </div>
 
       {/* Body */}
-      <p style={{ color: '#4b5563', fontSize: 'clamp(1rem, 1.2vw, 1.2rem)', lineHeight: 1.75 }}>
+      <p style={{ color: '#4b4b4b', fontSize: '1.05rem', lineHeight: 1.7 }}>
         {card.body}
       </p>
 
@@ -184,8 +185,8 @@ export function Skills() {
             <h2
               style={{
                 fontFamily: 'var(--font-heading)',
-                fontWeight: 700,
-                fontSize: 'clamp(2.8rem, 5vw, 5rem)',
+                fontWeight: 800,
+                fontSize: 'clamp(2.4rem, 4vw, 3.8rem)',
                 color: '#0a0a0a',
                 lineHeight: 1.05,
                 marginBottom: '12px',
@@ -230,8 +231,8 @@ export function Skills() {
             <h2
               style={{
                 fontFamily: 'var(--font-heading)',
-                fontWeight: 700,
-                fontSize: 'clamp(2.8rem, 5vw, 5rem)',
+                fontWeight: 800,
+                fontSize: 'clamp(2.4rem, 4vw, 3.8rem)',
                 color: '#0a0a0a',
               }}
             >
@@ -248,27 +249,28 @@ export function Skills() {
                 transition={{ duration: 0.7, delay: i * 0.12, ease: CARD_EASE }}
                 style={{
                   background: '#ffffff',
-                  borderRadius: '18px',
-                  padding: '32px',
+                  borderRadius: '20px',
+                  padding: '40px 36px',
                   border: '1px solid #e5e7eb',
                   boxShadow: '0 2px 12px rgba(0,0,0,0.05)',
+                  minHeight: '280px',
                 }}
               >
-                <span style={{ fontSize: '2rem', lineHeight: 1, display: 'block', marginBottom: '16px' }}>
+                <span style={{ fontSize: '2rem', lineHeight: 1, display: 'block', marginBottom: '20px' }}>
                   {v.emoji}
                 </span>
                 <h3
                   style={{
                     fontFamily: 'var(--font-heading)',
                     fontWeight: 700,
-                    fontSize: '1.2rem',
+                    fontSize: 'clamp(1.3rem, 1.8vw, 1.6rem)',
                     color: '#0a0a0a',
                     marginBottom: '10px',
                   }}
                 >
                   {v.title}
                 </h3>
-                <p style={{ color: '#4b5563', fontSize: 'clamp(1rem, 1.2vw, 1.2rem)', lineHeight: 1.75 }}>
+                <p style={{ color: '#4b4b4b', fontSize: '1.05rem', lineHeight: 1.7 }}>
                   {v.body}
                 </p>
               </motion.div>

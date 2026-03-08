@@ -207,7 +207,7 @@ function MediaPanel({ media }: { media: MediaConfig }) {
           position: 'relative',
           width: '100%',
           height: '100%',
-          minHeight: '320px',
+          minHeight: '480px',
           background: media.gradient,
           borderRadius: '16px',
           overflow: 'hidden',
@@ -335,27 +335,33 @@ function ExperienceBlock({ block }: { block: Block }) {
 
       <div className="max-w-6xl mx-auto px-6 w-full">
         <div
-          className={`grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center ${
-            isPatternA ? '' : 'md:[&>*:first-child]:order-2 md:[&>*:last-child]:order-1'
+          className={`grid grid-cols-1 items-center gap-8 md:gap-12 ${
+            isPatternA
+              ? 'md:grid-cols-[62fr_38fr]'
+              : 'md:grid-cols-[38fr_62fr] md:[&>*:first-child]:order-2 md:[&>*:last-child]:order-1'
           }`}
         >
           {/* Image panel — zoom reveal */}
           <motion.div
             {...mediaMotion}
-            style={{ aspectRatio: '4/3', borderRadius: '16px', overflow: 'hidden' }}
+            style={{ borderRadius: '16px', overflow: 'hidden', minHeight: '480px' }}
           >
             <MediaPanel media={block.media} />
           </motion.div>
 
           {/* Text panel */}
-          <motion.div {...textMotion} className="flex flex-col gap-5">
+          <motion.div
+            {...textMotion}
+            className="flex flex-col gap-5"
+            style={{ padding: 'clamp(24px, 3vw, 48px)' }}
+          >
             <p
               style={{
                 fontFamily: 'var(--font-mono)',
-                fontSize: '0.85rem',
-                letterSpacing: '0.14em',
+                fontSize: '0.78rem',
+                letterSpacing: '0.12em',
                 textTransform: 'uppercase',
-                color: 'rgba(255,255,255,0.6)',
+                color: 'rgba(255,255,255,0.5)',
               }}
             >
               {block.label}
@@ -365,7 +371,7 @@ function ExperienceBlock({ block }: { block: Block }) {
               style={{
                 fontFamily: 'var(--font-heading)',
                 fontWeight: 700,
-                fontSize: 'clamp(1.6rem, 2.8vw, 2.4rem)',
+                fontSize: 'clamp(1.5rem, 2.2vw, 2rem)',
                 color: '#ffffff',
                 lineHeight: 1.2,
               }}
@@ -375,9 +381,9 @@ function ExperienceBlock({ block }: { block: Block }) {
 
             <p
               style={{
-                color: 'rgba(255,255,255,0.65)',
-                fontSize: 'clamp(1rem, 1.2vw, 1.2rem)',
-                lineHeight: 1.75,
+                color: 'rgba(255,255,255,0.7)',
+                fontSize: '1rem',
+                lineHeight: 1.7,
               }}
             >
               {block.description}

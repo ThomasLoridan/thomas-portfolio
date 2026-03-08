@@ -26,7 +26,7 @@ function CertCard({
         background: '#ffffff',
         border: '1px solid #e8e8e8',
         borderRadius: '20px',
-        padding: '28px 28px 24px',
+        padding: '32px 28px',
         marginRight: '16px',
         cursor: 'pointer',
         display: 'flex',
@@ -44,7 +44,7 @@ function CertCard({
       }}
     >
       {/* Logo / award area */}
-      <div style={{ height: '56px', display: 'flex', alignItems: 'center' }}>
+      <div style={{ height: '52px', display: 'flex', alignItems: 'center' }}>
         {cert.isAward ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <span style={{ fontSize: '40px', lineHeight: 1 }}>{cert.awardIcon}</span>
@@ -127,7 +127,7 @@ function CertCard({
         style={{
           fontFamily: 'var(--font-heading)',
           fontWeight: 700,
-          fontSize: '1rem',
+          fontSize: '1.05rem',
           color: '#0a0a0a',
           lineHeight: 1.3,
           flex: 1,
@@ -335,7 +335,7 @@ function CertModal({
 /* ─── Main section ─────────────────────────────────────── */
 export function Certifications() {
   const headerRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(headerRef, { once: true, margin: '-80px' });
+  const inView = useInView(headerRef, { once: true, margin: '-15%' });
   const [paused, setPaused] = useState(false);
   const [selected, setSelected] = useState<Certification | null>(null);
   const [wheelOffset, setWheelOffset] = useState(0);
@@ -356,14 +356,14 @@ export function Certifications() {
           ref={headerRef}
           initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
           className="mb-12"
         >
           <h2
             style={{
               fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: 'clamp(2.8rem, 5vw, 5rem)',
+              fontWeight: 800,
+              fontSize: 'clamp(2.4rem, 4vw, 3.8rem)',
               color: '#0a0a0a',
               lineHeight: 1.05,
             }}
@@ -384,9 +384,10 @@ export function Certifications() {
 
       {/* Marquee — full bleed */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
-        transition={{ duration: 0.6, delay: 0.2 }}
+        initial={{ opacity: 0, x: -30 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: '-15%' }}
+        transition={{ duration: 0.8, delay: 0.2 }}
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => { setPaused(false); setWheelOffset(0); }}
         onWheel={handleWheel}
