@@ -12,22 +12,30 @@ export function Hero() {
   return (
     <section
       id="hero"
-      className="relative w-full h-screen overflow-hidden bg-black"
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '100vh',
+        overflow: 'hidden',
+        backgroundColor: '#000',
+      }}
     >
-      {/* Radial glow behind photo */}
+      {/* Radial glow */}
       <div
-        className="absolute pointer-events-none"
         style={{
+          position: 'absolute',
           bottom: '-10%',
           left: '50%',
           transform: 'translateX(-50%)',
           width: '70vw',
           height: '70vh',
-          background: 'radial-gradient(ellipse at center bottom, rgba(60,90,255,0.18) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse at center bottom, rgba(60,90,255,0.2) 0%, transparent 70%)',
+          pointerEvents: 'none',
+          zIndex: 0,
         }}
       />
 
-      {/* Profile photo — dominant, centered, bottom-anchored */}
+      {/* Photo container — centered, bottom-anchored, 92vh tall */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -38,55 +46,56 @@ export function Hero() {
           left: '50%',
           transform: 'translateX(-50%)',
           height: '92vh',
-          width: 'auto',
+          width: '60vw',
+          maxWidth: '900px',
           zIndex: 1,
+          maskImage: 'linear-gradient(to top, black 55%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to top, black 55%, transparent 100%)',
         }}
       >
         <Image
           src={profile.photo}
           alt={profile.name}
-          height={1200}
-          width={800}
+          fill
           priority
-          unoptimized={false}
           style={{
-            height: '92vh',
-            width: 'auto',
             objectFit: 'contain',
             objectPosition: 'bottom center',
-            maskImage: 'linear-gradient(to top, black 55%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to top, black 55%, transparent 100%)',
           }}
+          sizes="60vw"
         />
       </motion.div>
 
-      {/* Text — bottom left, on top of photo */}
+      {/* Text — bottom left, above photo */}
       <div
         style={{
           position: 'absolute',
           bottom: 'clamp(48px, 7vh, 80px)',
           left: 'clamp(32px, 6vw, 96px)',
           zIndex: 2,
-          maxWidth: '520px',
+          maxWidth: '560px',
         }}
       >
-        {/* Eyebrow */}
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1rem', fontFamily: 'Inter', marginBottom: '12px', letterSpacing: '0.04em' }}
+          style={{
+            color: 'rgba(255,255,255,0.5)',
+            fontSize: '0.95rem',
+            marginBottom: '14px',
+            letterSpacing: '0.04em',
+          }}
         >
           Thomas Loridan
         </motion.p>
 
-        {/* H1 */}
         <motion.h1
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.45 }}
           style={{
-            fontSize: 'clamp(2.6rem, 5.5vw, 5.2rem)',
+            fontSize: 'clamp(2.8rem, 5.5vw, 5.5rem)',
             fontWeight: 800,
             lineHeight: 1.0,
             marginBottom: '20px',
@@ -101,7 +110,6 @@ export function Hero() {
           </span>
         </motion.h1>
 
-        {/* Subtitle */}
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -117,7 +125,6 @@ export function Hero() {
           I lead cross-functional programs that create measurable impact across 26 countries.
         </motion.p>
 
-        {/* CTAs */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
