@@ -112,7 +112,7 @@ export function HeroAbout() {
             bottom: 'clamp(48px, 8vh, 80px)',
             left: 'clamp(32px, 6vw, 96px)',
             zIndex: 2,
-            maxWidth: '520px',
+            maxWidth: 'clamp(480px, 44vw, 680px)',
           }}
         >
           {/* Eyebrow */}
@@ -299,10 +299,8 @@ export function HeroAbout() {
 
               <div className="flex flex-col gap-3">
                 {[
-                  { label: 'Location', value: 'Luxembourg · Remote-friendly' },
+                  { label: 'Based in', value: 'Paris · Luxembourg · Barcelona — open to relocation' },
                   { label: 'Languages', value: 'French · English' },
-                  { label: 'Focus', value: 'PM IC4/IC5 at GAFAM companies' },
-                  { label: 'Education', value: 'École Centrale Lille · MSc Corporate Strategy' },
                 ].map(({ label, value }) => (
                   <div key={label} className="flex items-start gap-3">
                     <span className="text-xs font-mono text-gray-400 tracking-wider uppercase w-24 shrink-0 pt-0.5">
@@ -341,10 +339,10 @@ export function HeroAbout() {
               </p>
 
               <p className="text-base text-gray-500 leading-relaxed">
-                My goal is to move into a PM IC4/IC5 role where I can own the full
-                product lifecycle: discovery, roadmap, build, and launch — combining
-                the technical depth I&apos;ve built as a TPM with the strategic thinking
-                of a Product leader.
+                I care about creating and shipping products that are genuinely
+                customer-centric — tools that make a real difference in people&apos;s
+                lives and integrate so naturally into their work and daily environment
+                that they can&apos;t imagine going back.
               </p>
 
               <div className="flex flex-wrap gap-3 pt-2">

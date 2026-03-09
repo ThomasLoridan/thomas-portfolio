@@ -162,6 +162,7 @@ function ImagePanel({ images }: { images: PassionImage[] }) {
 function PassionBloc({ passion }: { passion: Passion }) {
   const isA = passion.pattern === 'A';
   const [imageHovered, setImageHovered] = useState(false);
+  const isSingle = passion.images.length === 1;
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-20%' });
 
@@ -173,6 +174,7 @@ function PassionBloc({ passion }: { passion: Passion }) {
         display: 'flex',
         alignItems: 'center',
         padding: 'clamp(48px, 8vh, 80px) 0',
+        overflow: 'hidden',
       }}
     >
       <div
@@ -185,16 +187,22 @@ function PassionBloc({ passion }: { passion: Passion }) {
           flexDirection: isA ? 'row' : 'row-reverse',
           gap: 'clamp(32px, 5vw, 64px)',
           alignItems: 'center',
+          position: 'relative',
         }}
       >
-        {/* Image side — hover here drives the flex push */}
+        {/* Image side:
+            — single image: scale transform (image grows behind text, z-index 1)
+            — dual images: ImagePanel handles internal flex push */}
         <div
-          onMouseEnter={() => setImageHovered(true)}
-          onMouseLeave={() => setImageHovered(false)}
+          onMouseEnter={() => isSingle && setImageHovered(true)}
+          onMouseLeave={() => isSingle && setImageHovered(false)}
           style={{
-            flexBasis: imageHovered ? '62%' : '55%',
-            flexShrink: 0,
-            transition: 'flex-basis 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+            flex: '0 0 55%',
+            position: 'relative',
+            zIndex: 1,
+            transform: isSingle && imageHovered ? 'scale(1.1)' : 'scale(1)',
+            transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+            transformOrigin: isA ? 'center left' : 'center right',
           }}
         >
           <motion.div
@@ -206,12 +214,12 @@ function PassionBloc({ passion }: { passion: Passion }) {
           </motion.div>
         </div>
 
-        {/* Text side — gets pushed when image is hovered */}
+        {/* Text side — fixed flex, z-index 2 so it stays in front of scaled image */}
         <div
           style={{
-            flexBasis: imageHovered ? '38%' : '45%',
-            flexShrink: 0,
-            transition: 'flex-basis 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+            flex: '0 0 45%',
+            position: 'relative',
+            zIndex: 2,
           }}
         >
           <motion.div

@@ -136,23 +136,37 @@ function SkillCard({
             transition={{ duration: 0.25 }}
             style={{ overflow: 'hidden' }}
           >
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', paddingTop: '8px' }}>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '10px 20px',
+                paddingTop: '12px',
+                borderTop: '1px solid #f0f0f0',
+              }}
+            >
               {card.tags.map((tag) => (
-                <span
-                  key={tag}
-                  style={{
-                    padding: '4px 12px',
-                    borderRadius: '99px',
-                    background: `${card.iconColor}10`,
-                    border: `1px solid ${card.iconColor}25`,
-                    color: card.iconColor,
-                    fontSize: '0.78rem',
-                    fontFamily: 'var(--font-mono)',
-                    fontWeight: 500,
-                  }}
-                >
-                  {tag}
-                </span>
+                <div key={tag} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div
+                    style={{
+                      width: '5px',
+                      height: '5px',
+                      borderRadius: '50%',
+                      background: card.iconColor,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span
+                    style={{
+                      color: '#374151',
+                      fontSize: '0.82rem',
+                      fontFamily: 'var(--font-mono)',
+                      fontWeight: 400,
+                    }}
+                  >
+                    {tag}
+                  </span>
+                </div>
               ))}
             </div>
           </motion.div>

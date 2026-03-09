@@ -19,9 +19,9 @@ export default function HomePage() {
         <Skills />
         <Experience />
         <Testimonials />
-        <Certifications />
         <Projects />
         <Hobbies />
+        <Certifications />
       </main>
       <Footer />
     </>

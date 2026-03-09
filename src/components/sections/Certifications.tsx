@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { X, ExternalLink } from 'lucide-react';
@@ -341,94 +341,159 @@ function CertModal({
 export function Certifications() {
   const headerRef = useRef<HTMLDivElement>(null);
   const inView = useInView(headerRef, { once: true, margin: '-15%' });
-  const [paused, setPaused] = useState(false);
   const [selected, setSelected] = useState<Certification | null>(null);
-  const [wheelOffset, setWheelOffset] = useState(0);
+  const [currentIdx, setCurrentIdx] = useState(0);
 
-  const doubled = [...certifications, ...certifications];
+  const CARD_WIDTH = 416; // 400px card + 16px gap
+  const VISIBLE_COUNT = 3;
+  const maxIdx = Math.max(0, certifications.length - VISIBLE_COUNT);
 
-  const handleWheel = (e: React.WheelEvent) => {
-    if (!paused) return;
-    e.preventDefault();
-    setWheelOffset((prev) => prev - (e.deltaY || e.deltaX) * 0.6);
+  const goPrev = () => setCurrentIdx((i) => Math.max(0, i - 1));
+  const goNext = () => setCurrentIdx((i) => Math.min(maxIdx, i + 1));
+
+  const canPrev = currentIdx > 0;
+  const canNext = currentIdx < maxIdx;
+
+  const BTN_BASE: React.CSSProperties = {
+    width: '44px',
+    height: '44px',
+    borderRadius: '50%',
+    border: '1px solid rgba(0,0,0,0.12)',
+    background: '#ffffff',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '1.1rem',
+    color: '#0a0a0a',
+    transition: 'background 0.2s, opacity 0.2s',
+    fontFamily: 'var(--font-body)',
   };
 
   return (
     <section id="certifications" className="section-padding certs-bg" style={{ overflow: 'hidden' }}>
       <div className="max-w-5xl mx-auto px-6">
-        {/* Header */}
+        {/* Header + nav row */}
         <motion.div
           ref={headerRef}
           initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
-          className="mb-12"
+          style={{ marginBottom: '48px' }}
         >
-          <p
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.82rem',
-              fontWeight: 500,
-              color: '#6e6e73',
-              letterSpacing: '0.16em',
-              textTransform: 'uppercase',
-              marginBottom: '16px',
-            }}
-          >
-            Certifications
-          </p>
-          <h2
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: 'clamp(3rem, 6vw, 6rem)',
-              color: '#0a0a0a',
-              lineHeight: 1.0,
-              letterSpacing: '-0.025em',
-              marginBottom: '16px',
-            }}
-          >
-            Continuous learning.
-          </h2>
-          <p
-            style={{
-              color: '#6e6e73',
-              fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
-              lineHeight: 1.8,
-              fontWeight: 400,
-              maxWidth: '560px',
-            }}
-          >
-            Google, AWS, McKinsey, and more. Staying at the frontier of what&apos;s possible.
-          </p>
+          {/* Top row: header left, nav arrows right */}
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '24px' }}>
+            <div>
+              <p
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.82rem',
+                  fontWeight: 500,
+                  color: '#6e6e73',
+                  letterSpacing: '0.16em',
+                  textTransform: 'uppercase',
+                  marginBottom: '16px',
+                }}
+              >
+                Certifications
+              </p>
+              <h2
+                style={{
+                  fontFamily: 'var(--font-heading)',
+                  fontWeight: 700,
+                  fontSize: 'clamp(3rem, 6vw, 6rem)',
+                  color: '#0a0a0a',
+                  lineHeight: 1.0,
+                  letterSpacing: '-0.025em',
+                  marginBottom: '16px',
+                }}
+              >
+                Continuous learning.
+              </h2>
+              <p
+                style={{
+                  color: '#6e6e73',
+                  fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
+                  lineHeight: 1.8,
+                  fontWeight: 400,
+                  maxWidth: '560px',
+                }}
+              >
+                Google, AWS, McKinsey, and more. Staying at the frontier of what&apos;s possible.
+              </p>
+            </div>
+
+            {/* Navigation arrows */}
+            <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+              <button
+                onClick={goPrev}
+                disabled={!canPrev}
+                style={{ ...BTN_BASE, opacity: canPrev ? 1 : 0.3, cursor: canPrev ? 'pointer' : 'default' }}
+                aria-label="Previous"
+              >
+                ‹
+              </button>
+              <button
+                onClick={goNext}
+                disabled={!canNext}
+                style={{ ...BTN_BASE, opacity: canNext ? 1 : 0.3, cursor: canNext ? 'pointer' : 'default' }}
+                aria-label="Next"
+              >
+                ›
+              </button>
+            </div>
+          </div>
         </motion.div>
       </div>
 
-      {/* Marquee — full bleed */}
+      {/* Carousel — full bleed */}
       <motion.div
-        initial={{ opacity: 0, x: -30 }}
-        whileInView={{ opacity: 1, x: 0 }}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-15%' }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => { setPaused(false); setWheelOffset(0); }}
-        onWheel={handleWheel}
-        style={{ overflow: 'hidden', paddingLeft: '24px' }}
+        transition={{ duration: 0.7, delay: 0.15 }}
+        style={{ overflow: 'hidden', paddingLeft: 'clamp(16px, 4vw, 48px)' }}
       >
-        <div
-          style={{
-            display: 'flex',
-            width: 'max-content',
-            animation: paused ? 'none' : 'marquee-left 30s linear infinite',
-            transform: paused ? `translateX(${wheelOffset}px)` : undefined,
-            transition: paused ? 'none' : undefined,
-          }}
+        <motion.div
+          animate={{ x: -currentIdx * CARD_WIDTH }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
+          style={{ display: 'flex', gap: '16px', width: 'max-content' }}
         >
-          {doubled.map((cert, i) => (
-            <CertCard key={`${cert.id}-${i}`} cert={cert} onClick={() => setSelected(cert)} />
+          {certifications.map((cert) => (
+            <div key={cert.id} style={{ flexShrink: 0, width: '400px' }}>
+              <CertCard cert={cert} onClick={() => setSelected(cert)} />
+            </div>
           ))}
-        </div>
+        </motion.div>
       </motion.div>
+
+      {/* Dot indicators */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '6px',
+          marginTop: '28px',
+        }}
+      >
+        {certifications.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentIdx(Math.min(i, maxIdx))}
+            style={{
+              width: i === currentIdx ? '20px' : '6px',
+              height: '6px',
+              borderRadius: '3px',
+              background: i === currentIdx ? '#0a0a0a' : 'rgba(0,0,0,0.2)',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'width 0.3s ease, background 0.3s ease',
+              padding: 0,
+            }}
+            aria-label={`Go to cert ${i + 1}`}
+          />
+        ))}
+      </div>
 
       {/* Modal */}
       <AnimatePresence>

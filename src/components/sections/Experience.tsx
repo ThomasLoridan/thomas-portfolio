@@ -510,7 +510,7 @@ function ExperienceBlock({
 
       <div className="max-w-5xl mx-auto px-6 w-full">
         <div
-          className={`grid grid-cols-1 items-center gap-8 md:gap-12 ${
+          className={`grid grid-cols-1 items-center gap-4 md:gap-12 ${
             isPatternA
               ? 'md:grid-cols-[62fr_38fr]'
               : 'md:grid-cols-[38fr_62fr] md:[&>*:first-child]:order-2 md:[&>*:last-child]:order-1'
@@ -519,7 +519,7 @@ function ExperienceBlock({
           {/* Image panel */}
           <motion.div
             {...mediaMotion}
-            style={{ borderRadius: '16px', overflow: 'hidden', minHeight: '480px' }}
+            style={{ borderRadius: '16px', overflow: 'hidden', minHeight: 'clamp(220px, 35vw, 480px)' }}
           >
             <MediaPanel media={block.media} />
           </motion.div>
