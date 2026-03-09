@@ -27,7 +27,7 @@ interface Project {
   visualBg: string;
 }
 
-/* ─── Data ───────────────────────────────────────────────── */
+/* ─── Data — max 2 KPIs, tightened descriptions ─────────── */
 const PROJECTS: Project[] = [
   {
     id: 'sonar',
@@ -36,16 +36,15 @@ const PROJECTS: Project[] = [
     context: 'Internal Tool',
     companyColor: '#FF9900',
     description:
-      'Production-grade post-scheduling system for 500+ EU Intermodal routes. Cut cycle time from 4 hours to 5 minutes across the entire network.',
+      'Post-scheduling automation for 500+ EU Intermodal routes. Cut cycle time from 4 hours to 5 minutes.',
     kpis: [
       { label: 'ARR impact', value: '€13.3M' },
       { label: 'cycle time', value: '5 min' },
-      { label: 'routes', value: '500+' },
     ],
     tags: ['Python', 'AWS ECS', 'S3', 'ETL'],
     githubUrl: 'https://github.com/ThomasLoridan',
     accentColor: '#FF9900',
-    visualBg: 'radial-gradient(ellipse at 50% 60%, #3d2000 0%, #1a0d00 55%, #0a0500 100%)',
+    visualBg: 'radial-gradient(ellipse at 50% 55%, #3d2000 0%, #1a0d00 52%, #080400 100%)',
   },
   {
     id: 'exec-analytics',
@@ -54,7 +53,7 @@ const PROJECTS: Project[] = [
     context: 'Internal Tool',
     companyColor: '#FF9900',
     description:
-      'Single source of truth for L7+ leadership across 35 countries — unifying 80+ KPIs from fragmented reporting systems.',
+      'Unified 80+ fragmented KPIs into a single source of truth for L7+ leadership across 35 countries.',
     kpis: [
       { label: 'KPIs unified', value: '80+' },
       { label: 'countries', value: '35' },
@@ -62,7 +61,7 @@ const PROJECTS: Project[] = [
     tags: ['SQL', 'Python', 'QuickSight', 'AWS Glue'],
     githubUrl: 'https://github.com/ThomasLoridan',
     accentColor: '#4da3ff',
-    visualBg: 'radial-gradient(ellipse at 50% 60%, #001840 0%, #000d20 55%, #000508 100%)',
+    visualBg: 'radial-gradient(ellipse at 50% 55%, #001840 0%, #000d20 52%, #000408 100%)',
   },
   {
     id: 'oracle',
@@ -71,16 +70,15 @@ const PROJECTS: Project[] = [
     context: 'Internal Tool',
     companyColor: '#FF9900',
     description:
-      'Automated ground transport auditing across 26 EU countries. Replaced 40 hours/month of manual analysis with a real-time pipeline.',
+      'Real-time audit pipeline for 250+ ground routes across 26 EU countries. Replaced 40 hrs/month of manual analysis.',
     kpis: [
       { label: 'annual savings', value: '€250K' },
       { label: 'routes', value: '250+' },
-      { label: 'saved / month', value: '40 hrs' },
     ],
     tags: ['Python', 'SQL', 'ETL', '26 countries'],
     githubUrl: 'https://github.com/ThomasLoridan',
     accentColor: '#a78bfa',
-    visualBg: 'radial-gradient(ellipse at 50% 60%, #18003d 0%, #08000f 55%, #040008 100%)',
+    visualBg: 'radial-gradient(ellipse at 50% 55%, #18003d 0%, #080010 52%, #030008 100%)',
   },
   {
     id: 'pm-portfolio',
@@ -89,15 +87,15 @@ const PROJECTS: Project[] = [
     context: 'Open Source',
     companyColor: '#34d399',
     description:
-      'Open-source portfolio with PRDs, architecture records, and shipped code — the full PM → engineer execution loop.',
+      'Open-source PM portfolio with PRDs, architecture records, and shipped code — built end-to-end.',
     kpis: [
-      { label: 'stack', value: 'Next.js' },
+      { label: 'built with', value: 'Next.js' },
       { label: 'license', value: 'Open' },
     ],
     tags: ['Next.js', 'TypeScript', 'Framer Motion'],
     githubUrl: 'https://github.com/ThomasLoridan',
     accentColor: '#34d399',
-    visualBg: 'radial-gradient(ellipse at 50% 60%, #003320 0%, #001208 55%, #000604 100%)',
+    visualBg: 'radial-gradient(ellipse at 50% 55%, #003320 0%, #001208 52%, #000503 100%)',
   },
 ];
 
@@ -124,27 +122,28 @@ function ProjectCard({
         flexDirection: 'column',
       }}
     >
-      {/* ── Visual top ── */}
+      {/* ── Visual block — branded color + project name ── */}
       <div
         style={{
           background: project.visualBg,
-          height: '200px',
+          height: '160px',
           position: 'relative',
           overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          flexShrink: 0,
         }}
       >
-        {/* Company label — top left */}
+        {/* Company — top left */}
         <span
           style={{
             position: 'absolute',
             top: '14px',
             left: '16px',
             fontFamily: 'var(--font-mono)',
-            fontSize: '0.6rem',
-            letterSpacing: '0.12em',
+            fontSize: '0.58rem',
+            letterSpacing: '0.14em',
             textTransform: 'uppercase',
             color: project.companyColor,
             fontWeight: 600,
@@ -153,42 +152,43 @@ function ProjectCard({
           {project.company}
         </span>
 
-        {/* Context label — top right */}
+        {/* Context — top right */}
         <span
           style={{
             position: 'absolute',
             top: '14px',
             right: '16px',
             fontFamily: 'var(--font-mono)',
-            fontSize: '0.58rem',
+            fontSize: '0.55rem',
             letterSpacing: '0.1em',
             textTransform: 'uppercase',
-            color: 'rgba(245,245,247,0.28)',
+            color: 'rgba(245,245,247,0.25)',
           }}
         >
           {project.context}
         </span>
 
-        {/* Glow orb */}
+        {/* Accent glow */}
         <div
           style={{
             position: 'absolute',
-            width: '200px',
-            height: '200px',
+            width: '180px',
+            height: '180px',
             borderRadius: '50%',
-            background: `radial-gradient(circle, ${project.accentColor}22 0%, transparent 65%)`,
+            background: `radial-gradient(circle, ${project.accentColor}20 0%, transparent 65%)`,
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
+            pointerEvents: 'none',
           }}
         />
 
-        {/* Project name */}
+        {/* Project name — centered */}
         <span
           style={{
             fontFamily: 'var(--font-heading)',
             fontWeight: 800,
-            fontSize: 'clamp(1.3rem, 2.2vw, 1.65rem)',
+            fontSize: 'clamp(1.2rem, 2vw, 1.55rem)',
             color: project.accentColor,
             letterSpacing: '-0.01em',
             position: 'relative',
@@ -202,35 +202,31 @@ function ProjectCard({
       {/* ── Text area ── */}
       <div
         style={{
-          padding: '22px 22px 18px',
+          padding: '20px 20px 16px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '14px',
+          gap: '12px',
           flex: 1,
         }}
       >
-        {/* Apple-style inline description: bold name → plain body */}
+        {/* Plain description — no redundant name prefix */}
         <p
           style={{
-            color: 'rgba(245,245,247,0.75)',
-            fontSize: '0.875rem',
+            color: 'rgba(245,245,247,0.72)',
+            fontSize: '0.85rem',
             lineHeight: 1.65,
             flex: 1,
             margin: 0,
           }}
         >
-          <strong style={{ color: '#ffffff', fontWeight: 700 }}>{project.name}.</strong>{' '}
           {project.description}
         </p>
 
-        {/* ── KPI stats — Apple style ──
-            label   (muted, 0.6rem, uppercase, mono)
-            value   (accent color, bold, 1.2rem heading)   */}
+        {/* ── KPI row — 2 stats, portfolio-wide #5AC8FA values ── */}
         <div
           style={{
             display: 'flex',
-            gap: '0',
-            paddingTop: '14px',
+            paddingTop: '12px',
             borderTop: '1px solid rgba(255,255,255,0.07)',
           }}
         >
@@ -241,22 +237,19 @@ function ProjectCard({
                 flex: 1,
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '5px',
-                paddingRight: i < project.kpis.length - 1 ? '12px' : 0,
-                paddingLeft: i > 0 ? '12px' : 0,
-                borderRight:
-                  i < project.kpis.length - 1
-                    ? '1px solid rgba(255,255,255,0.06)'
-                    : 'none',
+                gap: '4px',
+                paddingRight: i === 0 ? '12px' : 0,
+                paddingLeft: i === 1 ? '12px' : 0,
+                borderRight: i === 0 ? '1px solid rgba(255,255,255,0.07)' : 'none',
               }}
             >
               <span
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  fontSize: '0.58rem',
+                  fontSize: '0.56rem',
                   letterSpacing: '0.1em',
                   textTransform: 'uppercase',
-                  color: 'rgba(245,245,247,0.32)',
+                  color: 'rgba(245,245,247,0.3)',
                   lineHeight: 1,
                 }}
               >
@@ -266,9 +259,9 @@ function ProjectCard({
                 style={{
                   fontFamily: 'var(--font-heading)',
                   fontWeight: 700,
-                  fontSize: 'clamp(1rem, 1.5vw, 1.2rem)',
-                  color: project.accentColor,
-                  lineHeight: 1,
+                  fontSize: 'clamp(1rem, 1.4vw, 1.15rem)',
+                  color: '#5AC8FA',
+                  lineHeight: 1.1,
                   letterSpacing: '-0.01em',
                 }}
               >
@@ -289,9 +282,9 @@ function ProjectCard({
           <p
             style={{
               fontFamily: 'var(--font-mono)',
-              fontSize: '0.6rem',
-              color: 'rgba(245,245,247,0.25)',
-              letterSpacing: '0.05em',
+              fontSize: '0.58rem',
+              color: 'rgba(245,245,247,0.22)',
+              letterSpacing: '0.04em',
               margin: 0,
             }}
           >
@@ -305,17 +298,17 @@ function ProjectCard({
             style={{
               display: 'flex',
               alignItems: 'center',
-              color: 'rgba(245,245,247,0.28)',
+              color: 'rgba(245,245,247,0.25)',
               textDecoration: 'none',
               transition: 'color 0.2s',
               flexShrink: 0,
               marginLeft: '8px',
             }}
             onMouseEnter={(e) =>
-              ((e.currentTarget as HTMLAnchorElement).style.color = 'rgba(245,245,247,0.7)')
+              ((e.currentTarget as HTMLAnchorElement).style.color = 'rgba(245,245,247,0.65)')
             }
             onMouseLeave={(e) =>
-              ((e.currentTarget as HTMLAnchorElement).style.color = 'rgba(245,245,247,0.28)')
+              ((e.currentTarget as HTMLAnchorElement).style.color = 'rgba(245,245,247,0.25)')
             }
           >
             <GithubIcon size={13} />
