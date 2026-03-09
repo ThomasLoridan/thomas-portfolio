@@ -5,243 +5,296 @@ import { motion, useInView } from 'framer-motion';
 import { GithubIcon, ExternalLink } from 'lucide-react';
 import { profile } from '@/data/profile';
 
-/* ─── Bento project data ───────────────────────────────── */
-interface BentoProject {
+const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
+
+/* ─── Types ──────────────────────────────────────────────── */
+interface ProjectKPI {
+  label: string;
+  value: string;
+}
+
+interface Project {
   id: string;
   name: string;
   subtitle: string;
-  impact: string;
   description: string;
+  kpis: ProjectKPI[];
   tags: string[];
   githubUrl: string;
-  style: 'gradient-orange' | 'dark-blue' | 'dark-indigo' | 'gradient-green';
+  accentColor: string;
+  visualBg: string;
 }
 
-const BENTO: BentoProject[] = [
+/* ─── Data ───────────────────────────────────────────────── */
+const PROJECTS: Project[] = [
   {
     id: 'sonar',
     name: 'SONAR',
     subtitle: 'Network Defense Automation',
-    impact: '€13.3M ARR',
     description:
-      'First production-grade post-scheduling system for 500+ Intermodal routes. Cut cycle time from 4 hours to 5 minutes for the entire EU network.',
-    tags: ['Python', 'AWS ECS', 'S3', 'Automation', 'ETL'],
+      'Production-grade post-scheduling system for EU Intermodal. Cut cycle time from 4 hours to 5 minutes across the entire network.',
+    kpis: [
+      { label: 'ARR impact', value: '€13.3M' },
+      { label: 'cycle time', value: '5 min' },
+      { label: 'routes', value: '500+' },
+    ],
+    tags: ['Python', 'AWS ECS', 'S3', 'ETL'],
     githubUrl: 'https://github.com/ThomasLoridan',
-    style: 'gradient-orange',
+    accentColor: '#FF9900',
+    visualBg: 'radial-gradient(ellipse at 60% 40%, #3d1f00 0%, #1c0a00 55%, #0a0400 100%)',
   },
   {
     id: 'exec-analytics',
-    name: 'Executive Analytics',
+    name: 'Exec Analytics',
     subtitle: 'Unified KPI Platform',
-    impact: '80+ KPIs · 530 Lanes',
     description:
-      'Unified fragmented reporting into a single source-of-truth for L7+ leadership across 35 countries.',
-    tags: ['SQL', 'Python', 'QuickSight', 'AWS Glue', 'BI'],
+      'Single source of truth for L7+ leadership across 35 countries — consolidating 80+ KPIs from fragmented systems.',
+    kpis: [
+      { label: 'KPIs unified', value: '80+' },
+      { label: 'countries', value: '35' },
+    ],
+    tags: ['SQL', 'Python', 'QuickSight', 'AWS Glue'],
     githubUrl: 'https://github.com/ThomasLoridan',
-    style: 'dark-blue',
+    accentColor: '#4da3ff',
+    visualBg: 'radial-gradient(ellipse at 60% 40%, #001840 0%, #000d20 55%, #000508 100%)',
   },
   {
     id: 'oracle',
     name: 'ORACLE',
     subtitle: 'Capacity Audit Platform',
-    impact: '€250K Savings',
     description:
-      'Automated ground transportation auditing across 250+ routes in 26 EU countries. Replaced 40 hours/month of manual analysis.',
-    tags: ['Python', 'SQL', 'QuickSight', 'ETL', '26 Countries'],
+      'Automated ground transport auditing across 26 EU countries. Replaced 40 hours/month of manual analysis.',
+    kpis: [
+      { label: 'annual savings', value: '€250K' },
+      { label: 'routes', value: '250+' },
+      { label: 'saved / month', value: '40 hrs' },
+    ],
+    tags: ['Python', 'SQL', 'ETL', '26 countries'],
     githubUrl: 'https://github.com/ThomasLoridan',
-    style: 'dark-indigo',
+    accentColor: '#a78bfa',
+    visualBg: 'radial-gradient(ellipse at 60% 40%, #18003d 0%, #08000f 55%, #040008 100%)',
   },
   {
     id: 'pm-portfolio',
-    name: 'PM Portfolio',
-    subtitle: 'Open Source',
-    impact: 'Open Source',
+    name: 'Portfolio',
+    subtitle: 'This website',
     description:
-      'Public portfolio of PM projects with PRDs, architecture decision records, and shipped code demonstrating the full PM → Engineer execution loop.',
-    tags: ['Next.js', 'TypeScript', 'Product Management'],
+      'Open-source portfolio with PRDs, architecture records, and shipped code — the full PM → engineer execution loop.',
+    kpis: [
+      { label: 'stack', value: 'Next.js' },
+      { label: 'license', value: 'Open' },
+    ],
+    tags: ['Next.js', 'TypeScript', 'Framer Motion'],
     githubUrl: 'https://github.com/ThomasLoridan',
-    style: 'gradient-green',
+    accentColor: '#34d399',
+    visualBg: 'radial-gradient(ellipse at 60% 40%, #003320 0%, #001208 55%, #000604 100%)',
   },
 ];
 
-const CARD_STYLES: Record<BentoProject['style'], React.CSSProperties> = {
-  'gradient-orange': {
-    background: 'linear-gradient(135deg, #FF9900 0%, #e65c00 100%)',
-    color: '#ffffff',
-  },
-  'dark-blue': {
-    background: '#0a1628',
-    color: '#ffffff',
-  },
-  'dark-indigo': {
-    background: '#0f0a2a',
-    color: '#ffffff',
-  },
-  'gradient-green': {
-    background: 'linear-gradient(135deg, #00a86b 0%, #007a4d 100%)',
-    color: '#ffffff',
-  },
-};
-
-const TEXT_MUTED: Record<BentoProject['style'], string> = {
-  'gradient-orange': 'rgba(255,255,255,0.7)',
-  'dark-blue': 'rgba(255,255,255,0.55)',
-  'dark-indigo': 'rgba(255,255,255,0.55)',
-  'gradient-green': 'rgba(255,255,255,0.7)',
-};
-
-const TAG_STYLE: Record<BentoProject['style'], React.CSSProperties> = {
-  'gradient-orange': {
-    background: 'rgba(255,255,255,0.18)',
-    color: 'rgba(255,255,255,0.9)',
-    border: '1px solid rgba(255,255,255,0.25)',
-  },
-  'dark-blue': {
-    background: 'rgba(255,255,255,0.07)',
-    color: 'rgba(255,255,255,0.6)',
-    border: '1px solid rgba(255,255,255,0.1)',
-  },
-  'dark-indigo': {
-    background: 'rgba(255,255,255,0.07)',
-    color: 'rgba(255,255,255,0.6)',
-    border: '1px solid rgba(255,255,255,0.1)',
-  },
-  'gradient-green': {
-    background: 'rgba(255,255,255,0.18)',
-    color: 'rgba(255,255,255,0.9)',
-    border: '1px solid rgba(255,255,255,0.25)',
-  },
-};
-
-function ProjectCard({ project, delay, inView }: { project: BentoProject; delay: number; inView: boolean }) {
-  const baseStyle = CARD_STYLES[project.style];
-  const muted = TEXT_MUTED[project.style];
-  const tagStyle = TAG_STYLE[project.style];
-
+/* ─── Project card (iOS-tile style) ─────────────────────── */
+function ProjectCard({
+  project,
+  delay,
+  inView,
+}: {
+  project: Project;
+  delay: number;
+  inView: boolean;
+}) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 28 }}
+      initial={{ opacity: 0, y: 32 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
+      transition={{ duration: 0.65, delay, ease: EASE }}
       style={{
-        ...baseStyle,
+        background: '#111113',
         borderRadius: '20px',
-        padding: '36px',
+        overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
-        gap: '16px',
-        minHeight: '320px',
       }}
     >
-      {/* Eyebrow */}
-      <p
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: '0.65rem',
-          letterSpacing: '0.15em',
-          textTransform: 'uppercase',
-          color: muted,
-        }}
-      >
-        {project.subtitle}
-      </p>
-
-      {/* Impact number */}
+      {/* Visual top — branded gradient + project name */}
       <div
         style={{
-          fontFamily: 'var(--font-heading)',
-          fontWeight: 800,
-          fontSize: 'clamp(1.8rem, 3vw, 2.6rem)',
-          lineHeight: 1,
-          color: '#ffffff',
+          background: project.visualBg,
+          height: '160px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+          overflow: 'hidden',
         }}
       >
-        {project.impact}
+        {/* Centered glow */}
+        <div
+          style={{
+            position: 'absolute',
+            width: '180px',
+            height: '180px',
+            borderRadius: '50%',
+            background: `radial-gradient(circle, ${project.accentColor}28 0%, transparent 70%)`,
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+          }}
+        />
+        <span
+          style={{
+            fontFamily: 'var(--font-heading)',
+            fontWeight: 800,
+            fontSize: 'clamp(1.25rem, 2vw, 1.6rem)',
+            color: project.accentColor,
+            letterSpacing: '-0.01em',
+            position: 'relative',
+            zIndex: 1,
+          }}
+        >
+          {project.name}
+        </span>
       </div>
 
-      {/* Name */}
-      <h3
+      {/* Text area */}
+      <div
         style={{
-          fontFamily: 'var(--font-heading)',
-          fontWeight: 700,
-          fontSize: '1.2rem',
-          color: '#ffffff',
-          lineHeight: 1.2,
-        }}
-      >
-        {project.name}
-      </h3>
-
-      {/* Description */}
-      <p
-        style={{
-          color: muted,
-          fontSize: '0.88rem',
-          lineHeight: 1.6,
+          padding: '24px 24px 20px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px',
           flex: 1,
         }}
       >
-        {project.description}
-      </p>
+        {/* Subtitle */}
+        <p
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.62rem',
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            color: 'rgba(245,245,247,0.38)',
+          }}
+        >
+          {project.subtitle}
+        </p>
 
-      {/* Tags */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-        {project.tags.map((tag) => (
-          <span
-            key={tag}
+        {/* Description */}
+        <p
+          style={{
+            color: 'rgba(245,245,247,0.78)',
+            fontSize: '0.875rem',
+            lineHeight: 1.65,
+            flex: 1,
+          }}
+        >
+          {project.description}
+        </p>
+
+        {/* ── KPI stats — Apple style ──
+            label (muted, tiny, uppercase) above
+            value (accent color, bold, large) below        */}
+        <div
+          style={{
+            display: 'flex',
+            gap: '20px',
+            paddingTop: '14px',
+            borderTop: '1px solid rgba(255,255,255,0.07)',
+            flexWrap: 'wrap',
+          }}
+        >
+          {project.kpis.map((kpi) => (
+            <div key={kpi.label} style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+              <span
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.6rem',
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(245,245,247,0.35)',
+                  lineHeight: 1,
+                }}
+              >
+                {kpi.label}
+              </span>
+              <span
+                style={{
+                  fontFamily: 'var(--font-heading)',
+                  fontWeight: 700,
+                  fontSize: 'clamp(1.05rem, 1.6vw, 1.3rem)',
+                  color: project.accentColor,
+                  lineHeight: 1,
+                  letterSpacing: '-0.01em',
+                }}
+              >
+                {kpi.value}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* Tags + GitHub icon */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginTop: '6px',
+          }}
+        >
+          <p
             style={{
-              ...tagStyle,
-              fontSize: '0.72rem',
-              padding: '3px 10px',
-              borderRadius: '99px',
               fontFamily: 'var(--font-mono)',
+              fontSize: '0.62rem',
+              color: 'rgba(245,245,247,0.28)',
+              letterSpacing: '0.04em',
             }}
           >
-            {tag}
-          </span>
-        ))}
+            {project.tags.join(' · ')}
+          </p>
+          <a
+            href={project.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View on GitHub"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              color: 'rgba(245,245,247,0.32)',
+              textDecoration: 'none',
+              transition: 'color 0.2s',
+              flexShrink: 0,
+              marginLeft: '8px',
+            }}
+            onMouseEnter={(e) =>
+              ((e.currentTarget as HTMLAnchorElement).style.color = 'rgba(245,245,247,0.75)')
+            }
+            onMouseLeave={(e) =>
+              ((e.currentTarget as HTMLAnchorElement).style.color = 'rgba(245,245,247,0.32)')
+            }
+          >
+            <GithubIcon size={14} />
+          </a>
+        </div>
       </div>
-
-      {/* GitHub link */}
-      <a
-        href={project.githubUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '6px',
-          fontSize: '0.8rem',
-          color: muted,
-          textDecoration: 'none',
-          transition: 'color 0.2s',
-          marginTop: '4px',
-        }}
-        onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#ffffff')}
-        onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = muted)}
-      >
-        <GithubIcon size={13} />
-        View on GitHub
-      </a>
     </motion.div>
   );
 }
 
-/* ─── Main section ─────────────────────────────────────── */
+/* ─── Main section ───────────────────────────────────────── */
 export function Projects() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
     <section id="projects" className="section-padding projects-bg">
-      <div className="max-w-5xl mx-auto px-6">
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 clamp(24px, 5vw, 64px)' }}>
+
         {/* Header */}
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 28 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="mb-12"
+          style={{ marginBottom: '48px' }}
         >
           <p
             style={{
@@ -256,88 +309,78 @@ export function Projects() {
           >
             Projects
           </p>
-          <h2
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: 'clamp(3rem, 6vw, 6rem)',
-              color: '#ffffff',
-              lineHeight: 1.0,
-              letterSpacing: '-0.025em',
-              marginBottom: '16px',
-            }}
-          >
-            Things I&apos;ve{' '}
-            <span style={{ color: '#5AC8FA' }}>shipped</span>.
-          </h2>
-          <p
-            style={{
-              color: 'rgba(245,245,247,0.65)',
-              fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
-              lineHeight: 1.8,
-              fontWeight: 400,
-              maxWidth: '560px',
-            }}
-          >
-            From €13.3M automation systems to open-source PM tools — built end-to-end.
-          </p>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+            <div>
+              <h2
+                style={{
+                  fontFamily: 'var(--font-heading)',
+                  fontWeight: 700,
+                  fontSize: 'clamp(3rem, 6vw, 6rem)',
+                  color: '#ffffff',
+                  lineHeight: 1.0,
+                  letterSpacing: '-0.025em',
+                  marginBottom: '16px',
+                }}
+              >
+                Things I&apos;ve{' '}
+                <span style={{ color: '#5AC8FA' }}>shipped</span>.
+              </h2>
+              <p
+                style={{
+                  color: 'rgba(245,245,247,0.65)',
+                  fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
+                  lineHeight: 1.8,
+                  fontWeight: 400,
+                  maxWidth: '480px',
+                }}
+              >
+                From €13.3M automation systems to open-source PM tools — built end-to-end.
+              </p>
+            </div>
+            <a
+              href={profile.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '10px 20px',
+                borderRadius: '99px',
+                background: 'rgba(255,255,255,0.07)',
+                border: '1px solid rgba(255,255,255,0.12)',
+                color: 'rgba(255,255,255,0.65)',
+                fontWeight: 500,
+                fontSize: '0.82rem',
+                textDecoration: 'none',
+                transition: 'background 0.2s, color 0.2s',
+                whiteSpace: 'nowrap',
+                alignSelf: 'flex-end',
+              }}
+              onMouseEnter={(e) => {
+                const el = e.currentTarget as HTMLAnchorElement;
+                el.style.background = 'rgba(255,255,255,0.12)';
+                el.style.color = '#ffffff';
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget as HTMLAnchorElement;
+                el.style.background = 'rgba(255,255,255,0.07)';
+                el.style.color = 'rgba(255,255,255,0.65)';
+              }}
+            >
+              <GithubIcon size={14} />
+              All projects
+              <ExternalLink size={11} />
+            </a>
+          </div>
         </motion.div>
 
-        {/* 2×2 Bento Grid */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '16px',
-          }}
-          className="grid-cols-1 sm:grid-cols-2"
-        >
-          {BENTO.map((project, i) => (
-            <ProjectCard key={project.id} project={project} delay={i * 0.1} inView={inView} />
+        {/* 4-column tile grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {PROJECTS.map((project, i) => (
+            <ProjectCard key={project.id} project={project} delay={i * 0.08} inView={inView} />
           ))}
         </div>
-
-        {/* Bottom CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          style={{ display: 'flex', justifyContent: 'center', marginTop: '48px' }}
-        >
-          <a
-            href={profile.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '12px 24px',
-              borderRadius: '99px',
-              background: 'rgba(255,255,255,0.08)',
-              border: '1px solid rgba(255,255,255,0.15)',
-              color: 'rgba(255,255,255,0.75)',
-              fontWeight: 500,
-              fontSize: '0.875rem',
-              textDecoration: 'none',
-              transition: 'background 0.2s, color 0.2s',
-            }}
-            onMouseEnter={(e) => {
-              const el = e.currentTarget as HTMLAnchorElement;
-              el.style.background = 'rgba(255,255,255,0.14)';
-              el.style.color = '#ffffff';
-            }}
-            onMouseLeave={(e) => {
-              const el = e.currentTarget as HTMLAnchorElement;
-              el.style.background = 'rgba(255,255,255,0.08)';
-              el.style.color = 'rgba(255,255,255,0.75)';
-            }}
-          >
-            <GithubIcon size={15} />
-            See all projects on GitHub
-            <ExternalLink size={12} />
-          </a>
-        </motion.div>
       </div>
     </section>
   );
