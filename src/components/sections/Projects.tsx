@@ -16,7 +16,9 @@ interface ProjectKPI {
 interface Project {
   id: string;
   name: string;
-  subtitle: string;
+  company: string;
+  context: string;
+  companyColor: string;
   description: string;
   kpis: ProjectKPI[];
   tags: string[];
@@ -30,9 +32,11 @@ const PROJECTS: Project[] = [
   {
     id: 'sonar',
     name: 'SONAR',
-    subtitle: 'Network Defense Automation',
+    company: 'Amazon',
+    context: 'Internal Tool',
+    companyColor: '#FF9900',
     description:
-      'Production-grade post-scheduling system for EU Intermodal. Cut cycle time from 4 hours to 5 minutes across the entire network.',
+      'Production-grade post-scheduling system for 500+ EU Intermodal routes. Cut cycle time from 4 hours to 5 minutes across the entire network.',
     kpis: [
       { label: 'ARR impact', value: '€13.3M' },
       { label: 'cycle time', value: '5 min' },
@@ -41,14 +45,16 @@ const PROJECTS: Project[] = [
     tags: ['Python', 'AWS ECS', 'S3', 'ETL'],
     githubUrl: 'https://github.com/ThomasLoridan',
     accentColor: '#FF9900',
-    visualBg: 'radial-gradient(ellipse at 60% 40%, #3d1f00 0%, #1c0a00 55%, #0a0400 100%)',
+    visualBg: 'radial-gradient(ellipse at 50% 60%, #3d2000 0%, #1a0d00 55%, #0a0500 100%)',
   },
   {
     id: 'exec-analytics',
     name: 'Exec Analytics',
-    subtitle: 'Unified KPI Platform',
+    company: 'Amazon',
+    context: 'Internal Tool',
+    companyColor: '#FF9900',
     description:
-      'Single source of truth for L7+ leadership across 35 countries — consolidating 80+ KPIs from fragmented systems.',
+      'Single source of truth for L7+ leadership across 35 countries — unifying 80+ KPIs from fragmented reporting systems.',
     kpis: [
       { label: 'KPIs unified', value: '80+' },
       { label: 'countries', value: '35' },
@@ -56,14 +62,16 @@ const PROJECTS: Project[] = [
     tags: ['SQL', 'Python', 'QuickSight', 'AWS Glue'],
     githubUrl: 'https://github.com/ThomasLoridan',
     accentColor: '#4da3ff',
-    visualBg: 'radial-gradient(ellipse at 60% 40%, #001840 0%, #000d20 55%, #000508 100%)',
+    visualBg: 'radial-gradient(ellipse at 50% 60%, #001840 0%, #000d20 55%, #000508 100%)',
   },
   {
     id: 'oracle',
     name: 'ORACLE',
-    subtitle: 'Capacity Audit Platform',
+    company: 'Amazon',
+    context: 'Internal Tool',
+    companyColor: '#FF9900',
     description:
-      'Automated ground transport auditing across 26 EU countries. Replaced 40 hours/month of manual analysis.',
+      'Automated ground transport auditing across 26 EU countries. Replaced 40 hours/month of manual analysis with a real-time pipeline.',
     kpis: [
       { label: 'annual savings', value: '€250K' },
       { label: 'routes', value: '250+' },
@@ -72,12 +80,14 @@ const PROJECTS: Project[] = [
     tags: ['Python', 'SQL', 'ETL', '26 countries'],
     githubUrl: 'https://github.com/ThomasLoridan',
     accentColor: '#a78bfa',
-    visualBg: 'radial-gradient(ellipse at 60% 40%, #18003d 0%, #08000f 55%, #040008 100%)',
+    visualBg: 'radial-gradient(ellipse at 50% 60%, #18003d 0%, #08000f 55%, #040008 100%)',
   },
   {
     id: 'pm-portfolio',
     name: 'Portfolio',
-    subtitle: 'This website',
+    company: 'Personal',
+    context: 'Open Source',
+    companyColor: '#34d399',
     description:
       'Open-source portfolio with PRDs, architecture records, and shipped code — the full PM → engineer execution loop.',
     kpis: [
@@ -87,11 +97,11 @@ const PROJECTS: Project[] = [
     tags: ['Next.js', 'TypeScript', 'Framer Motion'],
     githubUrl: 'https://github.com/ThomasLoridan',
     accentColor: '#34d399',
-    visualBg: 'radial-gradient(ellipse at 60% 40%, #003320 0%, #001208 55%, #000604 100%)',
+    visualBg: 'radial-gradient(ellipse at 50% 60%, #003320 0%, #001208 55%, #000604 100%)',
   },
 ];
 
-/* ─── Project card (iOS-tile style) ─────────────────────── */
+/* ─── Project card ───────────────────────────────────────── */
 function ProjectCard({
   project,
   delay,
@@ -114,36 +124,71 @@ function ProjectCard({
         flexDirection: 'column',
       }}
     >
-      {/* Visual top — branded gradient + project name */}
+      {/* ── Visual top ── */}
       <div
         style={{
           background: project.visualBg,
-          height: '160px',
+          height: '200px',
+          position: 'relative',
+          overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          position: 'relative',
-          overflow: 'hidden',
         }}
       >
-        {/* Centered glow */}
+        {/* Company label — top left */}
+        <span
+          style={{
+            position: 'absolute',
+            top: '14px',
+            left: '16px',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.6rem',
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            color: project.companyColor,
+            fontWeight: 600,
+          }}
+        >
+          {project.company}
+        </span>
+
+        {/* Context label — top right */}
+        <span
+          style={{
+            position: 'absolute',
+            top: '14px',
+            right: '16px',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.58rem',
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            color: 'rgba(245,245,247,0.28)',
+          }}
+        >
+          {project.context}
+        </span>
+
+        {/* Glow orb */}
         <div
           style={{
             position: 'absolute',
-            width: '180px',
-            height: '180px',
+            width: '200px',
+            height: '200px',
             borderRadius: '50%',
-            background: `radial-gradient(circle, ${project.accentColor}28 0%, transparent 70%)`,
+            background: `radial-gradient(circle, ${project.accentColor}22 0%, transparent 65%)`,
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
           }}
         />
+
+        {/* Project name */}
         <span
           style={{
             fontFamily: 'var(--font-heading)',
             fontWeight: 800,
-            fontSize: 'clamp(1.25rem, 2vw, 1.6rem)',
+            fontSize: 'clamp(1.3rem, 2.2vw, 1.65rem)',
             color: project.accentColor,
             letterSpacing: '-0.01em',
             position: 'relative',
@@ -154,62 +199,64 @@ function ProjectCard({
         </span>
       </div>
 
-      {/* Text area */}
+      {/* ── Text area ── */}
       <div
         style={{
-          padding: '24px 24px 20px',
+          padding: '22px 22px 18px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '10px',
+          gap: '14px',
           flex: 1,
         }}
       >
-        {/* Subtitle */}
+        {/* Apple-style inline description: bold name → plain body */}
         <p
           style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.62rem',
-            letterSpacing: '0.12em',
-            textTransform: 'uppercase',
-            color: 'rgba(245,245,247,0.38)',
-          }}
-        >
-          {project.subtitle}
-        </p>
-
-        {/* Description */}
-        <p
-          style={{
-            color: 'rgba(245,245,247,0.78)',
+            color: 'rgba(245,245,247,0.75)',
             fontSize: '0.875rem',
             lineHeight: 1.65,
             flex: 1,
+            margin: 0,
           }}
         >
+          <strong style={{ color: '#ffffff', fontWeight: 700 }}>{project.name}.</strong>{' '}
           {project.description}
         </p>
 
         {/* ── KPI stats — Apple style ──
-            label (muted, tiny, uppercase) above
-            value (accent color, bold, large) below        */}
+            label   (muted, 0.6rem, uppercase, mono)
+            value   (accent color, bold, 1.2rem heading)   */}
         <div
           style={{
             display: 'flex',
-            gap: '20px',
+            gap: '0',
             paddingTop: '14px',
             borderTop: '1px solid rgba(255,255,255,0.07)',
-            flexWrap: 'wrap',
           }}
         >
-          {project.kpis.map((kpi) => (
-            <div key={kpi.label} style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+          {project.kpis.map((kpi, i) => (
+            <div
+              key={kpi.label}
+              style={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '5px',
+                paddingRight: i < project.kpis.length - 1 ? '12px' : 0,
+                paddingLeft: i > 0 ? '12px' : 0,
+                borderRight:
+                  i < project.kpis.length - 1
+                    ? '1px solid rgba(255,255,255,0.06)'
+                    : 'none',
+              }}
+            >
               <span
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  fontSize: '0.6rem',
+                  fontSize: '0.58rem',
                   letterSpacing: '0.1em',
                   textTransform: 'uppercase',
-                  color: 'rgba(245,245,247,0.35)',
+                  color: 'rgba(245,245,247,0.32)',
                   lineHeight: 1,
                 }}
               >
@@ -219,7 +266,7 @@ function ProjectCard({
                 style={{
                   fontFamily: 'var(--font-heading)',
                   fontWeight: 700,
-                  fontSize: 'clamp(1.05rem, 1.6vw, 1.3rem)',
+                  fontSize: 'clamp(1rem, 1.5vw, 1.2rem)',
                   color: project.accentColor,
                   lineHeight: 1,
                   letterSpacing: '-0.01em',
@@ -231,21 +278,21 @@ function ProjectCard({
           ))}
         </div>
 
-        {/* Tags + GitHub icon */}
+        {/* Tags + GitHub */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            marginTop: '6px',
           }}
         >
           <p
             style={{
               fontFamily: 'var(--font-mono)',
-              fontSize: '0.62rem',
-              color: 'rgba(245,245,247,0.28)',
-              letterSpacing: '0.04em',
+              fontSize: '0.6rem',
+              color: 'rgba(245,245,247,0.25)',
+              letterSpacing: '0.05em',
+              margin: 0,
             }}
           >
             {project.tags.join(' · ')}
@@ -258,20 +305,20 @@ function ProjectCard({
             style={{
               display: 'flex',
               alignItems: 'center',
-              color: 'rgba(245,245,247,0.32)',
+              color: 'rgba(245,245,247,0.28)',
               textDecoration: 'none',
               transition: 'color 0.2s',
               flexShrink: 0,
               marginLeft: '8px',
             }}
             onMouseEnter={(e) =>
-              ((e.currentTarget as HTMLAnchorElement).style.color = 'rgba(245,245,247,0.75)')
+              ((e.currentTarget as HTMLAnchorElement).style.color = 'rgba(245,245,247,0.7)')
             }
             onMouseLeave={(e) =>
-              ((e.currentTarget as HTMLAnchorElement).style.color = 'rgba(245,245,247,0.32)')
+              ((e.currentTarget as HTMLAnchorElement).style.color = 'rgba(245,245,247,0.28)')
             }
           >
-            <GithubIcon size={14} />
+            <GithubIcon size={13} />
           </a>
         </div>
       </div>
@@ -309,7 +356,15 @@ export function Projects() {
           >
             Projects
           </p>
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'flex-end',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '16px',
+            }}
+          >
             <div>
               <h2
                 style={{
@@ -349,7 +404,7 @@ export function Projects() {
                 borderRadius: '99px',
                 background: 'rgba(255,255,255,0.07)',
                 border: '1px solid rgba(255,255,255,0.12)',
-                color: 'rgba(255,255,255,0.65)',
+                color: 'rgba(255,255,255,0.6)',
                 fontWeight: 500,
                 fontSize: '0.82rem',
                 textDecoration: 'none',
@@ -365,7 +420,7 @@ export function Projects() {
               onMouseLeave={(e) => {
                 const el = e.currentTarget as HTMLAnchorElement;
                 el.style.background = 'rgba(255,255,255,0.07)';
-                el.style.color = 'rgba(255,255,255,0.65)';
+                el.style.color = 'rgba(255,255,255,0.6)';
               }}
             >
               <GithubIcon size={14} />

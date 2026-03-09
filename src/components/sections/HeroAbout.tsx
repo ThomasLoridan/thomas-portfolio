@@ -121,11 +121,12 @@ export function HeroAbout() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             style={{
-              color: 'rgba(255,255,255,0.6)',
-              fontSize: '1rem',
-              fontFamily: 'var(--font-body)',
-              fontWeight: 400,
-              letterSpacing: '0.04em',
+              color: 'rgba(255,255,255,0.5)',
+              fontSize: '0.82rem',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: 500,
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase',
               marginBottom: '12px',
             }}
           >
