@@ -4,6 +4,8 @@ import { useRef, ReactNode } from 'react';
 import { motion, useInView } from 'framer-motion';
 import Image from 'next/image';
 
+const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
+
 /* ─── Types ───────────────────────────────────────────────── */
 type MediaConfig =
   | { type: 'image'; src: string; fit?: 'contain' | 'cover'; bg?: string }
@@ -17,12 +19,10 @@ interface KPI {
 
 interface Block {
   id: string;
-  pattern: 'A' | 'B';
   label: string;
   role: string;
   description: string;
   kpis: KPI[];
-  accentColor: string;
   media: MediaConfig;
 }
 
@@ -32,8 +32,6 @@ interface CompanyGroup {
   blockIds: string[];
   accentColor: string;
 }
-
-const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
 /* ─── Highlight text parser ───────────────────────────────── */
 function Highlight({ text, color }: { text: string; color: string }): ReactNode {
@@ -57,67 +55,45 @@ function Highlight({ text, color }: { text: string; color: string }): ReactNode 
 const BLOCKS: Block[] = [
   {
     id: 'amazon-tpm-innovation',
-    pattern: 'A',
     label: 'AUG 2025–PRESENT · LUXEMBOURG',
     role: 'Technical Program Manager — **Tech & Innovation Portfolio**',
     description:
-      'Own product strategy for the Tech & Innovation portfolio supporting 30-country EU Intermodal and Expansion. Drive the €30M ARR roadmap across analytics platforms and automation systems.',
+      'Own product strategy for the Tech & Innovation portfolio supporting 30-country EU Intermodal. Drive the €30M ARR roadmap across analytics and automation platforms.',
     kpis: [
       { value: '€13.3M', label: 'SONAR automation' },
-      { value: '50+', label: 'stakeholders aligned' },
-      { value: '€30M', label: 'portfolio managed' },
+      { value: '50+', label: 'stakeholders' },
+      { value: '€30M', label: 'portfolio' },
     ],
-    accentColor: '#FF9900',
-    media: {
-      type: 'gif',
-      src: '/images/companies/amazon-arrow.gif',
-      fit: 'contain',
-      bg: '#0a0a0a',
-    },
+    media: { type: 'gif', src: '/images/companies/amazon-arrow.gif', fit: 'contain', bg: '#0a0a0a' },
   },
   {
     id: 'amazon-ba-emea',
-    pattern: 'B',
     label: 'DEC 2024–AUG 2025 · LUXEMBOURG',
     role: '**Performance** Business Analyst — **Transportation EMEA**',
     description:
-      'Built real-time monitoring and AI-assisted audit workflows for 30+ L5–L7 leaders. Consolidated fragmented reporting across 35 countries into a single source of truth.',
+      'Built real-time monitoring and AI-assisted audit workflows for 30+ L5–L7 leaders across 35 countries.',
     kpis: [
       { value: '80+', label: 'ETL pipelines' },
-      { value: '€1.5M/q', label: 'capacity savings' },
+      { value: '€1.5M/q', label: 'capacity saved' },
       { value: '45%', label: 'volume increase' },
     ],
-    accentColor: '#FF9900',
-    media: {
-      type: 'gif',
-      src: '/images/companies/amazon-light.gif',
-      fit: 'contain',
-      bg: '#ffffff',
-    },
+    media: { type: 'gif', src: '/images/companies/amazon-light.gif', fit: 'contain', bg: '#ffffff' },
   },
   {
     id: 'amazon-tpm-reliability',
-    pattern: 'A',
     label: 'APR 2024–DEC 2024 · BARCELONA',
     role: 'Technical Program Manager — **Global Strategic Reliability**',
     description:
-      'Drove product development for operational analytics platforms across 2,300 global fulfillment sites. Built 3 strategic data platforms with senior engineers.',
+      'Drove product development for operational analytics across 2,300 global fulfillment sites. Built 3 strategic data platforms.',
     kpis: [
       { value: '25%', label: 'downtime reduction' },
       { value: '10K+', label: 'daily users' },
       { value: '€8.9M', label: 'costs benchmarked' },
     ],
-    accentColor: '#FF9900',
-    media: {
-      type: 'image',
-      src: '/images/companies/amazon-dark.jpg',
-      fit: 'contain',
-      bg: '#0a0a0a',
-    },
+    media: { type: 'image', src: '/images/companies/amazon-dark.jpg', fit: 'contain', bg: '#0a0a0a' },
   },
   {
     id: 'auchan',
-    pattern: 'B',
     label: 'SEP 2023–MAR 2024 · LILLE',
     role: '**Strategy Consultant** — DSI',
     description:
@@ -126,74 +102,46 @@ const BLOCKS: Block[] = [
       { value: '€250M', label: 'IT portfolio' },
       { value: '4', label: 'companies benchmarked' },
     ],
-    accentColor: '#E2001A',
-    media: {
-      type: 'image',
-      src: '/images/auchan/auchan-logo-full.png',
-      fit: 'contain',
-      bg: '#1a0000',
-    },
+    media: { type: 'image', src: '/images/auchan/auchan-logo-full.png', fit: 'contain', bg: '#1a0000' },
   },
   {
     id: 'loreal-freelance',
-    pattern: 'A',
     label: 'MAR 2023–MAR 2024 · PARIS',
     role: 'Business Analyst — **Global CDMO, Consumer Product Division**',
     description:
-      'Led global data governance engagement across 50+ countries. Standardized reporting and designed bi-weekly COMEX dashboards for C-suite product roadmap alignment.',
+      'Led global data governance across 50+ countries. Designed bi-weekly COMEX dashboards for C-suite product roadmap alignment.',
     kpis: [
       { value: '50+', label: 'countries' },
       { value: '20%', label: 'data quality lift' },
     ],
-    accentColor: '#C8A951',
-    media: {
-      type: 'image',
-      src: '/images/loreal/loreal-water.webp',
-      fit: 'cover',
-      bg: '#1a1300',
-    },
+    media: { type: 'image', src: '/images/loreal/loreal-water.webp', fit: 'cover', bg: '#1a1300' },
   },
   {
     id: 'loreal-delivery',
-    pattern: 'B',
     label: 'SEP 2022–MAR 2023 · PARIS',
     role: 'Technical Delivery Manager — **Global Data Team**',
     description:
-      'Built global B2B analytics platform supporting billion-euro product decisions across Europe, China, and the US. Re-engineered IT delivery workflows.',
+      'Built global B2B analytics platform supporting billion-euro product decisions across Europe, China, and the US.',
     kpis: [
       { value: '3', label: 'markets covered' },
       { value: '25%', label: 'lead time reduction' },
     ],
-    accentColor: '#C8A951',
-    media: {
-      type: 'image',
-      src: '/images/loreal/loreal-pro.webp',
-      fit: 'cover',
-      bg: '#111',
-    },
+    media: { type: 'image', src: '/images/loreal/loreal-pro.webp', fit: 'cover', bg: '#111' },
   },
   {
     id: 'loreal-pm',
-    pattern: 'A',
     label: 'FEB 2022–SEP 2022 · PARIS',
     role: 'Technical Project Manager — **Digital EMEA**',
     description:
-      'Delivered 12 automated customer journeys across 3 UK divisions. Scaled web stack across 120 websites, unlocking €100M ARR opportunity.',
+      'Delivered 12 automated customer journeys across 3 UK divisions. Scaled web stack across 120 websites.',
     kpis: [
       { value: '€1.75M', label: 'UK journeys ARR' },
-      { value: '€100M', label: 'web stack opportunity' },
+      { value: '€100M', label: 'web opportunity' },
     ],
-    accentColor: '#C8A951',
-    media: {
-      type: 'gif',
-      src: '/images/loreal/loreal-luxe-portrait.gif',
-      fit: 'cover',
-      bg: '#111',
-    },
+    media: { type: 'gif', src: '/images/loreal/loreal-luxe-portrait.gif', fit: 'cover', bg: '#111' },
   },
   {
     id: 'familyad',
-    pattern: 'B',
     label: 'SEP 2021–MAR 2022 · PARIS',
     role: 'Co-Founder, **CEO & CFO**',
     description:
@@ -202,11 +150,7 @@ const BLOCKS: Block[] = [
       { value: 'Station F', label: 'finalist' },
       { value: 'MVP', label: 'launched' },
     ],
-    accentColor: '#6366f1',
-    media: {
-      type: 'orbs',
-      gradient: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #3730a3 100%)',
-    },
+    media: { type: 'orbs', gradient: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #3730a3 100%)' },
   },
 ];
 
@@ -239,144 +183,15 @@ const GROUPS: CompanyGroup[] = [
 
 const BLOCK_MAP = Object.fromEntries(BLOCKS.map((b) => [b.id, b]));
 
-/* ─── KPI stat row ────────────────────────────────────────── */
-function KPIStats({ kpis }: { kpis: KPI[] }) {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        borderTop: '1px solid rgba(255,255,255,0.12)',
-        marginTop: '28px',
-        paddingTop: '20px',
-      }}
-    >
-      {kpis.map((kpi, i) => (
-        <div
-          key={i}
-          style={{
-            flex: 1,
-            paddingRight: i < kpis.length - 1 ? '20px' : 0,
-            paddingLeft: i > 0 ? '20px' : 0,
-            borderRight: i < kpis.length - 1 ? '1px solid rgba(255,255,255,0.12)' : 'none',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '4px',
-          }}
-        >
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: 'clamp(1.5rem, 2.2vw, 2rem)',
-              color: '#5AC8FA',
-              lineHeight: 1.05,
-            }}
-          >
-            {kpi.value}
-          </p>
-          <p
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.68rem',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.45)',
-              lineHeight: 1.3,
-            }}
-          >
-            {kpi.label}
-          </p>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-/* ─── Company group header ────────────────────────────────── */
-function GroupHeader({ group }: { group: CompanyGroup }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-10%' });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 16 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
-      style={{
-        maxWidth: '1024px',
-        margin: '0 auto',
-        padding: '0 24px',
-        paddingTop: 'clamp(56px, 9vh, 96px)',
-        paddingBottom: '0',
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-        {/* Colored left accent bar */}
-        <div
-          style={{
-            width: '3px',
-            height: '52px',
-            borderRadius: '2px',
-            background: group.accentColor,
-            flexShrink: 0,
-          }}
-        />
-
-        {/* Period above company name */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <span
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.72rem',
-              color: group.accentColor,
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              fontWeight: 500,
-            }}
-          >
-            {group.period}
-          </span>
-          <span
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: 'clamp(1.8rem, 2.8vw, 2.4rem)',
-              color: '#ffffff',
-              letterSpacing: '-0.02em',
-              lineHeight: 1.1,
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {group.company}
-          </span>
-        </div>
-
-        {/* Hairline rule */}
-        <div
-          style={{
-            flex: 1,
-            height: '1px',
-            background: 'rgba(255,255,255,0.1)',
-          }}
-        />
-      </div>
-    </motion.div>
-  );
-}
-
-/* ─── Media panel ─────────────────────────────────────────── */
+/* ─── Media panel (fills parent container) ────────────────── */
 function MediaPanel({ media }: { media: MediaConfig }) {
   if (media.type === 'orbs') {
     return (
       <div
         style={{
-          position: 'relative',
-          width: '100%',
-          height: '100%',
-          minHeight: '480px',
+          position: 'absolute',
+          inset: 0,
           background: media.gradient,
-          borderRadius: '16px',
           overflow: 'hidden',
         }}
       >
@@ -384,24 +199,24 @@ function MediaPanel({ media }: { media: MediaConfig }) {
           className="animate-pulse-glow"
           style={{
             position: 'absolute',
-            width: '280px',
-            height: '280px',
+            width: '260px',
+            height: '260px',
             borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(255,255,255,0.18) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(255,255,255,0.16) 0%, transparent 70%)',
             top: '-60px',
-            right: '-60px',
+            right: '-40px',
           }}
         />
         <div
           className="animate-pulse-glow"
           style={{
             position: 'absolute',
-            width: '200px',
-            height: '200px',
+            width: '180px',
+            height: '180px',
             borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%)',
-            bottom: '-40px',
-            left: '-40px',
+            background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+            bottom: '-30px',
+            left: '-30px',
             animationDelay: '1s',
           }}
         />
@@ -418,8 +233,8 @@ function MediaPanel({ media }: { media: MediaConfig }) {
             style={{
               fontFamily: 'var(--font-heading)',
               fontWeight: 800,
-              fontSize: '1.5rem',
-              color: 'rgba(255,255,255,0.7)',
+              fontSize: '1.4rem',
+              color: 'rgba(255,255,255,0.65)',
               letterSpacing: '0.2em',
               textTransform: 'uppercase',
             }}
@@ -430,16 +245,12 @@ function MediaPanel({ media }: { media: MediaConfig }) {
       </div>
     );
   }
-
   return (
     <div
       style={{
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-        minHeight: '320px',
+        position: 'absolute',
+        inset: 0,
         background: media.bg ?? '#111',
-        borderRadius: '16px',
         overflow: 'hidden',
       }}
     >
@@ -450,126 +261,325 @@ function MediaPanel({ media }: { media: MediaConfig }) {
         style={{ objectFit: media.fit ?? 'cover' }}
         unoptimized={media.type === 'gif'}
         loading="lazy"
-        sizes="(max-width: 768px) 100vw, 50vw"
+        sizes="(max-width: 768px) 100vw, 40vw"
       />
     </div>
   );
 }
 
-/* ─── Single experience block ─────────────────────────────── */
-function ExperienceBlock({
-  block,
-  companyAccent,
-}: {
-  block: Block;
-  companyAccent: string;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-20%' });
-  const isPatternA = block.pattern === 'A';
-
-  const mediaMotion = {
-    initial: { opacity: 0, scale: 1.15 },
-    animate: inView ? { opacity: 1, scale: 1 } : {},
-    transition: { duration: 1, ease: EASE },
-  };
-
-  const textMotion = {
-    initial: { opacity: 0, x: isPatternA ? 40 : -40 },
-    animate: inView ? { opacity: 1, x: 0 } : {},
-    transition: { duration: 0.7, delay: 0.2, ease: EASE },
-  };
-
+/* ─── KPI row — Apple spec style (label above, value below) ─ */
+function KPIRow({ kpis }: { kpis: KPI[] }) {
   return (
     <div
-      ref={ref}
       style={{
-        position: 'relative',
-        minHeight: '60vh',
         display: 'flex',
-        alignItems: 'center',
-        padding: 'clamp(40px, 7vh, 72px) 0',
+        paddingTop: '14px',
+        borderTop: '1px solid rgba(255,255,255,0.08)',
+        marginTop: 'auto',
       }}
     >
-      {/* Timeline dot */}
+      {kpis.map((kpi, i) => (
+        <div
+          key={i}
+          style={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '4px',
+            paddingRight: i < kpis.length - 1 ? '12px' : 0,
+            paddingLeft: i > 0 ? '12px' : 0,
+            borderRight:
+              i < kpis.length - 1 ? '1px solid rgba(255,255,255,0.08)' : 'none',
+          }}
+        >
+          <span
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.56rem',
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: 'rgba(245,245,247,0.32)',
+              lineHeight: 1,
+            }}
+          >
+            {kpi.label}
+          </span>
+          <span
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontWeight: 700,
+              fontSize: 'clamp(0.9rem, 1.2vw, 1.1rem)',
+              color: '#5AC8FA',
+              lineHeight: 1.1,
+              letterSpacing: '-0.01em',
+            }}
+          >
+            {kpi.value}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ─── Portrait role card (multi-role company groups) ─────── */
+function RoleCard({
+  block,
+  accentColor,
+  inView,
+  delay,
+}: {
+  block: Block;
+  accentColor: string;
+  inView: boolean;
+  delay: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.55, delay, ease: EASE }}
+      style={{
+        background: 'rgba(255,255,255,0.03)',
+        borderRadius: '16px',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      {/* Media — top portion */}
+      <div style={{ position: 'relative', height: '180px', flexShrink: 0 }}>
+        <MediaPanel media={block.media} />
+      </div>
+
+      {/* Text — bottom portion */}
       <div
         style={{
-          position: 'absolute',
-          left: 'clamp(11px, 2.6vw, 36px)',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          width: '8px',
-          height: '8px',
-          borderRadius: '50%',
-          background: 'rgba(255,255,255,0.5)',
-          zIndex: 2,
+          padding: '18px 20px 20px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px',
+          flex: 1,
         }}
-      />
-
-      <div className="max-w-5xl mx-auto px-6 w-full">
-        <div
-          className={`grid grid-cols-1 items-center gap-4 md:gap-12 ${
-            isPatternA
-              ? 'md:grid-cols-[62fr_38fr]'
-              : 'md:grid-cols-[38fr_62fr] md:[&>*:first-child]:order-2 md:[&>*:last-child]:order-1'
-          }`}
+      >
+        {/* Period / location */}
+        <p
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.62rem',
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            color: accentColor,
+            fontWeight: 500,
+            lineHeight: 1,
+          }}
         >
-          {/* Image panel */}
-          <motion.div
-            {...mediaMotion}
-            style={{ borderRadius: '16px', overflow: 'hidden', minHeight: 'clamp(220px, 35vw, 480px)' }}
+          {block.label}
+        </p>
+
+        {/* Role title */}
+        <h3
+          style={{
+            fontFamily: 'var(--font-heading)',
+            fontWeight: 700,
+            fontSize: 'clamp(0.92rem, 1.1vw, 1.1rem)',
+            color: '#ffffff',
+            lineHeight: 1.3,
+          }}
+        >
+          <Highlight text={block.role} color="#5AC8FA" />
+        </h3>
+
+        {/* Description */}
+        <p
+          style={{
+            color: 'rgba(245,245,247,0.6)',
+            fontSize: '0.82rem',
+            lineHeight: 1.65,
+            flex: 1,
+          }}
+        >
+          {block.description}
+        </p>
+
+        {/* KPIs */}
+        <KPIRow kpis={block.kpis} />
+      </div>
+    </motion.div>
+  );
+}
+
+/* ─── Landscape role card (single-role companies) ─────────── */
+function LandscapeRoleCard({
+  block,
+  accentColor,
+  inView,
+}: {
+  block: Block;
+  accentColor: string;
+  inView: boolean;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, ease: EASE }}
+      className="grid grid-cols-1 md:grid-cols-2"
+      style={{
+        background: 'rgba(255,255,255,0.03)',
+        borderRadius: '16px',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Media — left side on desktop, top on mobile */}
+      <div style={{ position: 'relative', minHeight: '280px' }}>
+        <MediaPanel media={block.media} />
+      </div>
+
+      {/* Text — right side */}
+      <div
+        style={{
+          padding: 'clamp(24px, 3vw, 40px)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px',
+        }}
+      >
+        <p
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.68rem',
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            color: accentColor,
+            fontWeight: 500,
+          }}
+        >
+          {block.label}
+        </p>
+
+        <h3
+          style={{
+            fontFamily: 'var(--font-heading)',
+            fontWeight: 700,
+            fontSize: 'clamp(1.2rem, 1.8vw, 1.6rem)',
+            color: '#ffffff',
+            lineHeight: 1.2,
+          }}
+        >
+          <Highlight text={block.role} color="#5AC8FA" />
+        </h3>
+
+        <p
+          style={{
+            color: 'rgba(245,245,247,0.7)',
+            fontSize: 'clamp(0.88rem, 1vw, 0.95rem)',
+            lineHeight: 1.7,
+            flex: 1,
+          }}
+        >
+          {block.description}
+        </p>
+
+        <KPIRow kpis={block.kpis} />
+      </div>
+    </motion.div>
+  );
+}
+
+/* ─── Company block — groups all roles under one cluster ──── */
+function CompanyBlock({ group }: { group: CompanyGroup }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-8%' });
+  const blocks = group.blockIds.map((id) => BLOCK_MAP[id]);
+  const isLandscape = blocks.length === 1;
+  const gridClass =
+    blocks.length === 3
+      ? 'grid grid-cols-1 md:grid-cols-3 gap-3'
+      : 'grid grid-cols-1 md:grid-cols-2 gap-3';
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 24 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+      style={{
+        background: 'rgba(255,255,255,0.02)',
+        border: '1px solid rgba(255,255,255,0.06)',
+        borderRadius: '24px',
+        padding: 'clamp(20px, 3vw, 32px)',
+        marginBottom: '20px',
+      }}
+    >
+      {/* Company header */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px',
+          marginBottom: '20px',
+        }}
+      >
+        {/* Accent bar */}
+        <div
+          style={{
+            width: '3px',
+            height: '44px',
+            borderRadius: '2px',
+            background: group.accentColor,
+            flexShrink: 0,
+          }}
+        />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+          <span
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.65rem',
+              color: group.accentColor,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              fontWeight: 500,
+            }}
           >
-            <MediaPanel media={block.media} />
-          </motion.div>
-
-          {/* Text panel */}
-          <motion.div
-            {...textMotion}
-            className="flex flex-col gap-5"
-            style={{ padding: 'clamp(24px, 3vw, 48px)' }}
+            {group.period}
+          </span>
+          <span
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontWeight: 700,
+              fontSize: 'clamp(1.5rem, 2.2vw, 2rem)',
+              color: '#ffffff',
+              letterSpacing: '-0.02em',
+              lineHeight: 1.1,
+            }}
           >
-            {/* Date / location label */}
-            <p
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.78rem',
-                letterSpacing: '0.14em',
-                textTransform: 'uppercase',
-                color: companyAccent,
-                fontWeight: 500,
-              }}
-            >
-              {block.label}
-            </p>
-
-            <h3
-              style={{
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 700,
-                fontSize: 'clamp(1.5rem, 2.2vw, 2rem)',
-                color: '#ffffff',
-                lineHeight: 1.2,
-              }}
-            >
-              <Highlight text={block.role} color="#5AC8FA" />
-            </h3>
-
-            <p
-              style={{
-                color: 'rgba(245,245,247,0.82)',
-                fontSize: 'clamp(1rem, 1.2vw, 1.1rem)',
-                lineHeight: 1.8,
-                fontWeight: 400,
-              }}
-            >
-              {block.description}
-            </p>
-
-            <KPIStats kpis={block.kpis} />
-          </motion.div>
+            {group.company}
+          </span>
         </div>
       </div>
-    </div>
+
+      {/* Role cards */}
+      {isLandscape ? (
+        <LandscapeRoleCard
+          block={blocks[0]}
+          accentColor={group.accentColor}
+          inView={inView}
+        />
+      ) : (
+        <div className={gridClass}>
+          {blocks.map((block, i) => (
+            <RoleCard
+              key={block.id}
+              block={block}
+              accentColor={group.accentColor}
+              inView={inView}
+              delay={i * 0.1}
+            />
+          ))}
+        </div>
+      )}
+    </motion.div>
   );
 }
 
@@ -579,105 +589,67 @@ export function Experience() {
   const headerInView = useInView(headerRef, { once: true, margin: '-80px' });
 
   return (
-    <section id="experience" className="experience-bg" style={{ position: 'relative' }}>
-      {/* Timeline vertical line */}
-      <div
-        style={{
-          position: 'absolute',
-          left: 'clamp(15px, 3vw, 40px)',
-          top: 0,
-          bottom: 0,
-          width: '1px',
-          background: 'rgba(255,255,255,0.15)',
-          pointerEvents: 'none',
-        }}
-      />
+    <section id="experience" className="experience-bg">
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 clamp(24px, 5vw, 64px)' }}>
 
-      {/* Section header */}
-      <div className="max-w-5xl mx-auto px-6 pt-28 pb-8">
-        <motion.div
-          ref={headerRef}
-          initial={{ opacity: 0, y: 28 }}
-          animate={headerInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.65, ease: 'easeOut' }}
-        >
-          <p
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.82rem',
-              fontWeight: 500,
-              color: 'rgba(245,245,247,0.5)',
-              letterSpacing: '0.16em',
-              textTransform: 'uppercase',
-              marginBottom: '16px',
-            }}
+        {/* Section header */}
+        <div style={{ paddingTop: 'clamp(64px, 10vh, 112px)', paddingBottom: '48px' }}>
+          <motion.div
+            ref={headerRef}
+            initial={{ opacity: 0, y: 28 }}
+            animate={headerInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.65, ease: 'easeOut' }}
           >
-            Experience
-          </p>
-          <h2
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: 'clamp(3rem, 6vw, 6rem)',
-              color: '#ffffff',
-              lineHeight: 1.0,
-              letterSpacing: '-0.025em',
-              marginBottom: '16px',
-            }}
-          >
-            Where I&apos;ve made{' '}
-            <span style={{ color: '#5AC8FA' }}>an impact</span>
-          </h2>
-          <p
-            style={{
-              color: 'rgba(245,245,247,0.65)',
-              fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
-              lineHeight: 1.8,
-              fontWeight: 400,
-              maxWidth: '560px',
-            }}
-          >
-            4 years across Amazon, L&apos;Oréal, Auchan, and a startup — from €250M portfolios to building a company from zero.
-          </p>
-        </motion.div>
-      </div>
-
-      {/* Grouped blocks */}
-      {GROUPS.map((group) => (
-        <div key={group.company}>
-          <GroupHeader group={group} />
-          {group.blockIds.map((id, i) => {
-            const block = BLOCK_MAP[id];
-            return (
-              <div key={id}>
-                <ExperienceBlock
-                    block={block}
-                    companyAccent={group.accentColor}
-                  />
-                {i < group.blockIds.length - 1 && (
-                  <div
-                    style={{
-                      maxWidth: '1024px',
-                      margin: '0 auto',
-                      padding: '0 24px',
-                    }}
-                  >
-                    <div
-                      style={{
-                        height: '1px',
-                        background: 'rgba(255,255,255,0.06)',
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
-            );
-          })}
+            <p
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.82rem',
+                fontWeight: 500,
+                color: 'rgba(245,245,247,0.5)',
+                letterSpacing: '0.16em',
+                textTransform: 'uppercase',
+                marginBottom: '16px',
+              }}
+            >
+              Experience
+            </p>
+            <h2
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontWeight: 700,
+                fontSize: 'clamp(3rem, 6vw, 6rem)',
+                color: '#ffffff',
+                lineHeight: 1.0,
+                letterSpacing: '-0.025em',
+                marginBottom: '16px',
+              }}
+            >
+              Where I&apos;ve made{' '}
+              <span style={{ color: '#5AC8FA' }}>an impact</span>
+            </h2>
+            <p
+              style={{
+                color: 'rgba(245,245,247,0.65)',
+                fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
+                lineHeight: 1.8,
+                fontWeight: 400,
+                maxWidth: '560px',
+              }}
+            >
+              4 years across Amazon, L&apos;Oréal, Auchan, and a startup — from €250M
+              portfolios to building a company from zero.
+            </p>
+          </motion.div>
         </div>
-      ))}
 
-      {/* Bottom padding */}
-      <div style={{ height: 'clamp(48px, 8vh, 80px)' }} />
+        {/* Company blocks */}
+        {GROUPS.map((group) => (
+          <CompanyBlock key={group.company} group={group} />
+        ))}
+
+        {/* Bottom padding */}
+        <div style={{ height: 'clamp(40px, 6vh, 64px)' }} />
+      </div>
     </section>
   );
 }
