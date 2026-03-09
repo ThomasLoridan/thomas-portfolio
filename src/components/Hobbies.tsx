@@ -107,7 +107,7 @@ function ImagePanel({ images }: { images: PassionImage[] }) {
 
   if (images.length === 2) {
     return (
-      <div style={{ display: 'flex', gap: '12px', height: '420px' }}>
+      <div style={{ display: 'flex', gap: '12px', height: 'clamp(260px, 42vw, 420px)' }}>
         {images.map((img, idx) => {
           const flexValue =
             hoveredIdx === null ? 1 : hoveredIdx === idx ? 1.4 : 0.6;
@@ -143,7 +143,7 @@ function ImagePanel({ images }: { images: PassionImage[] }) {
     <div
       style={{
         position: 'relative',
-        height: '420px',
+        height: 'clamp(260px, 42vw, 420px)',
         borderRadius: '16px',
         overflow: 'hidden',
       }}
@@ -170,7 +170,6 @@ function PassionBloc({ passion }: { passion: Passion }) {
     <div
       ref={ref}
       style={{
-        minHeight: '70vh',
         display: 'flex',
         alignItems: 'center',
         padding: 'clamp(48px, 8vh, 80px) 0',
@@ -178,13 +177,12 @@ function PassionBloc({ passion }: { passion: Passion }) {
       }}
     >
       <div
+        className={`flex flex-col gap-8 ${isA ? 'md:flex-row' : 'md:flex-row-reverse'}`}
         style={{
           maxWidth: '1024px',
           margin: '0 auto',
           padding: '0 clamp(24px, 6vw, 80px)',
           width: '100%',
-          display: 'flex',
-          flexDirection: isA ? 'row' : 'row-reverse',
           gap: 'clamp(32px, 5vw, 64px)',
           alignItems: 'center',
           position: 'relative',
@@ -194,10 +192,10 @@ function PassionBloc({ passion }: { passion: Passion }) {
             — single image: scale transform (image grows behind text, z-index 1)
             — dual images: ImagePanel handles internal flex push */}
         <div
+          className="w-full md:w-[55%] shrink-0"
           onMouseEnter={() => isSingle && setImageHovered(true)}
           onMouseLeave={() => isSingle && setImageHovered(false)}
           style={{
-            flex: '0 0 55%',
             position: 'relative',
             zIndex: 1,
             transform: isSingle && imageHovered ? 'scale(1.1)' : 'scale(1)',
@@ -214,10 +212,10 @@ function PassionBloc({ passion }: { passion: Passion }) {
           </motion.div>
         </div>
 
-        {/* Text side — fixed flex, z-index 2 so it stays in front of scaled image */}
+        {/* Text side — z-index 2 so it stays in front of scaled image */}
         <div
+          className="w-full md:w-[45%] shrink-0"
           style={{
-            flex: '0 0 45%',
             position: 'relative',
             zIndex: 2,
           }}

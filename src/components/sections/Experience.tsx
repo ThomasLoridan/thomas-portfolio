@@ -459,11 +459,9 @@ function MediaPanel({ media }: { media: MediaConfig }) {
 /* ─── Single experience block ─────────────────────────────── */
 function ExperienceBlock({
   block,
-  companyName,
   companyAccent,
 }: {
   block: Block;
-  companyName: string;
   companyAccent: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -530,27 +528,6 @@ function ExperienceBlock({
             className="flex flex-col gap-5"
             style={{ padding: 'clamp(24px, 3vw, 48px)' }}
           >
-            {/* Company pill badge */}
-            <div style={{ marginBottom: '8px' }}>
-              <span
-                style={{
-                  display: 'inline-block',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.65rem',
-                  letterSpacing: '0.12em',
-                  textTransform: 'uppercase',
-                  color: companyAccent,
-                  fontWeight: 600,
-                  padding: '3px 10px',
-                  borderRadius: '99px',
-                  border: `1px solid ${companyAccent}60`,
-                  background: `${companyAccent}12`,
-                }}
-              >
-                {companyName}
-              </span>
-            </div>
-
             {/* Date / location label */}
             <p
               style={{
@@ -558,7 +535,7 @@ function ExperienceBlock({
                 fontSize: '0.78rem',
                 letterSpacing: '0.14em',
                 textTransform: 'uppercase',
-                color: 'rgba(245,245,247,0.72)',
+                color: companyAccent,
                 fontWeight: 500,
               }}
             >
@@ -675,7 +652,6 @@ export function Experience() {
               <div key={id}>
                 <ExperienceBlock
                     block={block}
-                    companyName={group.company}
                     companyAccent={group.accentColor}
                   />
                 {i < group.blockIds.length - 1 && (
