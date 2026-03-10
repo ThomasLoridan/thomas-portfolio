@@ -2,12 +2,13 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { SocialSidebar } from '@/components/layout/SocialSidebar';
 import { HeroAbout } from '@/components/sections/HeroAbout';
+import { ProofQuote } from '@/components/sections/ProofQuote';
 import { CareerArc } from '@/components/sections/CareerArc';
 import { Skills } from '@/components/sections/Skills';
 import { Experience } from '@/components/sections/Experience';
 import { PauseSection } from '@/components/sections/PauseSection';
-import { Testimonials } from '@/components/sections/Testimonials';
 import { Projects } from '@/components/sections/Projects';
+import { Testimonials } from '@/components/sections/Testimonials';
 import { Hobbies } from '@/components/Hobbies';
 import { Certifications } from '@/components/sections/Certifications';
 
@@ -17,39 +18,40 @@ export default function HomePage() {
       <Navbar />
       <SocialSidebar />
       <main>
-        {/* Hero + About section + quote interlude */}
+        {/* Hero (dark) + About (white) */}
         <HeroAbout />
 
-        {/* Career progression arc */}
+        {/* Proof quote — white bg, after About */}
+        <ProofQuote />
+
+        {/* Career arc progression — dark bg */}
         <CareerArc />
 
-        {/* Skills marquee */}
+        {/* Skills — light gray bg */}
         <Skills />
 
-        {/* Work experience by company */}
+        {/* Work experience by company — dark bg */}
         <Experience />
 
-        {/* Pause — after Experience */}
+        {/* Pause 1 — after Experience */}
         <PauseSection
-          stat="€30M+"
-          label="programs managed"
-          statement="Four companies. Eight roles. Every program delivered on scope."
+          stat="€16.3M+"
+          label="Total ARR impact delivered across Amazon systems in 3 years."
+          variant="dark"
+        />
+
+        {/* Projects grid — dark bg */}
+        <Projects />
+
+        {/* Pause 2 — after Projects */}
+        <PauseSection
+          stat="7,000+"
+          label="Lines of production Python. Not a side project — operational infrastructure."
           variant="dark"
         />
 
         {/* Testimonials */}
         <Testimonials />
-
-        {/* Projects grid */}
-        <Projects />
-
-        {/* Pause — after Projects */}
-        <PauseSection
-          stat="100%"
-          label="shipped to production"
-          statement="Not prototypes. Not slides. Real tools, real users, real metrics."
-          variant="light"
-        />
 
         {/* Hobbies */}
         <Hobbies />

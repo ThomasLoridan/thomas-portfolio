@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { Code2, Lightbulb, Network } from 'lucide-react';
+import { Code2, Lightbulb, Network, Target, Shield, Zap } from 'lucide-react';
 
 /* ─── Skill card data ─────────────────────────────────── */
 const SKILL_CARDS = [
@@ -10,21 +10,21 @@ const SKILL_CARDS = [
     icon: Code2,
     iconColor: '#0075eb',
     title: 'Technical depth.',
-    body: 'Python, SQL, AWS, GCP. I build the systems, not just the specs.',
+    body: 'Python, SQL, AWS, GCP. Production systems serving 2,300+ sites and processing 500+ routes in real time.',
     tags: ['Python', 'SQL', 'AWS', 'GCP', 'BigQuery', 'ETL Pipelines', 'Docker', 'TypeScript', 'FastAPI', 'REST APIs'],
   },
   {
     icon: Lightbulb,
     iconColor: '#6366f1',
     title: 'Product thinking.',
-    body: 'PRDs, roadmaps, OKRs. I define what to build and why it matters.',
+    body: 'PRDs, roadmaps, OKRs. €30M portfolio managed end-to-end — from discovery to stakeholder alignment to delivery.',
     tags: ['PRD Writing', 'Roadmap Planning', 'OKR Definition', 'A/B Testing', 'User Research', 'Stakeholder Mgmt', 'Data-Driven Decisions'],
   },
   {
     icon: Network,
     iconColor: '#00a86b',
     title: 'Program leadership.',
-    body: '50+ stakeholders across 26 countries. I align teams and ship at scale.',
+    body: '50+ stakeholders across 26 countries. Programs that ship on time and infrastructure teams don\'t want to lose.',
     tags: ['Cross-functional', 'Agile/Scrum', 'Executive Reporting', 'Jira', 'Confluence', 'QuickSight', 'PowerBI', 'Figma'],
   },
 ];
@@ -32,17 +32,20 @@ const SKILL_CARDS = [
 /* ─── Values data ─────────────────────────────────────── */
 const VALUES = [
   {
-    emoji: '🎯',
+    icon: Target,
+    iconColor: '#0075eb',
     title: 'Impact-first.',
     body: 'Every decision backed by data and tied to business outcomes.',
   },
   {
-    emoji: '🔒',
+    icon: Shield,
+    iconColor: '#6366f1',
     title: 'Ownership.',
     body: 'I treat every product like my own. No escalation theater.',
   },
   {
-    emoji: '⚡',
+    icon: Zap,
+    iconColor: '#00a86b',
     title: 'Speed + precision.',
     body: "I move fast without breaking things. Or people.",
   },
@@ -298,9 +301,7 @@ export function Skills() {
                   minHeight: '280px',
                 }}
               >
-                <span style={{ fontSize: '2rem', lineHeight: 1, display: 'block', marginBottom: '20px' }}>
-                  {v.emoji}
-                </span>
+                <v.icon size={32} color={v.iconColor} style={{ marginBottom: '20px' }} />
                 <h3
                   style={{
                     fontFamily: 'var(--font-heading)',

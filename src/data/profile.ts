@@ -2,7 +2,7 @@ import type { Profile } from '@/types';
 
 export const profile: Profile = {
   name: 'Thomas Loridan',
-  title: 'Technical Program Manager → Product Manager',
+  title: 'Technical Program Manager · Builder',
   tagline: "I don't just write specs. I ship them.",
   bio: 'TPM at Amazon EU Transportation, leading cross-functional programs across 26 countries with a €30M+ portfolio. MSc from École Centrale Lille. Co-founder of Familyad (ad-tech). Passionate about automation, data-driven decisions, and building products that create measurable impact.',
   location: 'Luxembourg',

@@ -25,7 +25,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Thomas Loridan — Product Manager',
+    default: 'Thomas Loridan — Technical Program Manager · Builder',
     template: '%s | Thomas Loridan',
   },
   description:
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    title: 'Thomas Loridan — Product Manager',
+    title: 'Thomas Loridan — Technical Program Manager · Builder',
     description:
       '€30M+ programs. 26 countries. Amazon EU Transportation. Systems that scale, impact by design.',
     siteName: 'Thomas Loridan Portfolio',

@@ -5,38 +5,16 @@ import { motion, useInView } from 'framer-motion';
 
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
-interface Stop {
-  year: string;
-  company: string;
-  role: string;
-  accent: string;
+interface ArcPair {
+  from: string;
+  to: string;
+  label: string;
 }
 
-const STOPS: Stop[] = [
-  {
-    year: '2021',
-    company: 'Familyad',
-    role: 'Co-Founder · CEO & CFO',
-    accent: '#6366f1',
-  },
-  {
-    year: '2022',
-    company: "L'Oréal",
-    role: 'Technical PM → Delivery → BA · EMEA & Global',
-    accent: '#C8A951',
-  },
-  {
-    year: '2023',
-    company: 'Auchan Retail',
-    role: 'Strategy Consultant · DSI',
-    accent: '#E2001A',
-  },
-  {
-    year: '2024',
-    company: 'Amazon',
-    role: 'TPM · Reliability → Transportation EMEA → Tech & Innovation',
-    accent: '#FF9900',
-  },
+const PAIRS: ArcPair[] = [
+  { from: '3 markets', to: '26 countries', label: 'Scope' },
+  { from: '€100M analyzed', to: '€30M managed', label: 'Ownership' },
+  { from: 'Consultant', to: 'Builder', label: 'Posture' },
 ];
 
 export function CareerArc() {
@@ -46,13 +24,12 @@ export function CareerArc() {
   return (
     <section
       style={{
-        background: '#ffffff',
+        background: '#080808',
         paddingBlock: 'clamp(48px, 8vw, 80px)',
-        borderTop: '1px solid #e5e7eb',
         overflow: 'hidden',
       }}
     >
-      <div style={{ maxWidth: '960px', margin: '0 auto', padding: '0 clamp(24px, 5vw, 48px)' }}>
+      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 clamp(24px, 5vw, 48px)' }}>
         {/* Eyebrow */}
         <motion.p
           ref={ref}
@@ -61,107 +38,87 @@ export function CareerArc() {
           transition={{ duration: 0.5, ease: 'easeOut' }}
           style={{
             fontFamily: 'var(--font-mono)',
-            fontSize: '0.72rem',
+            fontSize: '0.68rem',
             fontWeight: 500,
-            color: '#9ca3af',
-            letterSpacing: '0.18em',
+            color: 'rgba(255,255,255,0.28)',
+            letterSpacing: '0.2em',
             textTransform: 'uppercase',
-            marginBottom: '32px',
+            marginBottom: '40px',
           }}
         >
           Career arc
         </motion.p>
 
-        {/* Timeline */}
-        <div style={{ position: 'relative' }}>
-          {/* Connecting line */}
-          <div
-            style={{
-              position: 'absolute',
-              top: '28px',
-              left: '0',
-              right: '0',
-              height: '1px',
-              background: 'linear-gradient(to right, #e5e7eb, #e5e7eb)',
-              zIndex: 0,
-            }}
-          />
-
-          <div
-            className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-4"
-            style={{ position: 'relative', zIndex: 1 }}
-          >
-            {STOPS.map((stop, i) => (
-              <motion.div
-                key={stop.company}
-                initial={{ opacity: 0, y: 20 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: i * 0.1, ease: EASE }}
-                style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+        {/* Three pairs */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px" style={{ background: 'rgba(255,255,255,0.06)' }}>
+          {PAIRS.map((pair, i) => (
+            <motion.div
+              key={pair.label}
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: i * 0.12, ease: EASE }}
+              style={{
+                background: '#080808',
+                padding: 'clamp(24px, 3vw, 40px)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '10px',
+              }}
+            >
+              {/* From value — muted */}
+              <span
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.75rem',
+                  color: 'rgba(255,255,255,0.32)',
+                  letterSpacing: '0.06em',
+                  lineHeight: 1.3,
+                }}
               >
-                {/* Year + dot */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div
-                    style={{
-                      width: '10px',
-                      height: '10px',
-                      borderRadius: '50%',
-                      background: stop.accent,
-                      flexShrink: 0,
-                      boxShadow: `0 0 0 3px ${stop.accent}22`,
-                    }}
-                  />
-                  <span
-                    style={{
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '0.68rem',
-                      fontWeight: 500,
-                      color: '#9ca3af',
-                      letterSpacing: '0.08em',
-                    }}
-                  >
-                    {stop.year}
-                  </span>
-                </div>
+                {pair.from}
+              </span>
 
-                {/* Company name */}
-                <p
-                  style={{
-                    fontFamily: 'var(--font-heading)',
-                    fontWeight: 700,
-                    fontSize: 'clamp(1rem, 1.3vw, 1.2rem)',
-                    color: '#0a0a0a',
-                    lineHeight: 1.15,
-                    letterSpacing: '-0.01em',
-                  }}
-                >
-                  {stop.company}
-                </p>
+              {/* Arrow */}
+              <span
+                style={{
+                  fontFamily: 'var(--font-heading)',
+                  fontSize: '1.3rem',
+                  color: '#5AC8FA',
+                  lineHeight: 1,
+                }}
+              >
+                →
+              </span>
 
-                {/* Role */}
-                <p
-                  style={{
-                    fontFamily: 'var(--font-body)',
-                    fontSize: '0.8rem',
-                    color: '#6b7280',
-                    lineHeight: 1.55,
-                  }}
-                >
-                  {stop.role}
-                </p>
+              {/* To value — large, white, bold */}
+              <span
+                style={{
+                  fontFamily: 'var(--font-heading)',
+                  fontWeight: 800,
+                  fontSize: 'clamp(1.6rem, 2.5vw, 2.4rem)',
+                  color: '#ffffff',
+                  lineHeight: 1.05,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                {pair.to}
+              </span>
 
-                {/* Accent bar */}
-                <div
-                  style={{
-                    height: '2px',
-                    width: '32px',
-                    borderRadius: '2px',
-                    background: stop.accent,
-                  }}
-                />
-              </motion.div>
-            ))}
-          </div>
+              {/* Label — small caps, muted */}
+              <span
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.6rem',
+                  letterSpacing: '0.18em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(255,255,255,0.28)',
+                  marginTop: '4px',
+                }}
+              >
+                {pair.label}
+              </span>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>

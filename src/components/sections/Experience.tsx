@@ -558,8 +558,8 @@ export function Experience() {
                 marginBottom: '16px',
               }}
             >
-              Impact,{' '}
-              <span style={{ color: '#5AC8FA' }}>by company.</span>
+              Four years.{' '}
+              <span style={{ color: '#5AC8FA' }}>One standard.</span>
             </h2>
             <p
               style={{
@@ -570,7 +570,7 @@ export function Experience() {
                 maxWidth: '520px',
               }}
             >
-              Four companies. €250M+ in portfolios managed. From a Paris startup to Amazon&apos;s EU Transportation network.
+              From L&apos;Oréal to Amazon — 3 markets grew to 26 countries, €100M analyzed became €30M managed.
             </p>
           </motion.div>
         </div>

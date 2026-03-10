@@ -19,10 +19,10 @@ export function Footer() {
             Get in touch
           </p>
           <h2 className="text-[clamp(2.5rem,6vw,5rem)] font-extrabold font-heading text-white leading-[0.92] tracking-tight max-w-2xl">
-            Have a role, partnership, or collaboration in mind?
+            Let&apos;s build something.
           </h2>
-          <p className="text-white/50 text-lg max-w-md font-light leading-relaxed">
-            I&apos;d love to hear from you.
+          <p className="text-white/50 text-base max-w-md font-light leading-relaxed">
+            Open to Senior TPM, Lead PM, and Head of Product roles. Also available for consulting and technical advisory.
           </p>
 
           {/* CTAs */}
