@@ -2,340 +2,282 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
+import Image from 'next/image';
 import { GithubIcon, ExternalLink } from 'lucide-react';
 import { profile } from '@/data/profile';
 
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
 /* ─── Types ──────────────────────────────────────────────── */
-interface ProjectKPI {
-  label: string;
+interface ProjectMetric {
   value: string;
+  label: string;
 }
 
 interface Project {
   id: string;
-  name: string;
-  headline: string;
-  company: string;
-  context: string;
-  companyColor: string;
-  description: string;
-  kpis: ProjectKPI[];
-  stack: string;
-  githubUrl: string;
-  accentColor: string;
-  visualBg: string;
+  companyTag: string;
+  editorialHeadline: string;
+  body: string;
+  metrics: ProjectMetric[];
+  stackLine: string;
+  imagePath: string;
+  imageFallbackBg: string;
+  layoutDirection: 'image-left' | 'image-right';
 }
 
-/* ─── Data — exact v2 copy ──────────────────────────────── */
+/* ─── Data ────────────────────────────────────────────────── */
 const PROJECTS: Project[] = [
   {
     id: 'sonar',
-    name: 'SONAR',
-    headline: 'The audit that never sleeps.',
-    company: 'Amazon',
-    context: 'Internal Tool',
-    companyColor: '#FF9900',
-    description:
-      'Post-scheduling automation for 500+ EU Intermodal routes. Cut cycle time from 4 hours to 5 minutes.',
-    kpis: [
-      { label: 'ARR impact', value: '€13.3M' },
-      { label: 'cycle time', value: '5 min' },
+    companyTag: 'AMAZON · INTERNAL TOOL',
+    editorialHeadline: 'The audit that never sleeps.',
+    body: 'Post-scheduling automation for 500+ EU Intermodal routes. Cut cycle time from 4 hours to 5 minutes — zero human intervention.',
+    metrics: [
+      { value: '€13.3M', label: 'ARR impact' },
+      { value: '5 min', label: 'Cycle time' },
+      { value: '500+', label: 'Routes covered' },
     ],
-    stack: 'Python + AWS ECS → real-time processing · S3 → audit history at scale',
-    githubUrl: 'https://github.com/ThomasLoridan',
-    accentColor: '#FF9900',
-    visualBg: 'radial-gradient(ellipse at 50% 55%, #3d2000 0%, #1a0d00 52%, #080400 100%)',
-  },
-  {
-    id: 'exec-analytics',
-    name: 'Exec Analytics',
-    headline: 'One source. 35 countries.',
-    company: 'Amazon',
-    context: 'Internal Tool',
-    companyColor: '#FF9900',
-    description:
-      'Unified 80+ fragmented KPIs for L7+ leadership. Consolidated fragmented reporting into a single platform.',
-    kpis: [
-      { label: 'KPIs unified', value: '80+' },
-      { label: 'countries', value: '35' },
-    ],
-    stack: 'QuickSight + Glue → unified KPI layer · Python → automated refresh',
-    githubUrl: 'https://github.com/ThomasLoridan',
-    accentColor: '#4da3ff',
-    visualBg: 'radial-gradient(ellipse at 50% 55%, #001840 0%, #000d20 52%, #000408 100%)',
+    stackLine: 'Python + AWS ECS → real-time route processing · S3 → audit history at scale',
+    imagePath: '/images/projects/sonar-hero.jpg',
+    imageFallbackBg: 'radial-gradient(ellipse at 40% 60%, #111c2e 0%, #06090f 60%, #020305 100%)',
+    layoutDirection: 'image-left',
   },
   {
     id: 'oracle',
-    name: 'ORACLE',
-    headline: 'Ground coverage. Automated.',
-    company: 'Amazon',
-    context: 'Internal Tool',
-    companyColor: '#FF9900',
-    description:
-      'Real-time audit pipeline for 250+ ground routes across 26 EU countries. Replaced 40 hrs/month of manual analysis.',
-    kpis: [
-      { label: 'annual savings', value: '€250K' },
-      { label: 'routes', value: '250+' },
+    companyTag: 'AMAZON · INTERNAL TOOL',
+    editorialHeadline: 'Ground coverage. Automated.',
+    body: 'Real-time audit pipeline for 250+ ground routes across 26 EU countries. Replaced 40 hours per month of manual analysis — permanently.',
+    metrics: [
+      { value: '€250K', label: 'Annual savings' },
+      { value: '250+', label: 'Routes audited' },
+      { value: '26', label: 'EU countries' },
     ],
-    stack: 'Python + SQL → live coverage audit · ETL → zero manual extraction',
-    githubUrl: 'https://github.com/ThomasLoridan',
-    accentColor: '#a78bfa',
-    visualBg: 'radial-gradient(ellipse at 50% 55%, #18003d 0%, #080010 52%, #030008 100%)',
+    stackLine: 'Python + SQL → live coverage audit · ETL → zero manual extraction',
+    imagePath: '/images/projects/oracle-hero.webp',
+    imageFallbackBg: 'radial-gradient(ellipse at 60% 40%, #1a1000 0%, #090600 60%, #030200 100%)',
+    layoutDirection: 'image-right',
   },
   {
-    id: 'pm-portfolio',
-    name: 'Portfolio',
-    headline: 'This portfolio. Open source.',
-    company: 'Personal',
-    context: 'Open Source',
-    companyColor: '#34d399',
-    description:
-      'Built end-to-end with Next.js, TypeScript, and Framer Motion.',
-    kpis: [
-      { label: 'stack', value: 'Next.js' },
-      { label: 'license', value: 'Open' },
+    id: 'exec-analytics',
+    companyTag: 'AMAZON · ANALYTICS PLATFORM',
+    editorialHeadline: 'One source. 35 countries.',
+    body: 'Unified 80+ fragmented KPIs into a single source of truth for L7+ leadership across 35 countries. Eliminated 6 hours of weekly manual consolidation.',
+    metrics: [
+      { value: '80+', label: 'KPIs unified' },
+      { value: '35', label: 'Countries' },
+      { value: '€1.5M/q', label: 'Capacity savings' },
     ],
-    stack: 'Next.js + Framer Motion → performant, animated · TypeScript → zero runtime errors',
-    githubUrl: 'https://github.com/ThomasLoridan',
-    accentColor: '#34d399',
-    visualBg: 'radial-gradient(ellipse at 50% 55%, #003320 0%, #001208 52%, #000503 100%)',
+    stackLine: 'QuickSight + AWS Glue → unified KPI layer · Python → automated refresh pipeline',
+    imagePath: '/images/projects/execanalytics-hero.avif',
+    imageFallbackBg: 'radial-gradient(ellipse at 50% 50%, #001428 0%, #000814 60%, #000408 100%)',
+    layoutDirection: 'image-left',
   },
 ];
 
 /* ─── Project card ───────────────────────────────────────── */
 function ProjectCard({
   project,
-  delay,
   inView,
+  delay,
 }: {
   project: Project;
-  delay: number;
   inView: boolean;
+  delay: number;
 }) {
+  const isLeft = project.layoutDirection === 'image-left';
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 32 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.65, delay, ease: EASE }}
+      transition={{ duration: 0.8, delay, ease: EASE }}
       style={{
-        background: '#111113',
-        borderRadius: '20px',
+        display: 'grid',
+        gridTemplateColumns: '1fr',
+        borderTop: '1px solid rgba(255,255,255,0.07)',
         overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column',
       }}
+      className={`md:grid-cols-[55fr_45fr] ${
+        isLeft
+          ? ''
+          : 'md:[&>*:first-child]:order-2 md:[&>*:last-child]:order-1'
+      }`}
     >
-      {/* ── Visual block — branded color + project name ── */}
-      <div
-        style={{
-          background: project.visualBg,
-          height: '160px',
-          position: 'relative',
-          overflow: 'hidden',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-        }}
-      >
-        {/* Company — top left */}
-        <span
-          style={{
-            position: 'absolute',
-            top: '14px',
-            left: '16px',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.58rem',
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            color: project.companyColor,
-            fontWeight: 600,
-          }}
-        >
-          {project.company}
-        </span>
+      {/* Image column */}
+      <div style={{ position: 'relative', minHeight: '280px', overflow: 'hidden' }}>
+        {/* Fallback gradient (visible when image hasn't loaded or path not set) */}
+        <div style={{ position: 'absolute', inset: 0, background: project.imageFallbackBg }} />
 
-        {/* Context — top right */}
-        <span
-          style={{
-            position: 'absolute',
-            top: '14px',
-            right: '16px',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.55rem',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            color: 'rgba(245,245,247,0.25)',
-          }}
-        >
-          {project.context}
-        </span>
+        {/* Real image — rendered on top of fallback */}
+        <Image
+          src={project.imagePath}
+          alt={project.editorialHeadline}
+          fill
+          style={{ objectFit: 'cover' }}
+          loading="lazy"
+          sizes="(max-width: 768px) 100vw, 55vw"
+        />
 
-        {/* Accent glow */}
+        {/* Gradient overlay blending image into content side */}
         <div
           style={{
             position: 'absolute',
-            width: '180px',
-            height: '180px',
-            borderRadius: '50%',
-            background: `radial-gradient(circle, ${project.accentColor}20 0%, transparent 65%)`,
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
+            inset: 0,
+            background: isLeft
+              ? 'linear-gradient(to right, rgba(15,15,15,0) 35%, rgba(15,15,15,0.92) 100%)'
+              : 'linear-gradient(to left, rgba(15,15,15,0) 35%, rgba(15,15,15,0.92) 100%)',
             pointerEvents: 'none',
           }}
         />
 
-        {/* Project name — centered */}
-        <span
+        {/* Mobile bottom fade */}
+        <div
+          className="md:hidden"
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: '80px',
+            background: 'linear-gradient(to bottom, transparent, #0f0f0f)',
+          }}
+        />
+      </div>
+
+      {/* Content column */}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          padding: 'clamp(32px, 5vw, 56px) clamp(24px, 4vw, 48px)',
+          gap: '18px',
+          background: '#0f0f0f',
+        }}
+      >
+        {/* Company tag */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.5, delay: delay + 0.1, ease: EASE }}
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.6rem',
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            color: '#FF9900',
+            fontWeight: 500,
+            margin: 0,
+          }}
+        >
+          {project.companyTag}
+        </motion.p>
+
+        {/* Editorial headline */}
+        <motion.h3
+          initial={{ opacity: 0, y: 16 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: delay + 0.18, ease: EASE }}
           style={{
             fontFamily: 'var(--font-heading)',
             fontWeight: 800,
-            fontSize: 'clamp(1.2rem, 2vw, 1.55rem)',
-            color: project.accentColor,
-            letterSpacing: '-0.01em',
-            position: 'relative',
-            zIndex: 1,
-          }}
-        >
-          {project.name}
-        </span>
-      </div>
-
-      {/* ── Text area ── */}
-      <div
-        style={{
-          padding: '20px 20px 16px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px',
-          flex: 1,
-        }}
-      >
-        {/* Editorial headline */}
-        <p
-          style={{
-            fontFamily: 'var(--font-heading)',
-            fontWeight: 700,
-            fontSize: 'clamp(0.9rem, 1.1vw, 1rem)',
+            fontSize: 'clamp(1.6rem, 2.5vw, 2.4rem)',
             color: '#ffffff',
-            lineHeight: 1.25,
-            letterSpacing: '-0.01em',
+            lineHeight: 1.1,
+            letterSpacing: '-0.02em',
             margin: 0,
           }}
         >
-          {project.headline}
-        </p>
+          {project.editorialHeadline}
+        </motion.h3>
 
-        {/* Description */}
-        <p
+        {/* Body */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.6, delay: delay + 0.28, ease: EASE }}
           style={{
-            color: 'rgba(245,245,247,0.60)',
-            fontSize: '0.8rem',
-            lineHeight: 1.65,
-            flex: 1,
+            color: 'rgba(245,245,247,0.58)',
+            fontSize: 'clamp(0.85rem, 1vw, 0.95rem)',
+            lineHeight: 1.75,
             margin: 0,
           }}
         >
-          {project.description}
-        </p>
+          {project.body}
+        </motion.p>
 
-        {/* ── KPI row — 2 stats, portfolio-wide #5AC8FA values ── */}
-        <div
+        {/* Metrics row */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.6, delay: delay + 0.36, ease: EASE }}
           style={{
             display: 'flex',
-            paddingTop: '12px',
+            paddingTop: '16px',
             borderTop: '1px solid rgba(255,255,255,0.07)',
           }}
         >
-          {project.kpis.map((kpi, i) => (
+          {project.metrics.map((m, i) => (
             <div
-              key={kpi.label}
+              key={m.label}
               style={{
                 flex: 1,
+                paddingRight: i < project.metrics.length - 1 ? '14px' : 0,
+                paddingLeft: i > 0 ? '14px' : 0,
+                borderRight:
+                  i < project.metrics.length - 1
+                    ? '1px solid rgba(255,255,255,0.07)'
+                    : 'none',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '4px',
-                paddingRight: i === 0 ? '12px' : 0,
-                paddingLeft: i === 1 ? '12px' : 0,
-                borderRight: i === 0 ? '1px solid rgba(255,255,255,0.07)' : 'none',
               }}
             >
               <span
                 style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.56rem',
-                  letterSpacing: '0.1em',
-                  textTransform: 'uppercase',
-                  color: 'rgba(245,245,247,0.3)',
-                  lineHeight: 1,
-                }}
-              >
-                {kpi.label}
-              </span>
-              <span
-                style={{
                   fontFamily: 'var(--font-heading)',
                   fontWeight: 700,
-                  fontSize: 'clamp(1rem, 1.4vw, 1.15rem)',
+                  fontSize: 'clamp(1rem, 1.5vw, 1.3rem)',
                   color: '#5AC8FA',
                   lineHeight: 1.1,
                   letterSpacing: '-0.01em',
                 }}
               >
-                {kpi.value}
+                {m.value}
+              </span>
+              <span
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.54rem',
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(245,245,247,0.28)',
+                  lineHeight: 1.2,
+                }}
+              >
+                {m.label}
               </span>
             </div>
           ))}
-        </div>
+        </motion.div>
 
-        {/* Tags + GitHub */}
-        <div
+        {/* Stack line */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.5, delay: delay + 0.44, ease: EASE }}
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.57rem',
+            color: 'rgba(245,245,247,0.18)',
+            letterSpacing: '0.04em',
+            lineHeight: 1.65,
+            margin: 0,
           }}
         >
-          <p
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.55rem',
-              color: 'rgba(245,245,247,0.22)',
-              letterSpacing: '0.03em',
-              margin: 0,
-              lineHeight: 1.6,
-              flex: 1,
-            }}
-          >
-            {project.stack}
-          </p>
-          <a
-            href={project.githubUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="View on GitHub"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              color: 'rgba(245,245,247,0.25)',
-              textDecoration: 'none',
-              transition: 'color 0.2s',
-              flexShrink: 0,
-              marginLeft: '8px',
-            }}
-            onMouseEnter={(e) =>
-              ((e.currentTarget as HTMLAnchorElement).style.color = 'rgba(245,245,247,0.65)')
-            }
-            onMouseLeave={(e) =>
-              ((e.currentTarget as HTMLAnchorElement).style.color = 'rgba(245,245,247,0.25)')
-            }
-          >
-            <GithubIcon size={13} />
-          </a>
-        </div>
+          {project.stackLine}
+        </motion.p>
       </div>
     </motion.div>
   );
@@ -347,7 +289,7 @@ export function Projects() {
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <section id="projects" className="section-padding projects-bg">
+    <section id="projects" style={{ background: '#0f0f0f' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 clamp(24px, 5vw, 64px)' }}>
 
         {/* Header */}
@@ -355,8 +297,8 @@ export function Projects() {
           ref={ref}
           initial={{ opacity: 0, y: 28 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-          style={{ marginBottom: '48px' }}
+          transition={{ duration: 0.75, ease: 'easeOut' }}
+          style={{ paddingTop: 'clamp(64px, 10vh, 112px)', paddingBottom: '56px' }}
         >
           <p
             style={{
@@ -389,7 +331,7 @@ export function Projects() {
                   color: '#ffffff',
                   lineHeight: 1.0,
                   letterSpacing: '-0.025em',
-                  marginBottom: '16px',
+                  marginBottom: '14px',
                 }}
               >
                 Systems{' '}
@@ -397,14 +339,14 @@ export function Projects() {
               </h2>
               <p
                 style={{
-                  color: 'rgba(245,245,247,0.65)',
-                  fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
+                  color: 'rgba(245,245,247,0.55)',
+                  fontSize: 'clamp(0.95rem, 1.1vw, 1.05rem)',
                   lineHeight: 1.8,
                   fontWeight: 400,
                   maxWidth: '480px',
                 }}
               >
-                From €13.3M automation systems to open-source PM tools — built end-to-end.
+                Three automation systems. €16.3M+ ARR impact. Built end-to-end.
               </p>
             </div>
             <a
@@ -417,9 +359,9 @@ export function Projects() {
                 gap: '8px',
                 padding: '10px 20px',
                 borderRadius: '99px',
-                background: 'rgba(255,255,255,0.07)',
-                border: '1px solid rgba(255,255,255,0.12)',
-                color: 'rgba(255,255,255,0.6)',
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.10)',
+                color: 'rgba(255,255,255,0.50)',
                 fontWeight: 500,
                 fontSize: '0.82rem',
                 textDecoration: 'none',
@@ -429,13 +371,13 @@ export function Projects() {
               }}
               onMouseEnter={(e) => {
                 const el = e.currentTarget as HTMLAnchorElement;
-                el.style.background = 'rgba(255,255,255,0.12)';
+                el.style.background = 'rgba(255,255,255,0.10)';
                 el.style.color = '#ffffff';
               }}
               onMouseLeave={(e) => {
                 const el = e.currentTarget as HTMLAnchorElement;
-                el.style.background = 'rgba(255,255,255,0.07)';
-                el.style.color = 'rgba(255,255,255,0.6)';
+                el.style.background = 'rgba(255,255,255,0.06)';
+                el.style.color = 'rgba(255,255,255,0.50)';
               }}
             >
               <GithubIcon size={14} />
@@ -445,12 +387,16 @@ export function Projects() {
           </div>
         </motion.div>
 
-        {/* 4-column tile grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Project cards — vertical stack */}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
           {PROJECTS.map((project, i) => (
-            <ProjectCard key={project.id} project={project} delay={i * 0.08} inView={inView} />
+            <ProjectCard key={project.id} project={project} inView={inView} delay={i * 0.12} />
           ))}
         </div>
+
+        {/* Bottom border */}
+        <div style={{ height: '1px', background: 'rgba(255,255,255,0.07)' }} />
+        <div style={{ height: 'clamp(48px, 7vh, 80px)' }} />
       </div>
     </section>
   );

@@ -22,7 +22,18 @@ export function Footer() {
             Let&apos;s build something.
           </h2>
           <p className="text-white/50 text-base max-w-md font-light leading-relaxed">
-            Open to Senior TPM, Lead PM, and Head of Product roles. Also available for consulting and technical advisory.
+            Open to Senior TPM, Lead PM, and Head of Product roles. Available for consulting and technical advisory.
+          </p>
+          <p
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.72rem',
+              letterSpacing: '0.08em',
+              color: 'rgba(255,255,255,0.25)',
+              lineHeight: 1.7,
+            }}
+          >
+            Based in Luxembourg · Paris · Barcelona · Open to relocation · French &amp; English
           </p>
 
           {/* CTAs */}

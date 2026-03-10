@@ -35,7 +35,7 @@ export default function HomePage() {
 
         {/* Pause 1 — after Experience */}
         <PauseSection
-          stat="€16.3M+"
+          metric="€16.3M+"
           label="Total ARR impact delivered across Amazon systems in 3 years."
           variant="dark"
         />
@@ -45,7 +45,7 @@ export default function HomePage() {
 
         {/* Pause 2 — after Projects */}
         <PauseSection
-          stat="7,000+"
+          metric="7,000+"
           label="Lines of production Python. Not a side project — operational infrastructure."
           variant="dark"
         />
