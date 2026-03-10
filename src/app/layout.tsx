@@ -25,11 +25,11 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Thomas Loridan — Technical Program Manager',
+    default: 'Thomas Loridan — Product Manager',
     template: '%s | Thomas Loridan',
   },
   description:
-    'Technical Program Manager at Amazon EU Transportation. €30M+ portfolio across 30 countries. Targeting PM IC4/IC5 roles at Meta, Google, Microsoft, Netflix, and Apple.',
+    'Product Manager & TPM. €30M+ portfolio across 26 countries at Amazon EU Transportation. Systems that scale. Impact by design.',
   keywords: [
     'Product Manager',
     'Technical Program Manager',
@@ -42,9 +42,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    title: 'Thomas Loridan — TPM → Product Manager',
+    title: 'Thomas Loridan — Product Manager',
     description:
-      'TPM at Amazon EU Transportation with €30M+ portfolio across 30 countries. Shipping specs and automating everything in between.',
+      '€30M+ programs. 26 countries. Amazon EU Transportation. Systems that scale, impact by design.',
     siteName: 'Thomas Loridan Portfolio',
   },
   robots: { index: true, follow: true },

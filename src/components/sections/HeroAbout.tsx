@@ -8,19 +8,18 @@ import { profile } from '@/data/profile';
 
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
-/* ─── H1 word-by-word data ─────────────────────────────── */
+/* ─── H1 nominal fragment data ─────────────────────────── */
 const H1_LINES: { text: string; color: string }[][] = [
   [
-    { text: 'Building', color: '#ffffff' },
-    { text: 'bridges', color: '#ffffff' },
+    { text: 'Programs', color: '#ffffff' },
+    { text: 'at scale.', color: '#ffffff' },
   ],
   [
-    { text: 'between', color: '#ffffff' },
-    { text: 'business', color: '#ffffff' },
+    { text: 'Systems', color: '#ffffff' },
+    { text: 'that', color: '#ffffff' },
   ],
   [
-    { text: '&', color: '#ffffff' },
-    { text: 'technology.', color: '#5AC8FA' },
+    { text: 'last.', color: '#5AC8FA' },
   ],
 ];
 
@@ -29,8 +28,11 @@ export function HeroAbout() {
   const scrollTo = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
-  const bioRef = useRef<HTMLDivElement>(null);
-  const bioInView = useInView(bioRef, { once: true, margin: '-12%' });
+  const aboutRef = useRef<HTMLDivElement>(null);
+  const aboutInView = useInView(aboutRef, { once: true, margin: '-10%' });
+
+  const quoteRef = useRef<HTMLDivElement>(null);
+  const quoteInView = useInView(quoteRef, { once: true, margin: '-10%' });
 
   return (
     <>
@@ -45,7 +47,7 @@ export function HeroAbout() {
       `}</style>
 
       {/* ══════════════════════════════════════════════════
-          DARK HERO — Apple MacBook Pro style
+          DARK HERO — sculptural background
       ══════════════════════════════════════════════════ */}
       <section
         id="hero"
@@ -58,19 +60,31 @@ export function HeroAbout() {
           background: '#000000',
         }}
       >
-        {/* Radial glow — behind photo (z-index 0) */}
+        {/* Sculptural background layers */}
         <div
           style={{
             position: 'absolute',
-            bottom: '-10%',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '70vw',
-            height: '70vh',
+            inset: 0,
             background:
-              'radial-gradient(ellipse at center bottom, rgba(90,120,255,0.18) 0%, transparent 70%)',
+              'radial-gradient(ellipse at 30% 70%, rgba(90,200,250,0.07) 0%, transparent 50%), ' +
+              'radial-gradient(ellipse at 70% 20%, rgba(90,100,255,0.10) 0%, transparent 50%), ' +
+              'radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.02) 0%, transparent 60%)',
             pointerEvents: 'none',
             zIndex: 0,
+          }}
+        />
+        {/* Subtle noise grain overlay */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage:
+              'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\' opacity=\'0.04\'/%3E%3C/svg%3E")',
+            backgroundRepeat: 'repeat',
+            backgroundSize: '200px 200px',
+            pointerEvents: 'none',
+            zIndex: 0,
+            opacity: 0.6,
           }}
         />
 
@@ -96,7 +110,7 @@ export function HeroAbout() {
         >
           <Image
             src={profile.photo}
-            alt={`${profile.name} — Technical Program Manager`}
+            alt={`${profile.name} — Product Manager`}
             fill
             style={{ objectFit: 'contain', objectPosition: 'bottom center' }}
             priority
@@ -133,7 +147,7 @@ export function HeroAbout() {
             Thomas Loridan
           </motion.p>
 
-          {/* H1 — word-by-word clip-path reveal */}
+          {/* H1 — nominal fragment, word-by-word clip-path reveal */}
           <h1
             className="hero-h1"
             style={{
@@ -179,44 +193,45 @@ export function HeroAbout() {
             })}
           </h1>
 
-          {/* Subtitle */}
+          {/* Metrics sub-headline */}
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.9 }}
             style={{
-              color: 'rgba(245,245,247,0.82)',
-              fontSize: 'clamp(0.95rem, 1.1vw, 1.1rem)',
+              color: 'rgba(245,245,247,0.50)',
+              fontSize: 'clamp(0.78rem, 0.9vw, 0.88rem)',
               fontWeight: 400,
               lineHeight: 1.6,
-              maxWidth: '400px',
               marginBottom: '28px',
-              fontFamily: 'var(--font-body)',
+              fontFamily: 'var(--font-mono)',
+              letterSpacing: '0.04em',
             }}
           >
-            I lead cross-functional programs that create measurable impact.
+            €30M+ portfolio&nbsp;·&nbsp;26 countries&nbsp;·&nbsp;Amazon EU Transportation
           </motion.p>
 
-          {/* CTA buttons — glass style */}
+          {/* CTA — 1 primary button + 1 muted text link */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.9 }}
-            style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}
+            transition={{ duration: 0.7, delay: 1.05 }}
+            style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}
           >
             <button
               onClick={() => scrollTo('experience')}
               style={{
-                padding: '10px 22px',
+                padding: '11px 26px',
                 borderRadius: '980px',
                 background: '#f5f5f7',
                 color: '#0a0a0a',
-                fontSize: '0.9rem',
-                fontWeight: 500,
+                fontSize: '0.88rem',
+                fontWeight: 600,
                 fontFamily: 'var(--font-body)',
                 border: 'none',
                 cursor: 'pointer',
                 transition: 'opacity 0.2s',
+                letterSpacing: '-0.01em',
               }}
               onMouseEnter={(e) =>
                 ((e.currentTarget as HTMLElement).style.opacity = '0.85')
@@ -225,7 +240,7 @@ export function HeroAbout() {
                 ((e.currentTarget as HTMLElement).style.opacity = '1')
               }
             >
-              View my work ↓
+              See the work
             </button>
 
             <a
@@ -235,22 +250,22 @@ export function HeroAbout() {
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '5px',
-                color: 'rgba(245,245,247,0.72)',
-                fontSize: '0.9rem',
+                gap: '4px',
+                color: 'rgba(245,245,247,0.40)',
+                fontSize: '0.82rem',
                 fontWeight: 400,
                 fontFamily: 'var(--font-body)',
                 textDecoration: 'none',
                 transition: 'color 0.2s',
               }}
               onMouseEnter={(e) =>
-                ((e.currentTarget as HTMLElement).style.color = '#ffffff')
+                ((e.currentTarget as HTMLElement).style.color = 'rgba(245,245,247,0.75)')
               }
               onMouseLeave={(e) =>
-                ((e.currentTarget as HTMLElement).style.color = 'rgba(245,245,247,0.72)')
+                ((e.currentTarget as HTMLElement).style.color = 'rgba(245,245,247,0.40)')
               }
             >
-              LinkedIn <ExternalLink size={11} />
+              LinkedIn <ExternalLink size={10} />
             </a>
           </motion.div>
         </div>
@@ -268,100 +283,230 @@ export function HeroAbout() {
       />
 
       {/* ══════════════════════════════════════════════════
-          WHITE ABOUT (below fold)
+          WHITE ABOUT — enabling voice, 3 blocks
       ══════════════════════════════════════════════════ */}
-      <section id="about" className="bg-white pb-28">
+      <section id="about" className="bg-white pb-20">
         <div className="max-w-5xl mx-auto px-6">
-
-          {/* Two-column: pull quote + bio */}
           <motion.div
-            ref={bioRef}
+            ref={aboutRef}
             initial={{ opacity: 0, y: 28 }}
-            animate={bioInView ? { opacity: 1, y: 0 } : {}}
+            animate={aboutInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.7, ease: 'easeOut' }}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start"
           >
-            {/* Left: pull quote + metadata */}
-            <div className="flex flex-col gap-8">
-              <blockquote style={{ borderLeft: '4px solid #0075eb', paddingLeft: '24px', margin: 0 }}>
+            {/* Eyebrow */}
+            <p
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.75rem',
+                fontWeight: 500,
+                color: '#0075eb',
+                letterSpacing: '0.18em',
+                textTransform: 'uppercase',
+                marginBottom: '36px',
+              }}
+            >
+              About
+            </p>
+
+            {/* Big heading */}
+            <h2
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontSize: 'clamp(2rem, 4vw, 3.4rem)',
+                fontWeight: 800,
+                color: '#0a0a0a',
+                lineHeight: 1.1,
+                letterSpacing: '-0.025em',
+                marginBottom: '48px',
+                maxWidth: '760px',
+              }}
+            >
+              The PM who turns
+              <br />
+              <span style={{ color: '#0075eb' }}>complexity into clarity.</span>
+            </h2>
+
+            {/* Three-block enabling voice structure */}
+            <div
+              className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12"
+              style={{ borderTop: '1px solid #e5e7eb', paddingTop: '36px' }}
+            >
+              {/* Block 1 — What I do */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.65rem',
+                    letterSpacing: '0.14em',
+                    textTransform: 'uppercase',
+                    color: '#0075eb',
+                    fontWeight: 500,
+                  }}
+                >
+                  What I do
+                </p>
                 <p
                   style={{
                     fontFamily: 'var(--font-heading)',
-                    fontSize: 'clamp(1.4rem, 2.5vw, 2rem)',
+                    fontSize: 'clamp(1.1rem, 1.5vw, 1.3rem)',
                     fontWeight: 700,
                     color: '#0a0a0a',
                     lineHeight: 1.3,
                   }}
                 >
-                  &ldquo;I don&apos;t just ship features.
-                  I build systems that last.&rdquo;
+                  I connect product vision to engineering reality.
                 </p>
-              </blockquote>
+                <p style={{ color: '#6b7280', fontSize: '0.95rem', lineHeight: 1.75 }}>
+                  TPM at Amazon EU Transportation, owning a €30M+ ARR roadmap across 26 countries.
+                  I translate ambiguous business goals into executable programs — then ship them.
+                </p>
+              </div>
 
-              <div className="flex flex-col gap-3">
-                {[
-                  { label: 'Based in', value: 'Paris · Luxembourg · Barcelona — open to relocation' },
-                  { label: 'Languages', value: 'French · English' },
-                ].map(({ label, value }) => (
-                  <div key={label} className="flex items-start gap-3">
-                    <span className="text-xs font-mono text-gray-400 tracking-wider uppercase w-24 shrink-0 pt-0.5">
-                      {label}
-                    </span>
-                    <span className="text-sm text-gray-700 font-medium">{value}</span>
-                  </div>
-                ))}
+              {/* Block 2 — How */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.65rem',
+                    letterSpacing: '0.14em',
+                    textTransform: 'uppercase',
+                    color: '#0075eb',
+                    fontWeight: 500,
+                  }}
+                >
+                  How I work
+                </p>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: 'clamp(1.1rem, 1.5vw, 1.3rem)',
+                    fontWeight: 700,
+                    color: '#0a0a0a',
+                    lineHeight: 1.3,
+                  }}
+                >
+                  Data-first. Customer-obsessed. Always shipping.
+                </p>
+                <p style={{ color: '#6b7280', fontSize: '0.95rem', lineHeight: 1.75 }}>
+                  I build tools I&apos;d want to use myself. Every decision is anchored in metrics,
+                  every release validated against real user behaviour. Automation where possible,
+                  judgment where it counts.
+                </p>
+              </div>
+
+              {/* Block 3 — Track record */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.65rem',
+                    letterSpacing: '0.14em',
+                    textTransform: 'uppercase',
+                    color: '#0075eb',
+                    fontWeight: 500,
+                  }}
+                >
+                  Track record
+                </p>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: 'clamp(1.1rem, 1.5vw, 1.3rem)',
+                    fontWeight: 700,
+                    color: '#0a0a0a',
+                    lineHeight: 1.3,
+                  }}
+                >
+                  Amazon. L&apos;Oréal. A startup from zero.
+                </p>
+                <p style={{ color: '#6b7280', fontSize: '0.95rem', lineHeight: 1.75 }}>
+                  MSc École Centrale Lille. Co-founded Familyad, reached Station F finals.
+                  Built analytics for C-suites at L&apos;Oréal. Now driving EU transportation
+                  programs at Amazon scale.
+                </p>
               </div>
             </div>
 
-            {/* Right: bio + CTAs */}
-            <div className="flex flex-col gap-6">
-              <h2
-                style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontSize: 'clamp(1.8rem,3.5vw,2.8rem)',
-                  fontWeight: 700,
-                  color: '#0a0a0a',
-                  lineHeight: 1.2,
-                }}
-              >
-                Builder. Strategist.{' '}
-                <span style={{ color: '#0075eb' }}>Executor.</span>
-              </h2>
-
-              <p className="text-lg text-gray-600 leading-relaxed">
-                {profile.bio}
-              </p>
-
-              <p className="text-base text-gray-500 leading-relaxed">
-                I&apos;ve spent my career at the intersection of data engineering,
-                program management, and product strategy — building platforms at Amazon
-                that serve 2,300+ sites, and delivering analytics solutions at L&apos;Oréal
-                that reshaped how their C-suite makes product decisions.
-              </p>
-
-              <p className="text-base text-gray-500 leading-relaxed">
-                I care about creating and shipping products that are genuinely
-                customer-centric — tools that make a real difference in people&apos;s
-                lives and integrate so naturally into their work and daily environment
-                that they can&apos;t imagine going back.
-              </p>
-
-              <div className="flex flex-wrap gap-3 pt-2">
-                <button onClick={() => scrollTo('experience')} className="btn-black">
-                  View my work
-                </button>
-                <a
-                  href={profile.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-outline inline-flex items-center gap-2"
-                >
-                  <ExternalLink size={14} /> Connect on LinkedIn
-                </a>
-              </div>
+            {/* Metadata row */}
+            <div
+              className="flex flex-wrap gap-x-10 gap-y-3"
+              style={{ marginTop: '36px', paddingTop: '28px', borderTop: '1px solid #e5e7eb' }}
+            >
+              {[
+                { label: 'Based in', value: 'Luxembourg · Paris · Barcelona — open to relocation' },
+                { label: 'Languages', value: 'French · English' },
+              ].map(({ label, value }) => (
+                <div key={label} style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
+                  <span
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '0.62rem',
+                      letterSpacing: '0.12em',
+                      textTransform: 'uppercase',
+                      color: '#9ca3af',
+                      flexShrink: 0,
+                    }}
+                  >
+                    {label}
+                  </span>
+                  <span style={{ fontSize: '0.9rem', color: '#374151', fontWeight: 500 }}>
+                    {value}
+                  </span>
+                </div>
+              ))}
             </div>
           </motion.div>
         </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════
+          QUOTE INTERLUDE — standalone below About (I9)
+      ══════════════════════════════════════════════════ */}
+      <section
+        style={{
+          background: '#0a0a0a',
+          padding: 'clamp(56px, 9vw, 96px) clamp(24px, 6vw, 96px)',
+          overflow: 'hidden',
+        }}
+      >
+        <motion.div
+          ref={quoteRef}
+          initial={{ opacity: 0, y: 24 }}
+          animate={quoteInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.75, ease: 'easeOut' }}
+          style={{ maxWidth: '860px', margin: '0 auto' }}
+        >
+          <p
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.75rem',
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.3)',
+              marginBottom: '20px',
+            }}
+          >
+            Approach
+          </p>
+          <blockquote style={{ margin: 0 }}>
+            <p
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontSize: 'clamp(1.6rem, 3vw, 2.6rem)',
+                fontWeight: 700,
+                color: '#f5f5f7',
+                lineHeight: 1.25,
+                letterSpacing: '-0.02em',
+              }}
+            >
+              &ldquo;I don&apos;t just ship features.{' '}
+              <span style={{ color: '#5AC8FA' }}>
+                I build systems that last.
+              </span>
+              &rdquo;
+            </p>
+          </blockquote>
+        </motion.div>
       </section>
     </>
   );

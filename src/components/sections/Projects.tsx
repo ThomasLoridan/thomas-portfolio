@@ -27,72 +27,72 @@ interface Project {
   visualBg: string;
 }
 
-/* ─── Data — max 2 KPIs, tightened descriptions ─────────── */
+/* ─── Data — editorial titles, benefit-anchored tech stack ── */
 const PROJECTS: Project[] = [
   {
     id: 'sonar',
-    name: 'SONAR',
+    name: '4 hrs → 5 min.',
     company: 'Amazon',
     context: 'Internal Tool',
     companyColor: '#FF9900',
     description:
-      'Post-scheduling automation for 500+ EU Intermodal routes. Cut cycle time from 4 hours to 5 minutes.',
+      'SONAR — post-scheduling automation for 500+ EU Intermodal routes. Eliminated manual dispatch entirely, recovering 4 hours of cycle time per run.',
     kpis: [
       { label: 'ARR impact', value: '€13.3M' },
       { label: 'cycle time', value: '5 min' },
     ],
-    tags: ['Python', 'AWS ECS', 'S3', 'ETL'],
+    tags: ['Python · ETL pipelines', 'AWS ECS · S3 orchestration'],
     githubUrl: 'https://github.com/ThomasLoridan',
     accentColor: '#FF9900',
     visualBg: 'radial-gradient(ellipse at 50% 55%, #3d2000 0%, #1a0d00 52%, #080400 100%)',
   },
   {
     id: 'exec-analytics',
-    name: 'Exec Analytics',
+    name: 'One source. 35 countries.',
     company: 'Amazon',
     context: 'Internal Tool',
     companyColor: '#FF9900',
     description:
-      'Unified 80+ fragmented KPIs into a single source of truth for L7+ leadership across 35 countries.',
+      'Exec Analytics — unified 80+ fragmented KPIs into a single source of truth for L7+ leadership. Replaced spreadsheet chaos with real-time QuickSight dashboards.',
     kpis: [
       { label: 'KPIs unified', value: '80+' },
       { label: 'countries', value: '35' },
     ],
-    tags: ['SQL', 'Python', 'QuickSight', 'AWS Glue'],
+    tags: ['SQL · Python · AWS Glue', 'QuickSight · real-time reporting'],
     githubUrl: 'https://github.com/ThomasLoridan',
     accentColor: '#4da3ff',
     visualBg: 'radial-gradient(ellipse at 50% 55%, #001840 0%, #000d20 52%, #000408 100%)',
   },
   {
     id: 'oracle',
-    name: 'ORACLE',
+    name: '250 routes. Zero manual.',
     company: 'Amazon',
     context: 'Internal Tool',
     companyColor: '#FF9900',
     description:
-      'Real-time audit pipeline for 250+ ground routes across 26 EU countries. Replaced 40 hrs/month of manual analysis.',
+      'ORACLE — real-time audit pipeline covering 250+ ground routes across 26 EU countries. Replaced 40 hrs/month of manual spreadsheet analysis with automated alerts.',
     kpis: [
       { label: 'annual savings', value: '€250K' },
-      { label: 'routes', value: '250+' },
+      { label: 'routes covered', value: '250+' },
     ],
-    tags: ['Python', 'SQL', 'ETL', '26 countries'],
+    tags: ['Python · SQL · real-time ETL', '26-country EU pipeline'],
     githubUrl: 'https://github.com/ThomasLoridan',
     accentColor: '#a78bfa',
     visualBg: 'radial-gradient(ellipse at 50% 55%, #18003d 0%, #080010 52%, #030008 100%)',
   },
   {
     id: 'pm-portfolio',
-    name: 'Portfolio',
+    name: 'Built end-to-end.',
     company: 'Personal',
     context: 'Open Source',
     companyColor: '#34d399',
     description:
-      'Open-source PM portfolio with PRDs, architecture records, and shipped code — built end-to-end.',
+      'This portfolio — designed, coded, and shipped from scratch. PRDs, architecture records, and production-grade React code, all open-source.',
     kpis: [
-      { label: 'built with', value: 'Next.js' },
+      { label: 'stack', value: 'Next.js' },
       { label: 'license', value: 'Open' },
     ],
-    tags: ['Next.js', 'TypeScript', 'Framer Motion'],
+    tags: ['Next.js · TypeScript', 'Framer Motion · Tailwind v4'],
     githubUrl: 'https://github.com/ThomasLoridan',
     accentColor: '#34d399',
     visualBg: 'radial-gradient(ellipse at 50% 55%, #003320 0%, #001208 52%, #000503 100%)',
@@ -279,17 +279,29 @@ function ProjectCard({
             justifyContent: 'space-between',
           }}
         >
-          <p
+          <div
             style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.58rem',
-              color: 'rgba(245,245,247,0.22)',
-              letterSpacing: '0.04em',
-              margin: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '3px',
             }}
           >
-            {project.tags.join(' · ')}
-          </p>
+            {project.tags.map((tag, i) => (
+              <p
+                key={i}
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.56rem',
+                  color: 'rgba(245,245,247,0.22)',
+                  letterSpacing: '0.04em',
+                  margin: 0,
+                  lineHeight: 1.5,
+                }}
+              >
+                {tag}
+              </p>
+            ))}
+          </div>
           <a
             href={project.githubUrl}
             target="_blank"
@@ -370,8 +382,8 @@ export function Projects() {
                   marginBottom: '16px',
                 }}
               >
-                Things I&apos;ve{' '}
-                <span style={{ color: '#5AC8FA' }}>shipped</span>.
+                Built.{' '}
+                <span style={{ color: '#5AC8FA' }}>Shipped. Live.</span>
               </h2>
               <p
                 style={{
@@ -382,7 +394,7 @@ export function Projects() {
                   maxWidth: '480px',
                 }}
               >
-                From €13.3M automation systems to open-source PM tools — built end-to-end.
+                From €13.3M automation systems to open-source PM tools — every line written, every metric real.
               </p>
             </div>
             <a

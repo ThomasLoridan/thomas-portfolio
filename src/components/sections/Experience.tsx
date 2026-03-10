@@ -558,8 +558,8 @@ export function Experience() {
                 marginBottom: '16px',
               }}
             >
-              Where I&apos;ve made{' '}
-              <span style={{ color: '#5AC8FA' }}>an impact</span>
+              Impact,{' '}
+              <span style={{ color: '#5AC8FA' }}>by company.</span>
             </h2>
             <p
               style={{
@@ -570,8 +570,7 @@ export function Experience() {
                 maxWidth: '520px',
               }}
             >
-              4 years across Amazon, L&apos;Oréal, Auchan, and a startup — from €250M
-              portfolios to building a company from zero.
+              Four companies. €250M+ in portfolios managed. From a Paris startup to Amazon&apos;s EU Transportation network.
             </p>
           </motion.div>
         </div>
