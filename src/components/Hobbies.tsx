@@ -312,7 +312,7 @@ export function Hobbies() {
             marginBottom: '20px',
           }}
         >
-          What drives me.
+          Beyond the work.
         </h2>
         <p
           style={{

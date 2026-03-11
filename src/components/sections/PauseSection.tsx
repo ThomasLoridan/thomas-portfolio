@@ -1,8 +1,9 @@
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
-import { useInView, useMotionValue, animate } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { useInView, animate } from 'framer-motion';
 import { motion } from 'framer-motion';
+import { useRef } from 'react';
 
 interface PauseSectionProps {
   metric: string;
@@ -11,48 +12,53 @@ interface PauseSectionProps {
 }
 
 /* ─── Parse metric string into countable parts ──────────── */
-function parseMetric(raw: string): { prefix: string; target: number; suffix: string; decimals: number } {
+function parseMetric(metric: string): {
+  prefix: string;
+  target: number;
+  suffix: string;
+  decimals: number;
+  formatFn: (v: number) => string;
+} {
   // "€16.3M+" → prefix="€", target=16.3, suffix="M+", decimals=1
   // "7,000+"  → prefix="",  target=7000,  suffix="+",  decimals=0
-  const clean = raw.replace(/,/g, '');
-  const match = clean.match(/^([€$£]?)([0-9.]+)([A-Za-z+%]*)$/);
-  if (!match) return { prefix: '', target: 0, suffix: raw, decimals: 0 };
-  const prefix = match[1] ?? '';
-  const num = parseFloat(match[2]);
-  const suffix = match[3] ?? '';
-  const decimals = (match[2].split('.')[1] ?? '').length;
-  return { prefix, target: num, suffix, decimals };
-}
+  const prefixMatch = metric.match(/^([^0-9]*)/);
+  const prefix = prefixMatch ? prefixMatch[1] : '';
+  const rest = metric.slice(prefix.length);
+  const numMatch = rest.match(/^([0-9][0-9,.]*)/);
+  if (!numMatch) {
+    return { prefix: '', target: 0, suffix: metric, decimals: 0, formatFn: (v) => String(Math.round(v)) };
+  }
+  const rawNum = numMatch[1].replace(/,/g, '');
+  const target = parseFloat(rawNum);
+  const suffix = rest.slice(numMatch[1].length);
+  const decimalPart = rawNum.includes('.') ? rawNum.split('.')[1] : '';
+  const decimals = decimalPart.length;
 
-function formatDisplay(value: number, prefix: string, suffix: string, decimals: number): string {
-  if (decimals > 0) return `${prefix}${value.toFixed(decimals)}${suffix}`;
-  const rounded = Math.round(value);
-  // Re-add thousands comma if original had it
-  const formatted = rounded >= 1000 ? rounded.toLocaleString('en-US') : String(rounded);
-  return `${prefix}${formatted}${suffix}`;
+  const formatFn = (v: number): string => {
+    if (decimals > 0) return v.toFixed(decimals);
+    return Math.round(v).toLocaleString('en-US').replace(/,/g, ',');
+  };
+
+  return { prefix, target, suffix, decimals, formatFn };
 }
 
 export function PauseSection({ metric, label, variant = 'dark' }: PauseSectionProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-15%' });
+  const isInView = useInView(ref, { once: true, margin: '-15%' });
   const isDark = variant === 'dark';
 
-  const { prefix, target, suffix, decimals } = parseMetric(metric);
-  const count = useMotionValue(0);
-  const [display, setDisplay] = useState(formatDisplay(0, prefix, suffix, decimals));
-  const hasAnimated = useRef(false);
+  const { prefix, target, suffix, formatFn } = parseMetric(metric);
+  const [display, setDisplay] = useState(`${prefix}0${suffix}`);
 
   useEffect(() => {
-    if (inView && !hasAnimated.current) {
-      hasAnimated.current = true;
-      const controls = animate(count, target, {
-        duration: 1.8,
-        ease: [0.16, 1, 0.3, 1],
-        onUpdate: (v) => setDisplay(formatDisplay(v, prefix, suffix, decimals)),
-      });
-      return controls.stop;
-    }
-  }, [inView, count, target, prefix, suffix, decimals]);
+    if (!isInView) return;
+    const controls = animate(0, target, {
+      duration: 1.8,
+      ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+      onUpdate: (v) => setDisplay(`${prefix}${formatFn(v)}${suffix}`),
+    });
+    return controls.stop;
+  }, [isInView]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <section
@@ -84,7 +90,7 @@ export function PauseSection({ metric, label, variant = 'dark' }: PauseSectionPr
         {/* Label */}
         <motion.p
           initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
+          animate={isInView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
           style={{
             marginTop: '20px',

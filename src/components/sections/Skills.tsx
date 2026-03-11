@@ -223,7 +223,7 @@ export function Skills() {
                 marginBottom: '16px',
               }}
             >
-              What I bring to the table.
+              Three strengths. One output.
             </h2>
             <p
               style={{

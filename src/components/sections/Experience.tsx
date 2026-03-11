@@ -63,7 +63,7 @@ const BLOCKS: Block[] = [
       'Own product strategy for the Tech & Innovation portfolio supporting 30-country EU Intermodal and Expansion. Drive the €30M ARR roadmap across analytics platforms and automation systems.',
     kpis: [
       { value: '€13.3M', label: 'SONAR automation' },
-      { value: '50+', label: 'Stakeholders aligned' },
+      { value: '50+', label: 'Stakeholders' },
       { value: '€30M', label: 'Portfolio ARR' },
     ],
     media: { type: 'gif', src: '/images/companies/amazon-arrow.gif', fit: 'contain', bg: '#0a0a0a' },
@@ -78,7 +78,7 @@ const BLOCKS: Block[] = [
     kpis: [
       { value: '80+', label: 'ETL pipelines' },
       { value: '€1.5M/q', label: 'Capacity savings' },
-      { value: '45%', label: 'Volume increase' },
+      { value: '45%', label: 'Volume growth' },
     ],
     media: { type: 'gif', src: '/images/companies/amazon-light.gif', fit: 'contain', bg: '#ffffff' },
   },
@@ -90,9 +90,9 @@ const BLOCKS: Block[] = [
     description:
       'Drove product development for operational analytics platforms across 2,300 global fulfillment sites. Built 3 strategic data platforms with senior engineers.',
     kpis: [
-      { value: '25%', label: 'Downtime reduction' },
+      { value: '25%', label: 'Downtime cut' },
       { value: '10K+', label: 'Daily users' },
-      { value: '€8.9M', label: 'Costs benchmarked' },
+      { value: '€8.9M', label: 'Costs mapped' },
     ],
     media: { type: 'image', src: '/images/companies/amazon-dark.jpg', fit: 'contain', bg: '#0a0a0a' },
   },
@@ -118,7 +118,7 @@ const BLOCKS: Block[] = [
       'Led global data governance engagement across 50+ countries. Standardized reporting and designed bi-weekly COMEX dashboards for C-suite product roadmap alignment.',
     kpis: [
       { value: '50+', label: 'Countries covered' },
-      { value: '20%', label: 'Data quality lift' },
+      { value: '20%', label: 'Data quality' },
     ],
     media: { type: 'image', src: '/images/loreal/loreal-water.webp', fit: 'cover', bg: '#1a1300' },
   },
@@ -131,7 +131,7 @@ const BLOCKS: Block[] = [
       'Built global B2B analytics platform supporting billion-euro product decisions across Europe, China, and the US. Re-engineered IT delivery workflows.',
     kpis: [
       { value: '3', label: 'Global markets' },
-      { value: '25%', label: 'Lead time reduction' },
+      { value: '25%', label: 'Lead time saved' },
     ],
     media: { type: 'image', src: '/images/loreal/loreal-pro.webp', fit: 'cover', bg: '#111' },
   },
@@ -558,7 +558,7 @@ export function Experience() {
                 marginBottom: '16px',
               }}
             >
-              Four years.{' '}
+              Four years. Three companies.{' '}
               <span style={{ color: '#5AC8FA' }}>One standard.</span>
             </h2>
             <p

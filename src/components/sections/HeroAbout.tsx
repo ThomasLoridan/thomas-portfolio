@@ -294,7 +294,7 @@ export function HeroAbout() {
                 lineHeight: 1.7,
               }}
             >
-              MSc École Centrale Lille&nbsp;·&nbsp;Co-founder Familyad (pitched at Station F)&nbsp;·&nbsp;Open to relocation.
+              MSc École Centrale Lille&nbsp;·&nbsp;Co-founder Familyad (Station F finalist)&nbsp;·&nbsp;Open to relocation.
             </p>
           </motion.div>
         </div>
