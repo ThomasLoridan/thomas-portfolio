@@ -1,272 +1,439 @@
 'use client';
 
-import { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { GithubIcon, ExternalLink } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { profile } from '@/data/profile';
 import { ProjectVisualSONAR } from '@/components/visuals/ProjectVisualSONAR';
 import { ProjectVisualORACLE } from '@/components/visuals/ProjectVisualORACLE';
 import { ProjectVisualExecAnalytics } from '@/components/visuals/ProjectVisualExecAnalytics';
+import { ProjectModal } from '@/components/projects/ProjectModal';
+import type { ProjectDetail } from '@/components/projects/ProjectModal';
+import { GithubIcon, ExternalLink } from 'lucide-react';
 
-const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
-
-/* ─── Types ──────────────────────────────────────────────── */
-interface ProjectMetric {
-  value: string;
-  label: string;
-}
-
-interface Project {
-  id: string;
-  companyTag: string;
-  editorialHeadline: string;
-  body: string;
-  metrics: ProjectMetric[];
-  stackLine: string;
-  visual: React.ReactNode;
-  layoutDirection: 'image-left' | 'image-right';
-}
-
-/* ─── Data ────────────────────────────────────────────────── */
-const PROJECTS: Project[] = [
+/* ─── Project data (card + modal) ────────────────────────── */
+const PROJECTS: ProjectDetail[] = [
   {
     id: 'sonar',
-    companyTag: 'AMAZON · INTERNAL TOOL',
-    editorialHeadline: 'The audit that never sleeps.',
-    body: 'Post-scheduling automation for 500+ EU Intermodal routes. Cut cycle time from 4 hours to 5 minutes — zero human intervention.',
+    tag: 'AMAZON · INTERNAL TOOL',
+    headline: 'The audit that never sleeps.',
+    description:
+      'Post-scheduling automation for 500+ EU Intermodal routes. Cut cycle time from 4 hours to 5 minutes — zero human intervention.',
+    visual: <ProjectVisualSONAR />,
     metrics: [
       { value: '€13.3M', label: 'ARR impact' },
       { value: '5 min', label: 'Cycle time' },
       { value: '500+', label: 'Routes covered' },
     ],
     stackLine: 'Python + AWS ECS → real-time route processing · S3 → audit history at scale',
-    visual: <ProjectVisualSONAR />,
-    layoutDirection: 'image-left',
+    overview:
+      'SONAR is a post-scheduling audit engine that runs automatically after every intermodal scheduling cycle across 500+ EU routes. It detects VRID misconfigurations, CIT breaches, and scheduling anomalies — and alerts the right team within minutes, not days.',
+    problemStatement:
+      'Before SONAR, the ROC team spent 6–8 hours every week manually cross-referencing 500+ route schedules against CIMS data to find SEA and RAIL configuration breaches. Errors were caught late — often after operational impact had already occurred.',
+    solutionStatement:
+      'A fully automated Python pipeline running on AWS ECS that pulls post-scheduling data, compares it against CIMS bank holiday and CPT override rules, classifies every route by breach type, generates a structured Excel report, and routes it to the correct team (ROC vs NetExc) based on a 48-hour cutoff rule.',
+    stack: [
+      { name: 'Python 3.11', role: 'Core processing engine — 4,400+ lines' },
+      { name: 'AWS ECS', role: 'Containerized execution — fully serverless' },
+      { name: 'AWS S3', role: 'Audit history storage and report archiving' },
+      { name: 'CIMS API', role: 'Bank holiday and CPT override source of truth' },
+      { name: 'openpyxl', role: 'Structured Excel report generation' },
+      { name: 'SMTP (SES)', role: 'Conditional alert routing by team and cutoff' },
+    ],
+    impact: [
+      { value: '€13.3M', label: 'ARR impact', context: 'Breach prevention across SEA/RAIL lanes' },
+      { value: '5 min', label: 'Cycle time', context: 'Down from 6–8 hours of manual work' },
+      { value: '500+', label: 'Routes covered', context: 'Every EU Intermodal route audited' },
+      { value: '0', label: 'Manual steps', context: 'Fully automated — no human trigger needed' },
+    ],
+    process: [
+      'Identified the gap during a weekly ROC review when a breach was found 4 days late, after delivery impact. The manual process had no reliable cadence.',
+      'Mapped the full data flow: scheduling trigger → CIMS rules → route classification → team routing logic. Designed the breach taxonomy: VRID mismatch, CIT override miss, CPT window violation.',
+      'Built the Python engine over 3 weeks, iterating on the classification logic and the 48-hour ROC vs NetExc split rule with the operations team.',
+      'Deployed on AWS ECS with an S3-based audit trail. Report generation triggers automatically post-scheduling — no human intervention after setup.',
+      'System has been running in production since 2024, covering every EU Intermodal scheduling cycle with zero maintenance incidents.',
+    ],
+    status: 'Production · Amazon EU Transportation · Since 2024',
   },
   {
     id: 'oracle',
-    companyTag: 'AMAZON · INTERNAL TOOL',
-    editorialHeadline: 'Ground coverage. Automated.',
-    body: 'Real-time audit pipeline for 250+ ground routes across 26 EU countries. Replaced 40 hours per month of manual analysis — permanently.',
+    tag: 'AMAZON · INTERNAL TOOL',
+    headline: 'Ground coverage. Automated.',
+    description:
+      'Real-time audit pipeline for 250+ ground routes across 26 EU countries. Replaced 40 hours per month of manual analysis — permanently.',
+    visual: <ProjectVisualORACLE />,
     metrics: [
       { value: '€250K', label: 'Annual savings' },
       { value: '250+', label: 'Routes audited' },
       { value: '26', label: 'EU countries' },
     ],
     stackLine: 'Python + SQL → live coverage audit · ETL → zero manual extraction',
-    visual: <ProjectVisualORACLE />,
-    layoutDirection: 'image-right',
+    overview:
+      'ORACLE is a 26-country contract coverage audit engine for Amazon\'s ground transportation network. It runs weekly across 250+ EU lanes, detects coverage gaps up to 6 weeks ahead, and generates actionable prioritization reports for the network planning team.',
+    problemStatement:
+      'Ground lane contract coverage was audited manually — a 40-hour monthly process relying on manual SQL queries, copy-paste into Excel, and subjective prioritization. Coverage gaps were often discovered only when a route failed to tender.',
+    solutionStatement:
+      'A Python-based audit pipeline that queries Redshift for live coverage data, applies a 6-week forward visibility window, classifies each lane by risk tier (critical/warning/healthy), and generates a formatted multi-sheet Excel report with priority scoring. Reduced audit cycle from 40 hours/month to under 2 hours.',
+    stack: [
+      { name: 'Python 3.11', role: 'ETL and classification engine' },
+      { name: 'AWS Redshift', role: 'Ground lane and contract data source' },
+      { name: 'openpyxl', role: 'Multi-sheet formatted Excel output' },
+      { name: 'pandas', role: 'Data transformation and aggregation' },
+      { name: 'CIMS', role: 'Bank holiday and operational calendar' },
+    ],
+    impact: [
+      { value: '€250K', label: 'Annual savings', context: '0.2 FTE reduction in manual audit hours' },
+      { value: '250+', label: 'Routes audited', context: 'Every active EU ground lane weekly' },
+      { value: '26', label: 'EU countries', context: 'Complete network coverage' },
+      { value: '6 wks', label: 'Forward visibility', context: 'vs. reactive same-week alerts before' },
+    ],
+    process: [
+      'Received a request from the network planning lead: reduce the time spent on monthly coverage audits. Spent a week shadowing the manual process to understand every step.',
+      'Identified 3 core inefficiencies: no forward-looking window (only current state), no risk tiering (every gap treated equally), and no automated delivery.',
+      'Designed the classification model: critical (coverage <7 days), warning (7–21 days), healthy (21+ days). Added 6-week forward projection using booking patterns.',
+      'Built the pipeline with a Redshift query layer that handles 26 countries\' data in a single run, with bank holiday adjustments from CIMS.',
+      'Delivered a formatted Excel report that could be sent directly to stakeholders — zero reformatting needed. Adopted by the full network planning team in week 2.',
+    ],
+    status: 'Production · Amazon EU Transportation · Since 2024',
   },
   {
     id: 'exec-analytics',
-    companyTag: 'AMAZON · ANALYTICS PLATFORM',
-    editorialHeadline: 'One source. 35 countries.',
-    body: 'Unified 80+ fragmented KPIs into a single source of truth for L7+ leadership across 35 countries. Eliminated 6 hours of weekly manual consolidation.',
+    tag: 'AMAZON · ANALYTICS PLATFORM',
+    headline: 'One source. 35 countries.',
+    description:
+      'Unified 80+ fragmented KPIs into a single source of truth for L7+ leadership across 35 countries. Eliminated 6 hours of weekly manual consolidation.',
+    visual: <ProjectVisualExecAnalytics />,
     metrics: [
       { value: '80+', label: 'KPIs unified' },
       { value: '35', label: 'Countries' },
       { value: '€1.5M/q', label: 'Capacity savings' },
     ],
     stackLine: 'QuickSight + AWS Glue → unified KPI layer · Python → automated refresh pipeline',
-    visual: <ProjectVisualExecAnalytics />,
-    layoutDirection: 'image-left',
+    overview:
+      'A unified BI platform for L7+ transportation leadership across 35 EU countries. Consolidates 80+ KPIs from fragmented reporting systems into a single QuickSight dashboard with automated Python refresh pipelines — eliminating 6 hours of weekly manual consolidation.',
+    problemStatement:
+      '35-country operational data lived in 7+ disconnected systems. L7 leaders spent 6 hours every week manually pulling, formatting, and reconciling KPIs before each MBR. No single source of truth existed. Data was always at least 48 hours stale.',
+    solutionStatement:
+      'An end-to-end data platform: 80+ ETL pipelines feeding a unified Redshift schema, automated Python refresh jobs, and a QuickSight dashboard layer with drill-down capability. Built from scratch in 6 months. Now the standard analytics platform for EU Transportation MBRs.',
+    stack: [
+      { name: 'Amazon QuickSight', role: 'Dashboard layer for L7+ leaders' },
+      { name: 'AWS Redshift', role: 'Unified data warehouse across 35 countries' },
+      { name: 'AWS Glue', role: '80+ ETL pipeline orchestration' },
+      { name: 'Python', role: 'Automated KPI refresh and anomaly detection' },
+      { name: 'S3', role: 'Data lake for raw operational feeds' },
+    ],
+    impact: [
+      { value: '80+', label: 'KPIs unified', context: 'From 7 disconnected reporting systems' },
+      { value: '35', label: 'Countries', context: 'Full EU transportation network' },
+      { value: '€1.5M/q', label: 'Capacity savings', context: 'Operational efficiency gains' },
+      { value: '6h', label: 'Weekly time saved', context: 'Per MBR cycle — L7 leadership' },
+    ],
+    process: [
+      'Inherited a fragmented analytics environment: 7 reporting systems, no shared schema, no ownership. First 2 weeks: mapped every data flow and identified the 80 KPIs that L7 leaders actually used.',
+      'Designed the Redshift schema from scratch — a unified operational fact table with 35-country dimension tables, optimized for QuickSight query patterns.',
+      'Built 80+ Glue ETL pipelines over 3 months, each with validation logic and failure alerting. Established a Python refresh layer for near-real-time KPI updates.',
+      'Designed the QuickSight dashboard in close collaboration with 6 L7 stakeholders across Luxembourg, Barcelona, and London. 4 design iterations over 6 weeks.',
+      'Launched as the official MBR analytics platform in Q1 2025. Zero manual consolidation since launch. Adopted by 30+ L5–L7 leaders.',
+    ],
+    status: 'Production · Amazon EU Transportation · Since Q1 2025',
   },
 ];
 
-/* ─── Project card ───────────────────────────────────────── */
+/* ─── Project card — Apple iPhone 17 Pro vertical layout ──── */
 function ProjectCard({
   project,
-  inView,
-  delay,
+  onViewProject,
 }: {
-  project: Project;
-  inView: boolean;
-  delay: number;
+  project: ProjectDetail;
+  onViewProject: (id: string) => void;
 }) {
-  const isLeft = project.layoutDirection === 'image-left';
+  const cardRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ['0 0.95', '0.35 0.6'] as any,
+  });
+  const opacity = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const y = useTransform(scrollYProgress, [0, 1], [40, 0]);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 32 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.8, delay, ease: EASE }}
-      style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr',
-        borderTop: '1px solid rgba(255,255,255,0.07)',
-        overflow: 'hidden',
-      }}
-      className={`md:grid-cols-[55fr_45fr] ${
-        isLeft
-          ? ''
-          : 'md:[&>*:first-child]:order-2 md:[&>*:last-child]:order-1'
-      }`}
+      ref={cardRef}
+      style={{ opacity, y, marginBottom: 'clamp(80px, 10vw, 120px)' }}
     >
-      {/* Visual column */}
-      <div style={{ position: 'relative', minHeight: '320px', overflow: 'hidden' }}>
+      {/* 1. Category tag */}
+      <p
+        style={{
+          fontSize: '12px',
+          fontWeight: 600,
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+          color: '#6e6e73',
+          marginBottom: '20px',
+        }}
+      >
+        {project.tag}
+      </p>
+
+      {/* 2. Headline — before the visual, creates anticipation */}
+      <h3
+        style={{
+          fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+          fontWeight: 700,
+          letterSpacing: '-0.002em',
+          lineHeight: 1.08,
+          color: '#f5f5f7',
+          marginBottom: '32px',
+          maxWidth: '800px',
+        }}
+      >
+        {project.headline}
+      </h3>
+
+      {/* 3. Full-bleed visual — 16/7 ratio, zero border-radius */}
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          aspectRatio: '16 / 7',
+          overflow: 'hidden',
+          borderRadius: 0,
+          marginBottom: '40px',
+        }}
+      >
         {project.visual}
-
-        {/* Desktop gradient overlay — blends visual into content column */}
+        {/* Bottom gradient — blends visual into page background */}
         <div
-          className="hidden md:block"
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: isLeft
-              ? 'linear-gradient(to right, rgba(29,29,31,0) 50%, rgba(29,29,31,0.95) 100%)'
-              : 'linear-gradient(to left, rgba(29,29,31,0) 50%, rgba(29,29,31,0.95) 100%)',
-            pointerEvents: 'none',
-          }}
-        />
-
-        {/* Mobile bottom fade */}
-        <div
-          className="md:hidden"
           style={{
             position: 'absolute',
             bottom: 0,
             left: 0,
             right: 0,
-            height: '80px',
+            height: '40%',
             background: 'linear-gradient(to bottom, transparent, #1d1d1f)',
             pointerEvents: 'none',
           }}
         />
       </div>
 
-      {/* Content column */}
+      {/* 4. Description */}
+      <p
+        style={{
+          fontSize: '17px',
+          lineHeight: 1.75,
+          color: '#86868b',
+          maxWidth: '640px',
+          marginBottom: '40px',
+        }}
+      >
+        {project.description}
+      </p>
+
+      {/* 5. Metrics — no card, no border, no background */}
       <div
         style={{
           display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          padding: 'clamp(32px, 5vw, 56px) clamp(24px, 4vw, 48px)',
-          gap: '18px',
-          background: '#1d1d1f',
+          gap: '48px',
+          marginBottom: '28px',
+          flexWrap: 'wrap',
         }}
       >
-        {/* Company tag */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.5, delay: delay + 0.1, ease: EASE }}
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.6rem',
-            letterSpacing: '0.18em',
-            textTransform: 'uppercase',
-            color: '#FF9900',
-            fontWeight: 500,
-            margin: 0,
-          }}
-        >
-          {project.companyTag}
-        </motion.p>
-
-        {/* Editorial headline */}
-        <motion.h3
-          initial={{ opacity: 0, y: 16 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: delay + 0.18, ease: EASE }}
-          style={{
-            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-            fontWeight: 800,
-            fontSize: 'clamp(1.6rem, 2.5vw, 2.4rem)',
-            color: '#f5f5f7',
-            lineHeight: 1.1,
-            letterSpacing: '-0.003em',
-            margin: 0,
-          }}
-        >
-          {project.editorialHeadline}
-        </motion.h3>
-
-        {/* Body */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.6, delay: delay + 0.28, ease: EASE }}
-          style={{
-            color: '#86868b',
-            fontSize: 'clamp(0.85rem, 1vw, 0.95rem)',
-            lineHeight: 1.75,
-            margin: 0,
-          }}
-        >
-          {project.body}
-        </motion.p>
-
-        {/* Metrics row */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.6, delay: delay + 0.36, ease: EASE }}
-          style={{
-            display: 'flex',
-            paddingTop: '16px',
-            borderTop: '1px solid rgba(255,255,255,0.07)',
-          }}
-        >
-          {project.metrics.map((m, i) => (
-            <div
-              key={m.label}
+        {project.metrics.map((m) => (
+          <div key={m.label}>
+            <p
               style={{
-                flex: 1,
-                paddingRight: i < project.metrics.length - 1 ? '14px' : 0,
-                paddingLeft: i > 0 ? '14px' : 0,
-                borderRight:
-                  i < project.metrics.length - 1
-                    ? '1px solid rgba(255,255,255,0.07)'
-                    : 'none',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '4px',
+                fontSize: '12px',
+                fontWeight: 400,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: '#6e6e73',
+                marginBottom: '6px',
               }}
             >
-              <span
-                style={{
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-                  fontWeight: 700,
-                  fontSize: 'clamp(1rem, 1.5vw, 1.3rem)',
-                  color: '#2997ff',
-                  lineHeight: 1.1,
-                  letterSpacing: '-0.01em',
-                }}
-              >
-                {m.value}
-              </span>
-              <span
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.54rem',
-                  letterSpacing: '0.1em',
-                  textTransform: 'uppercase',
-                  color: '#6e6e73',
-                  lineHeight: 1.2,
-                }}
-              >
-                {m.label}
-              </span>
-            </div>
-          ))}
-        </motion.div>
+              {m.label}
+            </p>
+            <p
+              style={{
+                fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
+                fontWeight: 700,
+                letterSpacing: '-0.01em',
+                color: '#f5f5f7',
+                lineHeight: 1,
+              }}
+            >
+              {m.value}
+            </p>
+          </div>
+        ))}
+      </div>
 
-        {/* Stack line */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.5, delay: delay + 0.44, ease: EASE }}
+      {/* 6. Stack line */}
+      <p
+        style={{
+          fontSize: '13px',
+          color: '#424245',
+          lineHeight: 1.6,
+          marginBottom: '40px',
+          fontFamily: 'var(--font-mono)',
+        }}
+      >
+        {project.stackLine}
+      </p>
+
+      {/* 7. View project bar — Apple "Comparer" style */}
+      <button
+        onClick={() => onViewProject(project.id)}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          width: '100%',
+          padding: '16px 20px',
+          background: 'rgba(255,255,255,0.05)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          borderRadius: '14px',
+          cursor: 'pointer',
+          transition: 'background 0.2s ease, border-color 0.2s ease',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+        }}
+      >
+        <span
           style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.57rem',
-            color: '#424245',
-            letterSpacing: '0.04em',
-            lineHeight: 1.65,
-            margin: 0,
+            fontSize: '15px',
+            fontWeight: 400,
+            color: '#f5f5f7',
+            letterSpacing: '-0.01em',
           }}
         >
-          {project.stackLine}
-        </motion.p>
+          View project details
+        </span>
+        <span
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            background: '#2997ff',
+            color: '#fff',
+            fontSize: '20px',
+            fontWeight: 300,
+            lineHeight: 1,
+            flexShrink: 0,
+          }}
+        >
+          +
+        </span>
+      </button>
+    </motion.div>
+  );
+}
+
+/* ─── Section header with scroll reveal ─────────────────── */
+function ProjectsHeader() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['0 1', '0.3 0.65'] as any,
+  });
+  const opacity = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const y = useTransform(scrollYProgress, [0, 1], [32, 0]);
+
+  return (
+    <motion.div
+      ref={ref}
+      style={{ opacity, y, paddingTop: 'clamp(64px, 10vh, 112px)', paddingBottom: '72px' }}
+    >
+      <p
+        style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: '0.7rem',
+          fontWeight: 500,
+          color: '#6e6e73',
+          letterSpacing: '0.22em',
+          textTransform: 'uppercase',
+          marginBottom: '16px',
+        }}
+      >
+        Projects
+      </p>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'flex-end',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '16px',
+        }}
+      >
+        <div>
+          <h2
+            style={{
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+              fontWeight: 700,
+              fontSize: 'clamp(3rem, 6vw, 6rem)',
+              color: '#f5f5f7',
+              lineHeight: 1.0,
+              letterSpacing: '-0.002em',
+              marginBottom: '14px',
+            }}
+          >
+            Systems{' '}
+            <span style={{ color: '#2997ff' }}>in production.</span>
+          </h2>
+          <p
+            style={{
+              color: '#86868b',
+              fontSize: 'clamp(0.95rem, 1.1vw, 1.05rem)',
+              lineHeight: 1.8,
+              fontWeight: 400,
+              maxWidth: '480px',
+            }}
+          >
+            Three automation systems. €16.3M+ ARR impact. Built end-to-end.
+          </p>
+        </div>
+        <a
+          href={profile.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '10px 20px',
+            borderRadius: '99px',
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.10)',
+            color: '#86868b',
+            fontWeight: 500,
+            fontSize: '0.82rem',
+            textDecoration: 'none',
+            transition: 'background 0.2s, color 0.2s',
+            whiteSpace: 'nowrap',
+            alignSelf: 'flex-end',
+          }}
+          onMouseEnter={(e) => {
+            const el = e.currentTarget as HTMLAnchorElement;
+            el.style.background = 'rgba(255,255,255,0.10)';
+            el.style.color = '#f5f5f7';
+          }}
+          onMouseLeave={(e) => {
+            const el = e.currentTarget as HTMLAnchorElement;
+            el.style.background = 'rgba(255,255,255,0.06)';
+            el.style.color = '#86868b';
+          }}
+        >
+          <GithubIcon size={14} />
+          All projects
+          <ExternalLink size={11} />
+        </a>
       </div>
     </motion.div>
   );
@@ -274,119 +441,39 @@ function ProjectCard({
 
 /* ─── Main section ───────────────────────────────────────── */
 export function Projects() {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-80px' });
+  const [activeProject, setActiveProject] = useState<string | null>(null);
+
+  const activeProjectData = PROJECTS.find((p) => p.id === activeProject) ?? null;
 
   return (
     <section id="projects" style={{ background: '#1d1d1f' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 clamp(24px, 5vw, 64px)' }}>
+      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 clamp(24px, 5vw, 64px)' }}>
+        <ProjectsHeader />
 
-        {/* Header */}
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 28 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.75, ease: 'easeOut' }}
-          style={{ paddingTop: 'clamp(64px, 10vh, 112px)', paddingBottom: '56px' }}
-        >
-          <p
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.7rem',
-              fontWeight: 500,
-              color: '#6e6e73',
-              letterSpacing: '0.22em',
-              textTransform: 'uppercase',
-              marginBottom: '16px',
-            }}
-          >
-            Projects
-          </p>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'flex-end',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              gap: '16px',
-            }}
-          >
-            <div>
-              <h2
-                style={{
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-                  fontWeight: 700,
-                  fontSize: 'clamp(3rem, 6vw, 6rem)',
-                  color: '#f5f5f7',
-                  lineHeight: 1.0,
-                  letterSpacing: '-0.002em',
-                  marginBottom: '14px',
-                }}
-              >
-                Systems{' '}
-                <span style={{ color: '#2997ff' }}>in production.</span>
-              </h2>
-              <p
-                style={{
-                  color: '#86868b',
-                  fontSize: 'clamp(0.95rem, 1.1vw, 1.05rem)',
-                  lineHeight: 1.8,
-                  fontWeight: 400,
-                  maxWidth: '480px',
-                }}
-              >
-                Three automation systems. €16.3M+ ARR impact. Built end-to-end.
-              </p>
-            </div>
-            <a
-              href={profile.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 20px',
-                borderRadius: '99px',
-                background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(255,255,255,0.10)',
-                color: '#86868b',
-                fontWeight: 500,
-                fontSize: '0.82rem',
-                textDecoration: 'none',
-                transition: 'background 0.2s, color 0.2s',
-                whiteSpace: 'nowrap',
-                alignSelf: 'flex-end',
-              }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget as HTMLAnchorElement;
-                el.style.background = 'rgba(255,255,255,0.10)';
-                el.style.color = '#f5f5f7';
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget as HTMLAnchorElement;
-                el.style.background = 'rgba(255,255,255,0.06)';
-                el.style.color = '#86868b';
-              }}
-            >
-              <GithubIcon size={14} />
-              All projects
-              <ExternalLink size={11} />
-            </a>
-          </div>
-        </motion.div>
-
-        {/* Project cards — vertical stack */}
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          {PROJECTS.map((project, i) => (
-            <ProjectCard key={project.id} project={project} inView={inView} delay={i * 0.12} />
+        {/* Project cards — vertical stack, Apple product page style */}
+        <div>
+          {PROJECTS.map((project) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              onViewProject={(id) => setActiveProject(id)}
+            />
           ))}
         </div>
 
-        {/* Bottom border */}
-        <div style={{ height: '1px', background: 'rgba(255,255,255,0.07)' }} />
-        <div style={{ height: 'clamp(48px, 7vh, 80px)' }} />
+        <div style={{ height: 'clamp(40px, 6vh, 64px)' }} />
       </div>
+
+      {/* Project detail modal */}
+      <AnimatePresence>
+        {activeProjectData && (
+          <ProjectModal
+            key={activeProjectData.id}
+            project={activeProjectData}
+            onClose={() => setActiveProject(null)}
+          />
+        )}
+      </AnimatePresence>
     </section>
   );
 }

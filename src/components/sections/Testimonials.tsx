@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 const COLS = [
   {
@@ -24,11 +24,110 @@ const COLS = [
   },
 ];
 
-const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
+/* ─── Animated testimonial item ─────────────────────────── */
+function TestimonialItem({
+  role,
+  company,
+  quote,
+  index,
+  scrollYProgress,
+}: {
+  role: string;
+  company: string;
+  quote: string;
+  index: number;
+  scrollYProgress: ReturnType<typeof useScroll>['scrollYProgress'];
+}) {
+  const start = index * 0.18;
+  const end = start + 0.55;
+
+  const opacity = useTransform(scrollYProgress, [start, end], [0, 1]);
+  const y = useTransform(scrollYProgress, [start, end], [20, 0]);
+
+  return (
+    <motion.div style={{ opacity, y }}>
+      {/* Label row */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          paddingTop: index > 0 ? '40px' : '0',
+          paddingBottom: '16px',
+        }}
+      >
+        <span
+          style={{
+            fontFamily: 'var(--font-heading)',
+            fontWeight: 700,
+            fontSize: '1.05rem',
+            color: '#f5f5f7',
+            letterSpacing: '-0.01em',
+          }}
+        >
+          {role}
+        </span>
+        <span
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.72rem',
+            fontWeight: 500,
+            color: '#86868b',
+            background: 'rgba(245,245,247,0.06)',
+            border: '1px solid rgba(245,245,247,0.12)',
+            padding: '3px 10px',
+            borderRadius: '99px',
+            letterSpacing: '0.04em',
+          }}
+        >
+          {company}
+        </span>
+        <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+      </div>
+
+      {/* Quote card */}
+      <div
+        style={{
+          background: 'rgba(255,255,255,0.04)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          borderRadius: '16px',
+          padding: 'clamp(24px, 3vw, 36px) clamp(24px, 3vw, 40px)',
+        }}
+      >
+        <p
+          style={{
+            fontFamily: 'var(--font-body)',
+            fontWeight: 400,
+            fontSize: 'clamp(1.05rem, 1.3vw, 1.2rem)',
+            lineHeight: 1.8,
+            color: '#f5f5f7',
+            fontStyle: 'italic',
+          }}
+        >
+          &ldquo;{quote}&rdquo;
+        </p>
+      </div>
+    </motion.div>
+  );
+}
 
 export function Testimonials() {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-80px' });
+  const headerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  /* Header scroll reveal */
+  const { scrollYProgress: headerProgress } = useScroll({
+    target: headerRef,
+    offset: ['0 1', '0.3 0.65'] as any,
+  });
+  const headerOpacity = useTransform(headerProgress, [0, 1], [0, 1]);
+  const headerY = useTransform(headerProgress, [0, 1], [24, 0]);
+
+  /* List scroll — shared progress for stagger */
+  const { scrollYProgress: listProgress } = useScroll({
+    target: listRef,
+    offset: ['0 1', '0.4 0.6'] as any,
+  });
 
   return (
     <section
@@ -38,11 +137,8 @@ export function Testimonials() {
       <div className="max-w-5xl mx-auto px-6">
         {/* Header */}
         <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 24 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.65, ease: 'easeOut' }}
-          style={{ maxWidth: '680px', marginBottom: '72px' }}
+          ref={headerRef}
+          style={{ opacity: headerOpacity, y: headerY, maxWidth: '680px', marginBottom: '72px' }}
         >
           <p
             style={{
@@ -84,86 +180,19 @@ export function Testimonials() {
           </p>
         </motion.div>
 
-        {/* Comparison list — inspired by Apple iPhone comparison layout */}
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        {/* Testimonial list */}
+        <div ref={listRef} style={{ display: 'flex', flexDirection: 'column' }}>
           {COLS.map(({ role, company, quote }, i) => (
-            <motion.div
+            <TestimonialItem
               key={role + company}
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.55, delay: 0.1 + i * 0.12, ease: 'easeOut' }}
-            >
-              {/* Model-name header row */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  paddingTop: i > 0 ? '40px' : '0',
-                  paddingBottom: '16px',
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: 'var(--font-heading)',
-                    fontWeight: 700,
-                    fontSize: '1.05rem',
-                    color: '#f5f5f7',
-                    letterSpacing: '-0.01em',
-                  }}
-                >
-                  {role}
-                </span>
-                <span
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '0.72rem',
-                    fontWeight: 500,
-                    color: '#86868b',
-                    background: 'rgba(245,245,247,0.06)',
-                    border: '1px solid rgba(245,245,247,0.12)',
-                    padding: '3px 10px',
-                    borderRadius: '99px',
-                    letterSpacing: '0.04em',
-                  }}
-                >
-                  {company}
-                </span>
-                <div
-                  style={{
-                    flex: 1,
-                    height: '1px',
-                    background: 'rgba(255,255,255,0.08)',
-                  }}
-                />
-              </div>
-
-              {/* Quote card */}
-              <div
-                style={{
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  borderRadius: '16px',
-                  padding: 'clamp(24px, 3vw, 36px) clamp(24px, 3vw, 40px)',
-                }}
-              >
-                <p
-                  style={{
-                    fontFamily: 'var(--font-body)',
-                    fontWeight: 400,
-                    fontSize: 'clamp(1.05rem, 1.3vw, 1.2rem)',
-                    lineHeight: 1.8,
-                    color: '#f5f5f7',
-                    fontStyle: 'italic',
-                  }}
-                >
-                  &ldquo;{quote}&rdquo;
-                </p>
-              </div>
-            </motion.div>
+              role={role}
+              company={company}
+              quote={quote}
+              index={i}
+              scrollYProgress={listProgress}
+            />
           ))}
         </div>
-
       </div>
     </section>
   );

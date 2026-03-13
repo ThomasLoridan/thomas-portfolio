@@ -1,9 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
-
-const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 interface ArcPair {
   from: string;
@@ -17,19 +15,37 @@ const PAIRS: ArcPair[] = [
   { from: 'Consultant', to: 'Builder', label: 'POSTURE' },
 ];
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.15, delayChildren: 0.1 } },
-};
-
-const cellVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
-};
-
 export function CareerArc() {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-80px' });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  /* Single scroll progress drives all child animations */
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['0 1', '0.3 0.65'] as any,
+  });
+
+  /* Eyebrow */
+  const eyebrowOpacity = useTransform(scrollYProgress, [0, 0.4], [0, 1]);
+  const eyebrowY = useTransform(scrollYProgress, [0, 0.4], [16, 0]);
+
+  /* Staggered pairs */
+  const p0Opacity = useTransform(scrollYProgress, [0.1, 0.6], [0, 1]);
+  const p0Y = useTransform(scrollYProgress, [0.1, 0.6], [20, 0]);
+  const arr0Scale = useTransform(scrollYProgress, [0.2, 0.55], [0, 1]);
+
+  const p1Opacity = useTransform(scrollYProgress, [0.25, 0.75], [0, 1]);
+  const p1Y = useTransform(scrollYProgress, [0.25, 0.75], [20, 0]);
+  const arr1Scale = useTransform(scrollYProgress, [0.35, 0.70], [0, 1]);
+
+  const p2Opacity = useTransform(scrollYProgress, [0.4, 0.9], [0, 1]);
+  const p2Y = useTransform(scrollYProgress, [0.4, 0.9], [20, 0]);
+  const arr2Scale = useTransform(scrollYProgress, [0.50, 0.85], [0, 1]);
+
+  const pairMotion = [
+    { opacity: p0Opacity, y: p0Y, arrowScale: arr0Scale },
+    { opacity: p1Opacity, y: p1Y, arrowScale: arr1Scale },
+    { opacity: p2Opacity, y: p2Y, arrowScale: arr2Scale },
+  ];
 
   return (
     <section
@@ -39,14 +55,15 @@ export function CareerArc() {
         overflow: 'hidden',
       }}
     >
-      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 clamp(24px, 5vw, 48px)' }}>
+      <div
+        ref={containerRef}
+        style={{ maxWidth: '900px', margin: '0 auto', padding: '0 clamp(24px, 5vw, 48px)' }}
+      >
         {/* Eyebrow */}
         <motion.p
-          ref={ref}
-          initial={{ opacity: 0, y: 16 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
           style={{
+            opacity: eyebrowOpacity,
+            y: eyebrowY,
             fontFamily: 'var(--font-mono)',
             fontSize: '0.65rem',
             fontWeight: 500,
@@ -61,10 +78,7 @@ export function CareerArc() {
         </motion.p>
 
         {/* Three before→after pairs */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={inView ? 'visible' : 'hidden'}
+        <div
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
@@ -73,78 +87,80 @@ export function CareerArc() {
           }}
           className="grid-cols-1 sm:grid-cols-3"
         >
-          {PAIRS.map((pair) => (
-            <motion.div
-              key={pair.label}
-              variants={cellVariants}
-              style={{
-                background: '#000000',
-                padding: 'clamp(24px, 3.5vw, 44px)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                textAlign: 'center',
-                gap: '8px',
-              }}
-            >
-              {/* From value — muted */}
-              <span
+          {PAIRS.map((pair, i) => {
+            const { opacity, y, arrowScale } = pairMotion[i];
+            return (
+              <motion.div
+                key={pair.label}
                 style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.78rem',
-                  color: 'rgba(255,255,255,0.30)',
-                  letterSpacing: '0.05em',
-                  lineHeight: 1.3,
+                  opacity,
+                  y,
+                  background: '#000000',
+                  padding: 'clamp(24px, 3.5vw, 44px)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  textAlign: 'center',
+                  gap: '8px',
                 }}
               >
-                {pair.from}
-              </span>
+                {/* From value */}
+                <span
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.78rem',
+                    color: 'rgba(255,255,255,0.30)',
+                    letterSpacing: '0.05em',
+                    lineHeight: 1.3,
+                  }}
+                >
+                  {pair.from}
+                </span>
 
-              {/* Arrow */}
-              <motion.span
-                initial={{ opacity: 0, scale: 0 }}
-                animate={inView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ duration: 0.3, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
-                style={{
-                  fontSize: '1.1rem',
-                  color: '#5AC8FA',
-                  lineHeight: 1,
-                  display: 'block',
-                }}
-              >
-                →
-              </motion.span>
+                {/* Arrow */}
+                <motion.span
+                  style={{
+                    scale: arrowScale,
+                    fontSize: '1.1rem',
+                    color: '#5AC8FA',
+                    lineHeight: 1,
+                    display: 'block',
+                  }}
+                >
+                  →
+                </motion.span>
 
-              {/* To value — large, bold */}
-              <span
-                style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontWeight: 800,
-                  fontSize: 'clamp(1.4rem, 2.5vw, 2.2rem)',
-                  color: '#ffffff',
-                  lineHeight: 1.05,
-                  letterSpacing: '-0.02em',
-                }}
-              >
-                {pair.to}
-              </span>
+                {/* To value */}
+                <span
+                  style={{
+                    fontFamily: 'var(--font-heading)',
+                    fontWeight: 800,
+                    fontSize: 'clamp(1.4rem, 2.5vw, 2.2rem)',
+                    color: '#ffffff',
+                    lineHeight: 1.05,
+                    letterSpacing: '-0.02em',
+                  }}
+                >
+                  {pair.to}
+                </span>
 
-              {/* Label — small caps */}
-              <span
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.58rem',
-                  letterSpacing: '0.2em',
-                  textTransform: 'uppercase',
-                  color: 'rgba(255,255,255,0.22)',
-                  marginTop: '4px',
-                }}
-              >
-                {pair.label}
-              </span>
-            </motion.div>
-          ))}
-        </motion.div>
+                {/* Label */}
+                <span
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.58rem',
+                    letterSpacing: '0.2em',
+                    textTransform: 'uppercase',
+                    color: 'rgba(255,255,255,0.22)',
+                    marginTop: '4px',
+                  }}
+                >
+                  {pair.label}
+                </span>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
