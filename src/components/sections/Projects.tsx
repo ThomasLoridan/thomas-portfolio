@@ -2,9 +2,11 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import Image from 'next/image';
 import { GithubIcon, ExternalLink } from 'lucide-react';
 import { profile } from '@/data/profile';
+import { ProjectVisualSONAR } from '@/components/visuals/ProjectVisualSONAR';
+import { ProjectVisualORACLE } from '@/components/visuals/ProjectVisualORACLE';
+import { ProjectVisualExecAnalytics } from '@/components/visuals/ProjectVisualExecAnalytics';
 
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
@@ -21,8 +23,7 @@ interface Project {
   body: string;
   metrics: ProjectMetric[];
   stackLine: string;
-  imagePath: string;
-  imageFallbackBg: string;
+  visual: React.ReactNode;
   layoutDirection: 'image-left' | 'image-right';
 }
 
@@ -39,8 +40,7 @@ const PROJECTS: Project[] = [
       { value: '500+', label: 'Routes covered' },
     ],
     stackLine: 'Python + AWS ECS → real-time route processing · S3 → audit history at scale',
-    imagePath: '/images/projects/Amazon-container-Houston-2.c6ed13.jpg',
-    imageFallbackBg: 'radial-gradient(ellipse at 40% 60%, #111c2e 0%, #06090f 60%, #020305 100%)',
+    visual: <ProjectVisualSONAR />,
     layoutDirection: 'image-left',
   },
   {
@@ -54,8 +54,7 @@ const PROJECTS: Project[] = [
       { value: '26', label: 'EU countries' },
     ],
     stackLine: 'Python + SQL → live coverage audit · ETL → zero manual extraction',
-    imagePath: '/images/projects/oracle_camion_amazon.webp',
-    imageFallbackBg: 'radial-gradient(ellipse at 60% 40%, #1a1000 0%, #090600 60%, #030200 100%)',
+    visual: <ProjectVisualORACLE />,
     layoutDirection: 'image-right',
   },
   {
@@ -69,8 +68,7 @@ const PROJECTS: Project[] = [
       { value: '€1.5M/q', label: 'Capacity savings' },
     ],
     stackLine: 'QuickSight + AWS Glue → unified KPI layer · Python → automated refresh pipeline',
-    imagePath: '/images/projects/amazon_quick_suite.jpg',
-    imageFallbackBg: 'radial-gradient(ellipse at 50% 50%, #001428 0%, #000814 60%, #000408 100%)',
+    visual: <ProjectVisualExecAnalytics />,
     layoutDirection: 'image-left',
   },
 ];
@@ -104,29 +102,19 @@ function ProjectCard({
           : 'md:[&>*:first-child]:order-2 md:[&>*:last-child]:order-1'
       }`}
     >
-      {/* Image column */}
-      <div style={{ position: 'relative', minHeight: '280px', overflow: 'hidden' }}>
-        {/* Fallback gradient (visible when image hasn't loaded or path not set) */}
-        <div style={{ position: 'absolute', inset: 0, background: project.imageFallbackBg }} />
+      {/* Visual column */}
+      <div style={{ position: 'relative', minHeight: '320px', overflow: 'hidden' }}>
+        {project.visual}
 
-        {/* Real image — rendered on top of fallback */}
-        <Image
-          src={project.imagePath}
-          alt={project.editorialHeadline}
-          fill
-          style={{ objectFit: 'cover' }}
-          loading="lazy"
-          sizes="(max-width: 768px) 100vw, 55vw"
-        />
-
-        {/* Gradient overlay blending image into content side */}
+        {/* Desktop gradient overlay — blends visual into content column */}
         <div
+          className="hidden md:block"
           style={{
             position: 'absolute',
             inset: 0,
             background: isLeft
-              ? 'linear-gradient(to right, rgba(15,15,15,0) 35%, rgba(15,15,15,0.92) 100%)'
-              : 'linear-gradient(to left, rgba(15,15,15,0) 35%, rgba(15,15,15,0.92) 100%)',
+              ? 'linear-gradient(to right, rgba(29,29,31,0) 50%, rgba(29,29,31,0.95) 100%)'
+              : 'linear-gradient(to left, rgba(29,29,31,0) 50%, rgba(29,29,31,0.95) 100%)',
             pointerEvents: 'none',
           }}
         />
@@ -140,7 +128,8 @@ function ProjectCard({
             left: 0,
             right: 0,
             height: '80px',
-            background: 'linear-gradient(to bottom, transparent, #0f0f0f)',
+            background: 'linear-gradient(to bottom, transparent, #1d1d1f)',
+            pointerEvents: 'none',
           }}
         />
       </div>
@@ -153,7 +142,7 @@ function ProjectCard({
           justifyContent: 'center',
           padding: 'clamp(32px, 5vw, 56px) clamp(24px, 4vw, 48px)',
           gap: '18px',
-          background: '#0f0f0f',
+          background: '#1d1d1f',
         }}
       >
         {/* Company tag */}
@@ -180,12 +169,12 @@ function ProjectCard({
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: delay + 0.18, ease: EASE }}
           style={{
-            fontFamily: 'var(--font-heading)',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
             fontWeight: 800,
             fontSize: 'clamp(1.6rem, 2.5vw, 2.4rem)',
-            color: '#ffffff',
+            color: '#f5f5f7',
             lineHeight: 1.1,
-            letterSpacing: '-0.02em',
+            letterSpacing: '-0.003em',
             margin: 0,
           }}
         >
@@ -198,7 +187,7 @@ function ProjectCard({
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.6, delay: delay + 0.28, ease: EASE }}
           style={{
-            color: 'rgba(245,245,247,0.58)',
+            color: '#86868b',
             fontSize: 'clamp(0.85rem, 1vw, 0.95rem)',
             lineHeight: 1.75,
             margin: 0,
@@ -236,10 +225,10 @@ function ProjectCard({
             >
               <span
                 style={{
-                  fontFamily: 'var(--font-heading)',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
                   fontWeight: 700,
                   fontSize: 'clamp(1rem, 1.5vw, 1.3rem)',
-                  color: '#5AC8FA',
+                  color: '#2997ff',
                   lineHeight: 1.1,
                   letterSpacing: '-0.01em',
                 }}
@@ -252,7 +241,7 @@ function ProjectCard({
                   fontSize: '0.54rem',
                   letterSpacing: '0.1em',
                   textTransform: 'uppercase',
-                  color: 'rgba(245,245,247,0.28)',
+                  color: '#6e6e73',
                   lineHeight: 1.2,
                 }}
               >
@@ -270,7 +259,7 @@ function ProjectCard({
           style={{
             fontFamily: 'var(--font-mono)',
             fontSize: '0.57rem',
-            color: 'rgba(245,245,247,0.18)',
+            color: '#424245',
             letterSpacing: '0.04em',
             lineHeight: 1.65,
             margin: 0,
@@ -289,7 +278,7 @@ export function Projects() {
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <section id="projects" style={{ background: '#0f0f0f' }}>
+    <section id="projects" style={{ background: '#1d1d1f' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 clamp(24px, 5vw, 64px)' }}>
 
         {/* Header */}
@@ -303,10 +292,10 @@ export function Projects() {
           <p
             style={{
               fontFamily: 'var(--font-mono)',
-              fontSize: '0.82rem',
+              fontSize: '0.7rem',
               fontWeight: 500,
-              color: 'rgba(245,245,247,0.5)',
-              letterSpacing: '0.16em',
+              color: '#6e6e73',
+              letterSpacing: '0.22em',
               textTransform: 'uppercase',
               marginBottom: '16px',
             }}
@@ -325,21 +314,21 @@ export function Projects() {
             <div>
               <h2
                 style={{
-                  fontFamily: 'var(--font-heading)',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
                   fontWeight: 700,
                   fontSize: 'clamp(3rem, 6vw, 6rem)',
-                  color: '#ffffff',
+                  color: '#f5f5f7',
                   lineHeight: 1.0,
-                  letterSpacing: '-0.025em',
+                  letterSpacing: '-0.002em',
                   marginBottom: '14px',
                 }}
               >
                 Systems{' '}
-                <span style={{ color: '#5AC8FA' }}>in production.</span>
+                <span style={{ color: '#2997ff' }}>in production.</span>
               </h2>
               <p
                 style={{
-                  color: 'rgba(245,245,247,0.55)',
+                  color: '#86868b',
                   fontSize: 'clamp(0.95rem, 1.1vw, 1.05rem)',
                   lineHeight: 1.8,
                   fontWeight: 400,
@@ -361,7 +350,7 @@ export function Projects() {
                 borderRadius: '99px',
                 background: 'rgba(255,255,255,0.06)',
                 border: '1px solid rgba(255,255,255,0.10)',
-                color: 'rgba(255,255,255,0.50)',
+                color: '#86868b',
                 fontWeight: 500,
                 fontSize: '0.82rem',
                 textDecoration: 'none',
@@ -372,12 +361,12 @@ export function Projects() {
               onMouseEnter={(e) => {
                 const el = e.currentTarget as HTMLAnchorElement;
                 el.style.background = 'rgba(255,255,255,0.10)';
-                el.style.color = '#ffffff';
+                el.style.color = '#f5f5f7';
               }}
               onMouseLeave={(e) => {
                 const el = e.currentTarget as HTMLAnchorElement;
                 el.style.background = 'rgba(255,255,255,0.06)';
-                el.style.color = 'rgba(255,255,255,0.50)';
+                el.style.color = '#86868b';
               }}
             >
               <GithubIcon size={14} />

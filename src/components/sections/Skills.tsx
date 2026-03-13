@@ -214,12 +214,11 @@ export function Skills() {
             </p>
             <h2
               style={{
-                fontFamily: 'var(--font-heading)',
                 fontWeight: 700,
-                fontSize: 'clamp(3rem, 6vw, 6rem)',
-                color: '#0a0a0a',
-                lineHeight: 1.0,
-                letterSpacing: '-0.025em',
+                fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+                color: '#f5f5f7',
+                lineHeight: 1.08,
+                letterSpacing: '-0.002em',
                 marginBottom: '16px',
               }}
             >
@@ -227,7 +226,7 @@ export function Skills() {
             </h2>
             <p
               style={{
-                color: '#4b5563',
+                color: '#86868b',
                 fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
                 lineHeight: 1.8,
                 fontWeight: 400,
@@ -262,7 +261,7 @@ export function Skills() {
       </div>
 
       {/* ── PART B: Values cards ────────────────────────── */}
-      <div className="bg-white section-padding">
+      <div className="section-padding">
         <div className="max-w-5xl mx-auto px-6">
           <motion.div
             ref={partBRef}
@@ -273,12 +272,11 @@ export function Skills() {
           >
             <h2
               style={{
-                fontFamily: 'var(--font-heading)',
                 fontWeight: 700,
-                fontSize: 'clamp(3rem, 6vw, 6rem)',
-                color: '#0a0a0a',
-                lineHeight: 1.0,
-                letterSpacing: '-0.025em',
+                fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+                color: '#f5f5f7',
+                lineHeight: 1.08,
+                letterSpacing: '-0.002em',
               }}
             >
               How I work.

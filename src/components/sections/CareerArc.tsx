@@ -34,7 +34,7 @@ export function CareerArc() {
   return (
     <section
       style={{
-        background: '#080808',
+        background: '#000000',
         paddingBlock: 'clamp(56px, 8vw, 80px)',
         overflow: 'hidden',
       }}
@@ -78,7 +78,7 @@ export function CareerArc() {
               key={pair.label}
               variants={cellVariants}
               style={{
-                background: '#080808',
+                background: '#000000',
                 padding: 'clamp(24px, 3.5vw, 44px)',
                 display: 'flex',
                 flexDirection: 'column',

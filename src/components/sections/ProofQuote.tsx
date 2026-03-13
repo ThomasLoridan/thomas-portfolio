@@ -10,50 +10,63 @@ export function ProofQuote() {
   return (
     <section
       style={{
-        background: '#ffffff',
+        background: '#1d1d1f',
         padding: 'clamp(48px, 7vw, 72px) clamp(24px, 6vw, 96px)',
       }}
     >
-      <motion.div
-        ref={ref}
-        initial={{ opacity: 0, y: 20 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        style={{
-          maxWidth: '700px',
-          margin: '0 auto',
-          borderLeft: '3px solid #0075eb',
-          paddingLeft: '28px',
-        }}
-      >
-        <p
+      <div style={{ maxWidth: '700px', margin: '0 auto', position: 'relative' }}>
+        {/* Left border — draws from top */}
+        <motion.div
+          initial={{ scaleY: 0 }}
+          animate={inView ? { scaleY: 1 } : {}}
+          transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
           style={{
-            fontFamily: 'var(--font-body)',
-            fontStyle: 'italic',
-            fontSize: 'clamp(1rem, 1.3vw, 1.2rem)',
-            color: '#1f2937',
-            lineHeight: 1.75,
-            margin: 0,
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: '3px',
+            background: '#2997ff',
+            transformOrigin: 'top',
           }}
+        />
+        <motion.div
+          ref={ref}
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          style={{ paddingLeft: '28px' }}
         >
-          &ldquo;SONAR replaced 8 hours of weekly manual work with a 5-minute automated process.
-          That&apos;s not a feature. That&apos;s a system.&rdquo;
-        </p>
-        <span
-          style={{
-            display: 'block',
-            marginTop: '16px',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.72rem',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            color: '#9ca3af',
-            fontStyle: 'normal',
-          }}
-        >
-          — SONAR · Amazon EU Transportation · 2024
-        </span>
-      </motion.div>
+          <p
+            style={{
+              fontStyle: 'italic',
+              fontSize: '19px',
+              color: '#86868b',
+              lineHeight: 1.6,
+              margin: 0,
+            }}
+          >
+            &ldquo;SONAR replaced 8 hours of weekly manual work with a 5-minute automated process.
+            That&apos;s not a feature. That&apos;s a system.&rdquo;
+          </p>
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={inView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            style={{
+              display: 'block',
+              marginTop: '16px',
+              fontSize: '12px',
+              fontWeight: 600,
+              letterSpacing: '0.05em',
+              color: '#6e6e73',
+              fontStyle: 'normal',
+            }}
+          >
+            — SONAR · Amazon EU Transportation · 2024
+          </motion.span>
+        </motion.div>
+      </div>
     </section>
   );
 }

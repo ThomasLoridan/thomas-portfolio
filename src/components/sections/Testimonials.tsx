@@ -33,7 +33,7 @@ export function Testimonials() {
   return (
     <section
       id="testimonials"
-      style={{ background: '#1d1d1f', paddingBlock: 'clamp(5rem,10vw,8rem)' }}
+      style={{ background: '#161617', paddingBlock: 'clamp(5rem,10vw,8rem)' }}
     >
       <div className="max-w-5xl mx-auto px-6">
         {/* Header */}
@@ -49,7 +49,7 @@ export function Testimonials() {
               fontSize: '0.82rem',
               fontFamily: 'var(--font-mono)',
               fontWeight: 500,
-              color: 'rgba(245,245,247,0.5)',
+              color: '#6e6e73',
               letterSpacing: '0.16em',
               textTransform: 'uppercase',
               marginBottom: '20px',
@@ -59,22 +59,22 @@ export function Testimonials() {
           </p>
           <p
             style={{
-              fontFamily: 'var(--font-heading)',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
               fontWeight: 700,
               fontSize: 'clamp(3rem, 6vw, 6rem)',
-              color: '#ffffff',
+              color: '#f5f5f7',
               lineHeight: 1.0,
-              letterSpacing: '-0.025em',
+              letterSpacing: '-0.002em',
               marginBottom: '20px',
             }}
           >
             &ldquo;Product instinct.{' '}
-            <span style={{ color: '#5AC8FA' }}>Technical depth.</span>{' '}
+            <span style={{ color: '#2997ff' }}>Technical depth.</span>{' '}
             Delivery.&rdquo;
           </p>
           <p
             style={{
-              color: 'rgba(245,245,247,0.65)',
+              color: '#86868b',
               fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
               lineHeight: 1.8,
               fontWeight: 400,
@@ -108,7 +108,7 @@ export function Testimonials() {
                     fontFamily: 'var(--font-heading)',
                     fontWeight: 700,
                     fontSize: '1.05rem',
-                    color: '#ffffff',
+                    color: '#f5f5f7',
                     letterSpacing: '-0.01em',
                   }}
                 >
@@ -119,7 +119,7 @@ export function Testimonials() {
                     fontFamily: 'var(--font-mono)',
                     fontSize: '0.72rem',
                     fontWeight: 500,
-                    color: 'rgba(245,245,247,0.6)',
+                    color: '#86868b',
                     background: 'rgba(245,245,247,0.06)',
                     border: '1px solid rgba(245,245,247,0.12)',
                     padding: '3px 10px',
@@ -153,7 +153,7 @@ export function Testimonials() {
                     fontWeight: 400,
                     fontSize: 'clamp(1.05rem, 1.3vw, 1.2rem)',
                     lineHeight: 1.8,
-                    color: 'rgba(245,245,247,0.9)',
+                    color: '#f5f5f7',
                     fontStyle: 'italic',
                   }}
                 >

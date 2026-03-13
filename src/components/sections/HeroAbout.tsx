@@ -39,7 +39,7 @@ export function HeroAbout() {
           width: '100vw',
           minHeight: '100vh',
           overflow: 'hidden',
-          background: '#080808',
+          background: '#000000',
         }}
       >
         {/* Sculptural background layers */}
@@ -224,15 +224,15 @@ export function HeroAbout() {
       <div
         aria-hidden="true"
         style={{
-          height: '120px',
-          background: 'linear-gradient(to bottom, #080808 0%, #ffffff 100%)',
+          height: '60px',
+          background: 'linear-gradient(to bottom, #000000 0%, #1d1d1f 100%)',
         }}
       />
 
       {/* ══════════════════════════════════════════════════
           WHITE ABOUT — 3-block enabling voice
       ══════════════════════════════════════════════════ */}
-      <section id="about" style={{ background: '#ffffff', paddingBottom: 'clamp(64px, 9vw, 96px)' }}>
+      <section id="about" style={{ background: '#1d1d1f', paddingTop: 'clamp(48px, 7vw, 80px)', paddingBottom: 'clamp(64px, 9vw, 96px)' }}>
         <div style={{ maxWidth: '860px', margin: '0 auto', padding: '0 clamp(24px, 5vw, 48px)' }}>
           <motion.div
             ref={aboutRef}
@@ -243,28 +243,40 @@ export function HeroAbout() {
             {/* Eyebrow */}
             <p
               style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.72rem',
-                fontWeight: 500,
-                color: '#0075eb',
-                letterSpacing: '0.18em',
+                fontSize: '12px',
+                fontWeight: 600,
+                color: '#6e6e73',
+                letterSpacing: '0.1em',
                 textTransform: 'uppercase',
-                marginBottom: '32px',
+                marginBottom: '24px',
               }}
             >
               About
             </p>
 
-            {/* Block 1 — identity, bold, larger */}
+            {/* H2 */}
+            <h2
+              style={{
+                fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+                fontWeight: 700,
+                letterSpacing: '-0.002em',
+                lineHeight: 1.08,
+                color: '#f5f5f7',
+                marginBottom: '28px',
+              }}
+            >
+              Builder. Strategist. Executor.
+            </h2>
+
+            {/* Block 1 — identity, bold */}
             <p
               style={{
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 800,
-                fontSize: 'clamp(1.5rem, 2.8vw, 2.4rem)',
-                color: '#0a0a0a',
-                lineHeight: 1.15,
-                letterSpacing: '-0.02em',
-                marginBottom: '24px',
+                fontWeight: 600,
+                fontSize: 'clamp(1rem, 1.8vw, 1.25rem)',
+                color: '#f5f5f7',
+                lineHeight: 1.4,
+                letterSpacing: '-0.01em',
+                marginBottom: '20px',
               }}
             >
               Automation-first. Data-native. Delivery-obsessed.
@@ -273,11 +285,10 @@ export function HeroAbout() {
             {/* Block 2 — enabling voice */}
             <p
               style={{
-                fontSize: 'clamp(1rem, 1.2vw, 1.1rem)',
-                color: '#374151',
-                lineHeight: 1.8,
+                fontSize: '17px',
+                color: '#86868b',
+                lineHeight: 1.7,
                 marginBottom: '20px',
-                fontFamily: 'var(--font-body)',
               }}
             >
               If you need someone who ships Python systems with €13M+ ARR impact, aligns 50+ stakeholders
@@ -287,11 +298,9 @@ export function HeroAbout() {
             {/* Block 3 — credential anchor, small, muted */}
             <p
               style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.8rem',
-                color: '#9ca3af',
-                letterSpacing: '0.04em',
-                lineHeight: 1.7,
+                fontSize: '13px',
+                color: '#6e6e73',
+                lineHeight: 1.5,
               }}
             >
               MSc École Centrale Lille&nbsp;·&nbsp;Co-founder Familyad (Station F finalist)&nbsp;·&nbsp;Open to relocation.
