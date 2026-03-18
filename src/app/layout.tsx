@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Plus_Jakarta_Sans, Inter, JetBrains_Mono } from 'next/font/google';
+import { Plus_Jakarta_Sans, Inter, JetBrains_Mono, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import { GSAPProvider } from '@/components/providers/GSAPProvider';
 
@@ -22,6 +22,14 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains',
   display: 'swap',
   weight: ['400', '500'],
+});
+
+const playfairDisplay = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-serif',
+  display: 'swap',
+  weight: ['700', '800', '900'],
+  style: ['normal', 'italic'],
 });
 
 export const metadata: Metadata = {
@@ -56,7 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${plusJakartaSans.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${plusJakartaSans.variable} ${inter.variable} ${jetbrainsMono.variable} ${playfairDisplay.variable}`}
     >
       <body className="min-h-screen antialiased bg-white text-[#0a0a0a]" style={{ overflowX: 'hidden', maxWidth: '100%' }}>
         <GSAPProvider>{children}</GSAPProvider>

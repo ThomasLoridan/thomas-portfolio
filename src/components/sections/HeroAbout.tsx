@@ -1,37 +1,98 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 import Image from 'next/image';
+import { gsap } from '@/lib/gsap';
 import { profile } from '@/data/profile';
 
-const EASE_EXPO = [0.16, 1, 0.3, 1] as [number, number, number, number];
+const WORDS = ['Builder.', 'Strategist.', 'Executor.'];
 
-/* ─── Main component ────────────────────────────────────── */
+// Word reveal timing constants
+const WORD_DELAY   = 0.3;   // first word starts at 0.3s
+const WORD_STAGGER = 0.12;  // 120ms between each word
+const WORD_DUR     = 0.75;  // each word animates for 750ms
+// last word settles at: WORD_DELAY + (n-1)*STAGGER + WORD_DUR
+const LAST_WORD_END = WORD_DELAY + (WORDS.length - 1) * WORD_STAGGER + WORD_DUR;
+
 export function HeroAbout() {
   const scrollTo = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
-  const aboutRef = useRef<HTMLDivElement>(null);
+  // ── Hero GSAP refs ──────────────────────────────────────────
+  const heroRef     = useRef<HTMLElement>(null);
+  const eyebrowRef  = useRef<HTMLParagraphElement>(null);
+  const lineRefs    = useRef<(HTMLSpanElement | null)[]>([]);
+  const subRef      = useRef<HTMLParagraphElement>(null);
+  const ctaRef      = useRef<HTMLDivElement>(null);
+  const shimmerRef  = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Eyebrow fades in with first word
+      gsap.fromTo(eyebrowRef.current,
+        { opacity: 0, y: 8 },
+        { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: WORD_DELAY }
+      );
+
+      // Word-by-word clip reveal (each word slides up from overflow:hidden container)
+      const lines = lineRefs.current.filter(Boolean);
+      gsap.fromTo(lines,
+        { yPercent: 110 },
+        {
+          yPercent: 0,
+          duration: WORD_DUR,
+          ease: 'power4.out',
+          stagger: WORD_STAGGER,
+          delay: WORD_DELAY,
+        }
+      );
+
+      // Sub-headline: 300ms after last word settles
+      gsap.fromTo(subRef.current,
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', delay: LAST_WORD_END + 0.3 }
+      );
+
+      // CTA: 400ms after sub-headline starts
+      gsap.fromTo(ctaRef.current,
+        { opacity: 0, y: 8 },
+        { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: LAST_WORD_END + 0.7 }
+      );
+    }, heroRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  const handleShimmer = () => {
+    if (!shimmerRef.current) return;
+    gsap.fromTo(shimmerRef.current,
+      { x: '-120%' },
+      { x: '120%', duration: 0.55, ease: 'power2.inOut' }
+    );
+  };
+
+  // ── About section ref ───────────────────────────────────────
+  const aboutRef   = useRef<HTMLDivElement>(null);
   const aboutInView = useInView(aboutRef, { once: true, margin: '-10%' });
 
   return (
     <>
-      {/* ─── Responsive overrides ──────────────────────── */}
+      {/* ── Responsive overrides ─────────────────────────────── */}
       <style>{`
         @media (max-width: 767px) {
           .hero-section { display: flex !important; flex-direction: column !important; min-height: 100svh !important; }
-          .hero-photo-wrap { position: relative !important; left: 0 !important; transform: none !important; width: 100% !important; height: 65vh !important; bottom: auto !important; }
-          .hero-text-wrap { position: relative !important; bottom: auto !important; left: auto !important; padding: 24px !important; max-width: 100% !important; }
-          .hero-h1 { font-size: clamp(2rem, 8vw, 3rem) !important; }
-          .hero-h1-sub { font-size: clamp(1.1rem, 4vw, 1.5rem) !important; }
+          .hero-photo-wrap { position: relative !important; left: 0 !important; transform: none !important; width: 100% !important; height: 58vh !important; bottom: auto !important; }
+          .hero-text-wrap { position: relative !important; bottom: auto !important; left: auto !important; padding: 28px 24px !important; max-width: 100% !important; }
+          .hero-h1 { font-size: clamp(3rem, 11vw, 5rem) !important; }
         }
       `}</style>
 
-      {/* ══════════════════════════════════════════════════
-          DARK HERO — sculptural background
-      ══════════════════════════════════════════════════ */}
+      {/* ══════════════════════════════════════════════════════
+          HERO — cinematic dark stage
+      ══════════════════════════════════════════════════════ */}
       <section
+        ref={heroRef}
         id="hero"
         className="hero-section"
         style={{
@@ -39,53 +100,43 @@ export function HeroAbout() {
           width: '100vw',
           minHeight: '100vh',
           overflow: 'hidden',
-          background: '#000000',
+          background: '#080808',
         }}
       >
-        {/* Sculptural background layers */}
+        {/* Stage light — subtle top-right radial glow */}
         <div
+          aria-hidden="true"
           style={{
             position: 'absolute',
             inset: 0,
+            pointerEvents: 'none',
             background:
-              'radial-gradient(ellipse at 30% 70%, rgba(90,200,250,0.07) 0%, transparent 50%), ' +
-              'radial-gradient(ellipse at 70% 20%, rgba(90,100,255,0.10) 0%, transparent 50%), ' +
-              'radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.02) 0%, transparent 60%)',
-            pointerEvents: 'none',
+              'radial-gradient(ellipse 70% 55% at 65% -5%, rgba(255,255,255,0.055) 0%, transparent 70%),' +
+              'radial-gradient(ellipse 50% 40% at 30% 100%, rgba(90,200,250,0.06) 0%, transparent 60%)',
             zIndex: 0,
-          }}
-        />
-        {/* Noise grain */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundImage:
-              'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\' opacity=\'0.04\'/%3E%3C/svg%3E")',
-            backgroundRepeat: 'repeat',
-            backgroundSize: '200px 200px',
-            pointerEvents: 'none',
-            zIndex: 0,
-            opacity: 0.6,
           }}
         />
 
-        {/* Photo */}
-        <motion.div
+        {/* Profile photo — dominant, center-right, bottom-anchored */}
+        <div
           className="hero-photo-wrap"
-          initial={{ y: 30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 1.4, ease: EASE_EXPO }}
           style={{
             position: 'absolute',
             bottom: 0,
             left: '50%',
-            transform: 'translateX(-40%)',
-            height: '95vh',
-            width: 'clamp(280px, 40vw, 540px)',
-            WebkitMaskImage: 'linear-gradient(to top, black 60%, transparent 100%)',
-            maskImage: 'linear-gradient(to top, black 60%, transparent 100%)',
+            transform: 'translateX(-15%)',
+            height: '94vh',
+            width: 'clamp(300px, 48vw, 760px)',
             zIndex: 1,
+            // Bottom fade + left-edge feather for dark stage treatment
+            maskImage:
+              'linear-gradient(to right, rgba(8,8,8,1) 0%, rgba(8,8,8,0.55) 25%, transparent 55%),' +
+              'linear-gradient(to top, #080808 0%, rgba(8,8,8,0.55) 45%, transparent 85%)',
+            WebkitMaskImage:
+              'linear-gradient(to right, rgba(8,8,8,1) 0%, rgba(8,8,8,0.55) 25%, transparent 55%),' +
+              'linear-gradient(to top, #080808 0%, rgba(8,8,8,0.55) 45%, transparent 85%)',
+            maskComposite: 'intersect',
+            WebkitMaskComposite: 'destination-in',
           }}
         >
           <Image
@@ -94,144 +145,136 @@ export function HeroAbout() {
             fill
             style={{ objectFit: 'contain', objectPosition: 'bottom center' }}
             priority
-            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 540px"
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 48vw, 760px"
           />
-        </motion.div>
+        </div>
 
-        {/* Text block — bottom-left */}
+        {/* Text block — bottom-left, above photo */}
         <div
           className="hero-text-wrap"
           style={{
             position: 'absolute',
-            bottom: 'clamp(48px, 8vh, 80px)',
+            bottom: 'clamp(40px, 7vh, 80px)',
             left: 'clamp(32px, 6vw, 96px)',
             zIndex: 2,
-            maxWidth: 'clamp(440px, 44vw, 640px)',
+            maxWidth: 'clamp(340px, 42vw, 600px)',
           }}
         >
           {/* Eyebrow */}
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.05, ease: EASE_EXPO }}
+          <p
+            ref={eyebrowRef}
             style={{
-              color: 'rgba(255,255,255,0.45)',
+              opacity: 0,
+              color: 'rgba(255,255,255,0.38)',
               fontSize: '0.78rem',
               fontFamily: 'var(--font-mono)',
               fontWeight: 500,
               letterSpacing: '0.18em',
               textTransform: 'uppercase',
-              marginBottom: '14px',
-            }}
-          >
-            Thomas Loridan
-          </motion.p>
-
-          {/* H1 Line 1 — large, bold */}
-          <motion.h1
-            className="hero-h1"
-            initial={{ opacity: 0, y: 32 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease: EASE_EXPO }}
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 800,
-              lineHeight: 1.0,
-              letterSpacing: '-0.025em',
-              fontSize: 'clamp(2.4rem, 5vw, 4.8rem)',
-              color: '#ffffff',
-              marginBottom: '10px',
-            }}
-          >
-            TPM. Builder.
-            <br />
-            Automation Lead.
-          </motion.h1>
-
-          {/* H1 Line 2 — metrics sub-heading, lighter */}
-          <motion.p
-            className="hero-h1-sub"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3, ease: EASE_EXPO }}
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 600,
-              fontSize: 'clamp(1.1rem, 2vw, 1.8rem)',
-              color: 'rgba(245,245,247,0.55)',
-              lineHeight: 1.2,
-              letterSpacing: '-0.015em',
               marginBottom: '18px',
             }}
           >
-            €16M+ delivered. 26 countries. Systems that stay.
-          </motion.p>
+            Thomas Loridan
+          </p>
 
-          {/* Sub-headline — mono, muted */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
+          {/* H1 — serif, word-by-word clip reveal */}
+          <h1
+            className="hero-h1"
             style={{
-              color: 'rgba(245,245,247,0.38)',
-              fontSize: 'clamp(0.75rem, 0.85vw, 0.82rem)',
-              fontFamily: 'var(--font-mono)',
-              fontWeight: 400,
-              letterSpacing: '0.05em',
+              fontFamily: 'var(--font-serif)',
+              fontWeight: 800,
+              lineHeight: 1.0,
+              letterSpacing: '-0.02em',
+              fontSize: 'clamp(3.8rem, 7.5vw, 8rem)',
               marginBottom: '28px',
             }}
           >
-            Amazon EU Transportation&nbsp;·&nbsp;Python&nbsp;·&nbsp;AWS&nbsp;·&nbsp;€30M portfolio
-          </motion.p>
+            {WORDS.map((word, i) => (
+              /* Clip container — overflow hidden hides the word until it rises */
+              <span
+                key={word}
+                style={{ display: 'block', overflow: 'hidden', lineHeight: 1.06 }}
+              >
+                <span
+                  ref={el => { lineRefs.current[i] = el; }}
+                  style={{ display: 'block', color: '#ffffff' }}
+                >
+                  {word}
+                </span>
+              </span>
+            ))}
+          </h1>
 
-          {/* Single primary CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
+          {/* Sub-headline */}
+          <p
+            ref={subRef}
+            style={{
+              opacity: 0,
+              color: 'rgba(255,255,255,0.52)',
+              fontSize: 'clamp(0.95rem, 1.1vw, 1.1rem)',
+              fontFamily: 'var(--font-body)',
+              lineHeight: 1.65,
+              marginBottom: '36px',
+              maxWidth: '400px',
+            }}
           >
+            TPM at Amazon EU Transportation — €16M+ delivered, 26 countries, systems that stay.
+          </p>
+
+          {/* CTA — white pill, black text, GSAP shimmer on hover */}
+          <div ref={ctaRef} style={{ opacity: 0 }}>
             <button
               onClick={() => scrollTo('projects')}
+              onMouseEnter={handleShimmer}
               style={{
-                padding: '11px 28px',
+                position: 'relative',
+                overflow: 'hidden',
+                padding: '14px 36px',
                 borderRadius: '980px',
-                background: '#f5f5f7',
-                color: '#0a0a0a',
-                fontSize: '0.88rem',
+                background: '#ffffff',
+                color: '#080808',
+                fontSize: '0.9rem',
                 fontWeight: 600,
                 fontFamily: 'var(--font-body)',
+                letterSpacing: '0.01em',
                 border: 'none',
                 cursor: 'pointer',
-                transition: 'opacity 0.2s',
-                letterSpacing: '-0.01em',
               }}
-              onMouseEnter={(e) =>
-                ((e.currentTarget as HTMLElement).style.opacity = '0.85')
-              }
-              onMouseLeave={(e) =>
-                ((e.currentTarget as HTMLElement).style.opacity = '1')
-              }
             >
-              See my work ↓
+              {/* Shimmer layer — slides right on hover */}
+              <span
+                ref={shimmerRef}
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '55%',
+                  height: '100%',
+                  background:
+                    'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.65) 50%, transparent 100%)',
+                  transform: 'translateX(-120%)',
+                  pointerEvents: 'none',
+                }}
+              />
+              View my work ↓
             </button>
-          </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════
-          GRADIENT TRANSITION BAND
-      ══════════════════════════════════════════════════ */}
+      {/* ── Gradient transition band ────────────────────────── */}
       <div
         aria-hidden="true"
         style={{
           height: '60px',
-          background: 'linear-gradient(to bottom, #000000 0%, #1d1d1f 100%)',
+          background: 'linear-gradient(to bottom, #080808 0%, #1d1d1f 100%)',
         }}
       />
 
-      {/* ══════════════════════════════════════════════════
-          WHITE ABOUT — 3-block enabling voice
-      ══════════════════════════════════════════════════ */}
+      {/* ══════════════════════════════════════════════════════
+          ABOUT — 3-block enabling voice (unchanged)
+      ══════════════════════════════════════════════════════ */}
       <section id="about" style={{ background: '#1d1d1f', paddingTop: 'clamp(48px, 7vw, 80px)', paddingBottom: 'clamp(64px, 9vw, 96px)' }}>
         <div style={{ maxWidth: '860px', margin: '0 auto', padding: '0 clamp(24px, 5vw, 48px)' }}>
           <motion.div
@@ -268,7 +311,7 @@ export function HeroAbout() {
               Builder. Strategist. Executor.
             </h2>
 
-            {/* Block 1 — identity, bold */}
+            {/* Block 1 */}
             <p
               style={{
                 fontWeight: 600,
@@ -282,7 +325,7 @@ export function HeroAbout() {
               Automation-first. Data-native. Delivery-obsessed.
             </p>
 
-            {/* Block 2 — enabling voice */}
+            {/* Block 2 */}
             <p
               style={{
                 fontSize: '17px',
@@ -295,7 +338,7 @@ export function HeroAbout() {
               across 26 countries, and doesn&apos;t stop at the spec — this is what you get.
             </p>
 
-            {/* Block 3 — credential anchor, small, muted */}
+            {/* Block 3 */}
             <p
               style={{
                 fontSize: '13px',

@@ -1,184 +1,161 @@
 'use client';
 
-import { motion } from 'framer-motion';
+/**
+ * Hero — standalone version (mirrors HeroAbout hero section).
+ * Not currently mounted in page.tsx (HeroAbout is used instead).
+ * Kept in sync for potential future split.
+ */
+
+import { useRef, useEffect } from 'react';
 import Image from 'next/image';
-import { ExternalLink } from 'lucide-react';
+import { gsap } from '@/lib/gsap';
 import { profile } from '@/data/profile';
 
+const WORDS = ['Builder.', 'Strategist.', 'Executor.'];
+
+const WORD_DELAY   = 0.3;
+const WORD_STAGGER = 0.12;
+const WORD_DUR     = 0.75;
+const LAST_WORD_END = WORD_DELAY + (WORDS.length - 1) * WORD_STAGGER + WORD_DUR;
+
 export function Hero() {
+  const heroRef    = useRef<HTMLElement>(null);
+  const eyebrowRef = useRef<HTMLParagraphElement>(null);
+  const lineRefs   = useRef<(HTMLSpanElement | null)[]>([]);
+  const subRef     = useRef<HTMLParagraphElement>(null);
+  const ctaRef     = useRef<HTMLDivElement>(null);
+  const shimmerRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(eyebrowRef.current,
+        { opacity: 0, y: 8 },
+        { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: WORD_DELAY }
+      );
+
+      const lines = lineRefs.current.filter(Boolean);
+      gsap.fromTo(lines,
+        { yPercent: 110 },
+        { yPercent: 0, duration: WORD_DUR, ease: 'power4.out', stagger: WORD_STAGGER, delay: WORD_DELAY }
+      );
+
+      gsap.fromTo(subRef.current,
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', delay: LAST_WORD_END + 0.3 }
+      );
+
+      gsap.fromTo(ctaRef.current,
+        { opacity: 0, y: 8 },
+        { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: LAST_WORD_END + 0.7 }
+      );
+    }, heroRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  const handleShimmer = () => {
+    if (!shimmerRef.current) return;
+    gsap.fromTo(shimmerRef.current,
+      { x: '-120%' },
+      { x: '120%', duration: 0.55, ease: 'power2.inOut' }
+    );
+  };
+
   const scrollTo = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
   return (
     <section
+      ref={heroRef}
       id="hero"
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '100vh',
-        overflow: 'hidden',
-        backgroundColor: '#0a0a0a',
-      }}
+      style={{ position: 'relative', width: '100vw', minHeight: '100vh', overflow: 'hidden', background: '#080808' }}
     >
-      {/* Animated gradient orbs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div
-          className="absolute w-[600px] h-[600px] rounded-full opacity-20 animate-pulse-glow"
-          style={{
-            background: 'radial-gradient(circle, rgba(0,117,235,0.4) 0%, transparent 70%)',
-            top: '-150px',
-            right: '-100px',
-          }}
-        />
-        <div
-          className="absolute w-[500px] h-[500px] rounded-full opacity-15 animate-pulse-glow"
-          style={{
-            background: 'radial-gradient(circle, rgba(139,92,246,0.4) 0%, transparent 70%)',
-            bottom: '-100px',
-            left: '-150px',
-            animationDelay: '1.5s',
-          }}
-        />
-      </div>
+      {/* Stage light */}
+      <div aria-hidden="true" style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0,
+        background:
+          'radial-gradient(ellipse 70% 55% at 65% -5%, rgba(255,255,255,0.055) 0%, transparent 70%),' +
+          'radial-gradient(ellipse 50% 40% at 30% 100%, rgba(90,200,250,0.06) 0%, transparent 60%)',
+      }} />
 
-      {/* Subtle dot grid */}
-      <div
-        className="absolute inset-0 opacity-[0.018]"
-        style={{
-          backgroundImage: 'radial-gradient(rgba(255,255,255,0.9) 1px, transparent 1px)',
-          backgroundSize: '44px 44px',
-        }}
-      />
-
-      {/* Profile photo — dominant, bottom-anchored, right 60% */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.96, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.9, delay: 0.5, ease: 'easeOut' }}
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: '55%',
-          transform: 'translateX(-50%)',
-          height: '88vh',
-          width: '55vw',
-          maxWidth: '860px',
-          zIndex: 1,
-          maskImage: 'linear-gradient(to top, black 55%, transparent 100%)',
-          WebkitMaskImage: 'linear-gradient(to top, black 55%, transparent 100%)',
-        }}
-      >
+      {/* Photo */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-15%)',
+        height: '94vh', width: 'clamp(300px, 48vw, 760px)', zIndex: 1,
+        maskImage:
+          'linear-gradient(to right, rgba(8,8,8,1) 0%, rgba(8,8,8,0.55) 25%, transparent 55%),' +
+          'linear-gradient(to top, #080808 0%, rgba(8,8,8,0.55) 45%, transparent 85%)',
+        WebkitMaskImage:
+          'linear-gradient(to right, rgba(8,8,8,1) 0%, rgba(8,8,8,0.55) 25%, transparent 55%),' +
+          'linear-gradient(to top, #080808 0%, rgba(8,8,8,0.55) 45%, transparent 85%)',
+        maskComposite: 'intersect',
+        WebkitMaskComposite: 'destination-in',
+      }}>
         <Image
           src={profile.photo}
           alt={`${profile.name} — Technical Program Manager`}
           fill
-          className="object-contain object-bottom"
+          style={{ objectFit: 'contain', objectPosition: 'bottom center' }}
           priority
-          sizes="(max-width: 768px) 80vw, 55vw"
+          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 48vw, 760px"
         />
-      </motion.div>
+      </div>
 
-      {/* Text — bottom left, above photo */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 'clamp(40px, 6vh, 72px)',
-          left: 'clamp(32px, 5vw, 80px)',
-          maxWidth: '480px',
-          zIndex: 2,
-        }}
-      >
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          style={{
-            color: 'rgba(255,255,255,0.5)',
-            fontSize: '0.95rem',
-            marginBottom: '14px',
-            letterSpacing: '0.04em',
-          }}
-        >
+      {/* Text block */}
+      <div style={{
+        position: 'absolute',
+        bottom: 'clamp(40px, 7vh, 80px)',
+        left: 'clamp(32px, 6vw, 96px)',
+        zIndex: 2,
+        maxWidth: 'clamp(340px, 42vw, 600px)',
+      }}>
+        <p ref={eyebrowRef} style={{
+          opacity: 0, color: 'rgba(255,255,255,0.38)', fontSize: '0.78rem',
+          fontFamily: 'var(--font-mono)', fontWeight: 500, letterSpacing: '0.18em',
+          textTransform: 'uppercase', marginBottom: '18px',
+        }}>
           Thomas Loridan
-        </motion.p>
+        </p>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.45 }}
-          style={{
-            fontSize: 'clamp(3.2rem, 6vw, 6.5rem)',
-            fontWeight: 800,
-            lineHeight: 0.95,
-            marginBottom: '20px',
-            fontFamily: 'var(--font-heading)',
-          }}
-        >
-          <span style={{ color: '#fff', display: 'block' }}>Building bridges</span>
-          <span style={{ color: '#fff', display: 'block' }}>between business</span>
-          <span style={{ display: 'block' }}>
-            <span style={{ color: '#fff' }}>& </span>
-            <span style={{ color: '#5AC8FA' }}>technology.</span>
-          </span>
-        </motion.h1>
+        <h1 style={{
+          fontFamily: 'var(--font-serif)', fontWeight: 800, lineHeight: 1.0,
+          letterSpacing: '-0.02em', fontSize: 'clamp(3.8rem, 7.5vw, 8rem)', marginBottom: '28px',
+        }}>
+          {WORDS.map((word, i) => (
+            <span key={word} style={{ display: 'block', overflow: 'hidden', lineHeight: 1.06 }}>
+              <span ref={el => { lineRefs.current[i] = el; }} style={{ display: 'block', color: '#ffffff' }}>
+                {word}
+              </span>
+            </span>
+          ))}
+        </h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.7 }}
-          style={{
-            color: 'rgba(255,255,255,0.55)',
-            fontSize: 'clamp(0.9rem, 1vw, 1rem)',
-            lineHeight: 1.6,
-            marginBottom: '28px',
-            maxWidth: '360px',
-          }}
-        >
-          I lead cross-functional programs that create measurable impact across 26 countries.
-        </motion.p>
+        <p ref={subRef} style={{
+          opacity: 0, color: 'rgba(255,255,255,0.52)', fontSize: 'clamp(0.95rem, 1.1vw, 1.1rem)',
+          fontFamily: 'var(--font-body)', lineHeight: 1.65, marginBottom: '36px', maxWidth: '400px',
+        }}>
+          TPM at Amazon EU Transportation — €16M+ delivered, 26 countries, systems that stay.
+        </p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.9 }}
-          style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}
-        >
+        <div ref={ctaRef} style={{ opacity: 0 }}>
           <button
-            onClick={() => scrollTo('experience')}
+            onClick={() => scrollTo('projects')}
+            onMouseEnter={handleShimmer}
             style={{
-              padding: '10px 22px',
-              borderRadius: '980px',
-              background: 'rgba(255,255,255,0.12)',
-              border: '1px solid rgba(255,255,255,0.2)',
-              color: '#fff',
-              fontSize: '0.9rem',
-              backdropFilter: 'blur(8px)',
-              cursor: 'pointer',
+              position: 'relative', overflow: 'hidden', padding: '14px 36px',
+              borderRadius: '980px', background: '#ffffff', color: '#080808',
+              fontSize: '0.9rem', fontWeight: 600, fontFamily: 'var(--font-body)',
+              letterSpacing: '0.01em', border: 'none', cursor: 'pointer',
             }}
           >
+            <span ref={shimmerRef} aria-hidden="true" style={{
+              position: 'absolute', top: 0, left: 0, width: '55%', height: '100%',
+              background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.65) 50%, transparent 100%)',
+              transform: 'translateX(-120%)', pointerEvents: 'none',
+            }} />
             View my work ↓
           </button>
-          <a
-            href={profile.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              padding: '10px 22px',
-              borderRadius: '980px',
-              background: 'rgba(255,255,255,0.12)',
-              border: '1px solid rgba(255,255,255,0.2)',
-              color: '#fff',
-              fontSize: '0.9rem',
-              backdropFilter: 'blur(8px)',
-              textDecoration: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
-          >
-            LinkedIn <ExternalLink size={13} />
-          </a>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
