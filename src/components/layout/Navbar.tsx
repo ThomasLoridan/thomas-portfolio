@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { useScrollSpy } from '@/hooks/useScrollSpy';
@@ -16,26 +16,28 @@ const SECTION_IDS = NAV_LINKS.map((l) => l.href);
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [isHero, setIsHero] = useState(true);
+  const [hidden, setHidden] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const lastScrollY = useRef(0);
   const activeSection = useScrollSpy(SECTION_IDS);
 
   useEffect(() => {
-    const DARK_SECTIONS = new Set(['hero', 'experience', 'testimonials', 'projects', 'contact']);
     const onScroll = () => {
       const y = window.scrollY;
-      setScrolled(y > 24);
-      // Detect which section the navbar is currently over
-      let activeDark = true; // default to dark (hero is first)
-      document.querySelectorAll<HTMLElement>('section[id]').forEach((el) => {
-        const top = el.offsetTop;
-        const bottom = top + el.offsetHeight;
-        if (y + 60 >= top && y + 60 < bottom) {
-          activeDark = DARK_SECTIONS.has(el.id);
-        }
-      });
-      setIsHero(activeDark);
+
+      // Background: activate after 20px
+      setScrolled(y > 20);
+
+      // Auto-hide: hide when scrolling down past 80px, reveal on scroll up
+      if (y > 80) {
+        setHidden(y > lastScrollY.current);
+      } else {
+        setHidden(false);
+      }
+
+      lastScrollY.current = y;
     };
+
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -45,64 +47,102 @@ export function Navbar() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Color scheme: white text on dark hero, dark text on light sections
-  const onDark = isHero;
-
   return (
     <>
       <motion.nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${
-          scrolled && !onDark
-            ? 'bg-white/95 backdrop-blur-xl border-b border-gray-200/80 py-3 shadow-sm'
-            : scrolled && onDark
-            ? 'bg-[#0a0a0a]/90 backdrop-blur-xl border-b border-white/5 py-3'
-            : 'bg-transparent py-5'
-        }`}
         initial={{ y: -24, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
+        animate={{ y: hidden ? '-100%' : 0, opacity: 1 }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 50,
+          background: scrolled ? 'rgba(8,8,8,0.8)' : 'transparent',
+          backdropFilter: scrolled ? 'blur(20px)' : 'none',
+          WebkitBackdropFilter: scrolled ? 'blur(20px)' : 'none',
+          borderBottom: scrolled ? '1px solid rgba(255,255,255,0.06)' : '1px solid transparent',
+          padding: scrolled ? '12px 0' : '20px 0',
+          transition: 'background 0.3s ease, padding 0.3s ease, border-color 0.3s ease',
+        }}
       >
-        <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
+        <div style={{ maxWidth: '1080px', margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+
+          {/* Logo */}
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className={`text-lg font-extrabold font-heading transition-colors tracking-tight ${
-              onDark ? 'text-white hover:text-blue-400' : 'text-[#0a0a0a] hover:text-[#0075eb]'
-            }`}
             aria-label="Back to top"
+            style={{
+              fontSize: '1.1rem',
+              fontWeight: 800,
+              fontFamily: 'var(--font-heading)',
+              color: '#fff',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              letterSpacing: '-0.02em',
+              opacity: scrolled ? 1 : 0.9,
+              transition: 'opacity 0.2s ease',
+            }}
           >
             TL
           </button>
 
           {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-8">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }} className="hidden md:flex">
             {NAV_LINKS.map(({ label, href }) => (
               <button
                 key={href}
                 onClick={() => scrollTo(href)}
-                className={`text-sm font-medium transition-all duration-200 relative ${
-                  activeSection === href
-                    ? onDark ? 'text-white' : 'text-[#0a0a0a]'
-                    : onDark ? 'text-white/60 hover:text-white' : 'text-gray-500 hover:text-[#0a0a0a]'
-                }`}
+                style={{
+                  position: 'relative',
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  color: activeSection === href ? '#fff' : 'rgba(255,255,255,0.55)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'color 0.2s ease',
+                  padding: '4px 0',
+                }}
+                onMouseEnter={e => { if (activeSection !== href) (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.85)'; }}
+                onMouseLeave={e => { if (activeSection !== href) (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.55)'; }}
               >
                 {label}
                 {activeSection === href && (
                   <motion.span
                     layoutId="nav-underline"
-                    className={`absolute -bottom-1 left-0 right-0 h-px ${onDark ? 'bg-blue-400' : 'bg-[#0075eb]'}`}
+                    style={{
+                      position: 'absolute',
+                      bottom: -2,
+                      left: 0,
+                      right: 0,
+                      height: 1,
+                      background: '#5AC8FA',
+                    }}
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                   />
                 )}
               </button>
             ))}
 
-            {/* Get in touch CTA */}
+            {/* Get in touch — Apple CTA blue */}
             <button
               onClick={() => scrollTo('contact')}
-              className={`text-sm font-medium px-4 py-2 rounded-full transition-all duration-200 ${
-                onDark
-                  ? 'bg-white text-[#0a0a0a] hover:bg-gray-100'
-                  : 'bg-[#0a0a0a] text-white hover:bg-[#1a1a1a]'
-              }`}
+              style={{
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                padding: '8px 18px',
+                borderRadius: '980px',
+                background: '#0071E3',
+                color: '#fff',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'background 0.2s ease',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = '#0077ED'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = '#0071E3'; }}
             >
               Get in touch
             </button>
@@ -110,58 +150,100 @@ export function Navbar() {
 
           {/* Mobile hamburger */}
           <button
-            className={`md:hidden p-1.5 transition-colors ${
-              onDark ? 'text-white/60 hover:text-white' : 'text-gray-500 hover:text-[#0a0a0a]'
-            }`}
+            className="md:hidden"
             onClick={() => setMobileOpen(true)}
             aria-label="Open menu"
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'rgba(255,255,255,0.7)',
+              cursor: 'pointer',
+              padding: '6px',
+            }}
           >
             <Menu size={22} />
           </button>
         </div>
       </motion.nav>
 
-      {/* Mobile full-screen overlay */}
+      {/* Mobile overlay */}
       <AnimatePresence>
         {mobileOpen && (
           <>
             <motion.div
-              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+              style={{ position: 'fixed', inset: 0, zIndex: 40, background: 'rgba(0,0,0,0.5)' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setMobileOpen(false)}
             />
             <motion.div
-              className="fixed top-0 right-0 bottom-0 z-50 w-72 bg-white border-l border-gray-200 flex flex-col p-8 gap-10"
+              style={{
+                position: 'fixed',
+                top: 0,
+                right: 0,
+                bottom: 0,
+                zIndex: 50,
+                width: 280,
+                background: 'rgba(8,8,8,0.97)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                borderLeft: '1px solid rgba(255,255,255,0.08)',
+                display: 'flex',
+                flexDirection: 'column',
+                padding: '32px 28px',
+                gap: '40px',
+              }}
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 280 }}
             >
-              <div className="flex justify-between items-center">
-                <span className="text-lg font-extrabold font-heading text-[#0a0a0a] tracking-tight">TL</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '1.1rem', fontWeight: 800, fontFamily: 'var(--font-heading)', color: '#fff', letterSpacing: '-0.02em' }}>TL</span>
                 <button
-                  className="text-gray-400 hover:text-[#0a0a0a] p-1.5 transition-colors"
                   onClick={() => setMobileOpen(false)}
                   aria-label="Close menu"
+                  style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', padding: '6px' }}
                 >
                   <X size={20} />
                 </button>
               </div>
-              <nav className="flex flex-col gap-6">
+
+              <nav style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                 {NAV_LINKS.map(({ label, href }) => (
                   <button
                     key={href}
                     onClick={() => scrollTo(href)}
-                    className="text-left text-xl font-medium text-gray-600 hover:text-[#0a0a0a] transition-colors font-heading"
+                    style={{
+                      textAlign: 'left',
+                      fontSize: '1.25rem',
+                      fontWeight: 500,
+                      fontFamily: 'var(--font-heading)',
+                      color: activeSection === href ? '#fff' : 'rgba(255,255,255,0.55)',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      transition: 'color 0.2s ease',
+                    }}
                   >
                     {label}
                   </button>
                 ))}
                 <button
                   onClick={() => scrollTo('contact')}
-                  className="mt-4 btn-black self-start"
+                  style={{
+                    marginTop: '8px',
+                    alignSelf: 'flex-start',
+                    fontSize: '0.9rem',
+                    fontWeight: 500,
+                    padding: '10px 22px',
+                    borderRadius: '980px',
+                    background: '#0071E3',
+                    color: '#fff',
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
                 >
                   Get in touch
                 </button>
