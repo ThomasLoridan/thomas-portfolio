@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Plus_Jakarta_Sans, Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
+import { GSAPProvider } from '@/components/providers/GSAPProvider';
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -58,7 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${plusJakartaSans.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body className="min-h-screen antialiased bg-white text-[#0a0a0a]" style={{ overflowX: 'hidden', maxWidth: '100%' }}>
-        {children}
+        <GSAPProvider>{children}</GSAPProvider>
       </body>
     </html>
   );
