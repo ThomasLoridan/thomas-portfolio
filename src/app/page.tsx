@@ -7,6 +7,7 @@ import { CareerArc } from '@/components/sections/CareerArc';
 import { Skills } from '@/components/sections/Skills';
 import { Experience } from '@/components/sections/Experience';
 import { PauseSection } from '@/components/sections/PauseSection';
+import { ImpactPause } from '@/components/sections/ImpactPause';
 import { Projects } from '@/components/sections/Projects';
 import { Testimonials } from '@/components/sections/Testimonials';
 import { Hobbies } from '@/components/Hobbies';
@@ -33,12 +34,8 @@ export default function HomePage() {
         {/* Work experience by company — dark bg */}
         <Experience />
 
-        {/* Pause 1 — after Experience */}
-        <PauseSection
-          metric="€16.3M+"
-          label="Total ARR impact delivered across Amazon systems in 3 years."
-          variant="dark"
-        />
+        {/* Impact pause — before Projects */}
+        <ImpactPause />
 
         {/* Projects grid — dark bg */}
         <Projects />
