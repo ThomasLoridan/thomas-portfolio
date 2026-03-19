@@ -1,9 +1,8 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
-import { motion, useInView } from 'framer-motion';
 import Image from 'next/image';
-import { gsap } from '@/lib/gsap';
+import { gsap, ScrollTrigger } from '@/lib/gsap';
 import { profile } from '@/data/profile';
 
 const WORDS = ['Builder.', 'Strategist.', 'Executor.'];
@@ -72,9 +71,42 @@ export function HeroAbout() {
     );
   };
 
-  // ── About section ref ───────────────────────────────────────
-  const aboutRef   = useRef<HTMLDivElement>(null);
-  const aboutInView = useInView(aboutRef, { once: true, margin: '-10%' });
+  // ── About section refs ──────────────────────────────────────
+  const aboutSectionRef = useRef<HTMLElement>(null);
+  const aboutEyebrowRef = useRef<HTMLParagraphElement>(null);
+  const h2WordRefs      = useRef<(HTMLSpanElement | null)[]>([]);
+  const blockRefs       = useRef<(HTMLParagraphElement | null)[]>([]);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const trigger = aboutSectionRef.current;
+
+      // Eyebrow
+      gsap.fromTo(aboutEyebrowRef.current,
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out',
+          scrollTrigger: { trigger, start: 'top 80%' } }
+      );
+
+      // H2 word-by-word clip reveal on scroll
+      const words = h2WordRefs.current.filter(Boolean);
+      gsap.fromTo(words,
+        { yPercent: 110 },
+        { yPercent: 0, duration: 0.8, ease: 'power4.out', stagger: 0.12,
+          scrollTrigger: { trigger, start: 'top 75%' } }
+      );
+
+      // 3 content blocks — staggered 100ms each
+      const blocks = blockRefs.current.filter(Boolean);
+      gsap.fromTo(blocks,
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', stagger: 0.1,
+          scrollTrigger: { trigger, start: 'top 62%' } }
+      );
+    }, aboutSectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <>
@@ -273,82 +305,105 @@ export function HeroAbout() {
       />
 
       {/* ══════════════════════════════════════════════════════
-          ABOUT — 3-block enabling voice (unchanged)
+          ABOUT — 3-block enabling voice
       ══════════════════════════════════════════════════════ */}
-      <section id="about" style={{ background: '#1d1d1f', paddingTop: 'clamp(48px, 7vw, 80px)', paddingBottom: 'clamp(64px, 9vw, 96px)' }}>
+      <section
+        ref={aboutSectionRef}
+        id="about"
+        style={{ background: '#1d1d1f', paddingTop: 'clamp(48px, 7vw, 80px)', paddingBottom: 'clamp(64px, 9vw, 96px)' }}
+      >
         <div style={{ maxWidth: '860px', margin: '0 auto', padding: '0 clamp(24px, 5vw, 48px)' }}>
-          <motion.div
-            ref={aboutRef}
-            initial={{ opacity: 0, y: 28 }}
-            animate={aboutInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, ease: 'easeOut' }}
+          {/* Eyebrow */}
+          <p
+            ref={aboutEyebrowRef}
+            style={{
+              opacity: 0,
+              fontSize: '12px',
+              fontWeight: 600,
+              color: '#6e6e73',
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              marginBottom: '24px',
+            }}
           >
-            {/* Eyebrow */}
-            <p
-              style={{
-                fontSize: '12px',
-                fontWeight: 600,
-                color: '#6e6e73',
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                marginBottom: '24px',
-              }}
-            >
-              About
-            </p>
+            About
+          </p>
 
-            {/* H2 */}
-            <h2
-              style={{
-                fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-                fontWeight: 700,
-                letterSpacing: '-0.002em',
-                lineHeight: 1.08,
-                color: '#f5f5f7',
-                marginBottom: '28px',
-              }}
-            >
-              Builder. Strategist. Executor.
-            </h2>
+          {/* H2 — serif, word-by-word clip reveal on scroll */}
+          <h2
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+              fontWeight: 700,
+              letterSpacing: '-0.02em',
+              lineHeight: 1.08,
+              marginBottom: '32px',
+            }}
+          >
+            {WORDS.map((word, i) => (
+              <span
+                key={word}
+                style={{
+                  display: 'inline-block',
+                  overflow: 'hidden',
+                  verticalAlign: 'bottom',
+                  marginRight: i < WORDS.length - 1 ? '0.28em' : 0,
+                  lineHeight: 1.15,
+                }}
+              >
+                <span
+                  ref={el => { h2WordRefs.current[i] = el; }}
+                  style={{ display: 'inline-block', color: '#f5f5f7' }}
+                >
+                  {word}
+                </span>
+              </span>
+            ))}
+          </h2>
 
-            {/* Block 1 */}
-            <p
-              style={{
-                fontWeight: 600,
-                fontSize: 'clamp(1rem, 1.8vw, 1.25rem)',
-                color: '#f5f5f7',
-                lineHeight: 1.4,
-                letterSpacing: '-0.01em',
-                marginBottom: '20px',
-              }}
-            >
-              Automation-first. Data-native. Delivery-obsessed.
-            </p>
+          {/* Block 1 */}
+          <p
+            ref={el => { blockRefs.current[0] = el; }}
+            style={{
+              opacity: 0,
+              fontWeight: 600,
+              fontSize: 'clamp(1rem, 1.8vw, 1.25rem)',
+              color: '#f5f5f7',
+              lineHeight: 1.4,
+              letterSpacing: '-0.01em',
+              marginBottom: '20px',
+            }}
+          >
+            Automation-first. Data-native. Delivery-obsessed.
+          </p>
 
-            {/* Block 2 */}
-            <p
-              style={{
-                fontSize: '17px',
-                color: '#86868b',
-                lineHeight: 1.7,
-                marginBottom: '20px',
-              }}
-            >
-              If you need someone who ships Python systems with €13M+ ARR impact, aligns 50+ stakeholders
-              across 26 countries, and doesn&apos;t stop at the spec — this is what you get.
-            </p>
+          {/* Block 2 */}
+          <p
+            ref={el => { blockRefs.current[1] = el; }}
+            style={{
+              opacity: 0,
+              fontSize: '17px',
+              color: '#86868b',
+              lineHeight: 1.7,
+              marginBottom: '20px',
+            }}
+          >
+            If you need someone who ships Python systems with €13M+ ARR impact, aligns 50+ stakeholders
+            across 26 countries, and doesn&apos;t stop at the spec — this is what you get.
+          </p>
 
-            {/* Block 3 */}
-            <p
-              style={{
-                fontSize: '13px',
-                color: '#6e6e73',
-                lineHeight: 1.5,
-              }}
-            >
-              MSc École Centrale Lille&nbsp;·&nbsp;Co-founder Familyad (Station F finalist)&nbsp;·&nbsp;Open to relocation.
-            </p>
-          </motion.div>
+          {/* Block 3 */}
+          <p
+            ref={el => { blockRefs.current[2] = el; }}
+            style={{
+              opacity: 0,
+              fontSize: '13px',
+              color: '#6e6e73',
+              lineHeight: 1.5,
+            }}
+          >
+            MSc École Centrale Lille&nbsp;·&nbsp;Co-founder Familyad (Station F finalist)&nbsp;·&nbsp;Open to relocation.
+          </p>
         </div>
       </section>
     </>
