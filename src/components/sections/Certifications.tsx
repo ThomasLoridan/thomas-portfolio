@@ -1,187 +1,175 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { X, ExternalLink } from 'lucide-react';
 import { certifications } from '@/data/certifications';
+import { gsap } from '@/lib/gsap';
 import type { Certification } from '@/types';
 
-/* ─── Marquee card ─────────────────────────────────────── */
+/* ─── Logo renderer (shared by card + modal) ─────────────── */
+function CertLogo({
+  cert,
+  size = 'card',
+}: {
+  cert: Certification;
+  size?: 'card' | 'modal';
+}) {
+  const isMcKinsey = cert.issuer === 'MCKINSEY & COMPANY';
+  const imgH = size === 'modal' ? 44 : 36;
+
+  if (cert.isAward) {
+    return (
+      <span style={{ fontSize: size === 'modal' ? '44px' : '36px', lineHeight: 1 }}>
+        {cert.awardIcon}
+      </span>
+    );
+  }
+  if (isMcKinsey) {
+    return (
+      <span
+        style={{
+          fontFamily: 'Georgia, serif',
+          fontSize: size === 'modal' ? '1rem' : '0.78rem',
+          color: '#0C2340',
+          fontWeight: 600,
+          lineHeight: 1.3,
+        }}
+      >
+        McKinsey &amp; Company
+      </span>
+    );
+  }
+  if (cert.logo) {
+    return (
+      <Image
+        src={cert.logo}
+        width={cert.logoWidth}
+        height={cert.logoHeight}
+        alt={cert.issuer}
+        style={{ objectFit: 'contain', objectPosition: 'left', maxHeight: `${imgH}px`, width: 'auto' }}
+      />
+    );
+  }
+  return null;
+}
+
+/* ─── Cert card — Apple grid tile ────────────────────────── */
 function CertCard({
   cert,
+  cardRef,
   onClick,
 }: {
   cert: Certification;
+  cardRef: (el: HTMLDivElement | null) => void;
   onClick: () => void;
 }) {
-  const isMcKinsey = cert.issuer === 'MCKINSEY & COMPANY';
-
   return (
     <div
+      ref={cardRef}
       onClick={onClick}
       style={{
-        flexShrink: 0,
-        width: '400px',
+        opacity: 0,
         background: '#ffffff',
-        border: '1px solid #e8e8e8',
-        borderRadius: '20px',
-        marginRight: '16px',
+        border: '1px solid rgba(0,0,0,0.06)',
+        borderRadius: '16px',
+        padding: 'clamp(24px, 3vw, 32px)',
         cursor: 'pointer',
         display: 'flex',
-        flexDirection: 'row',
-        overflow: 'hidden',
-        transition: 'box-shadow 0.2s, transform 0.2s',
+        flexDirection: 'column',
+        gap: '14px',
+        transition: 'box-shadow 0.3s ease, transform 0.3s ease',
       }}
       onMouseEnter={(e) => {
-        (e.currentTarget as HTMLElement).style.boxShadow = '0 12px 40px rgba(0,0,0,0.12)';
-        (e.currentTarget as HTMLElement).style.transform = 'translateY(-3px)';
+        const el = e.currentTarget as HTMLDivElement;
+        el.style.boxShadow = '0 12px 48px rgba(0,0,0,0.10)';
+        el.style.transform = 'translateY(-4px)';
       }}
       onMouseLeave={(e) => {
-        (e.currentTarget as HTMLElement).style.boxShadow = 'none';
-        (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+        const el = e.currentTarget as HTMLDivElement;
+        el.style.boxShadow = 'none';
+        el.style.transform = 'translateY(0)';
       }}
     >
-      {/* Left — logo panel */}
-      <div
-        style={{
-          width: '120px',
-          flexShrink: 0,
-          background: cert.isAward ? `${cert.accentColor}10` : '#f5f5f7',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '24px 16px',
-        }}
-      >
-        {cert.isAward ? (
-          <span style={{ fontSize: '40px', lineHeight: 1 }}>{cert.awardIcon}</span>
-        ) : isMcKinsey ? (
-          <span
-            style={{
-              fontFamily: 'Georgia, serif',
-              fontSize: '0.7rem',
-              color: '#0C2340',
-              fontWeight: 600,
-              textAlign: 'center',
-              lineHeight: 1.4,
-            }}
-          >
-            McKinsey &amp; Company
-          </span>
-        ) : cert.logo ? (
-          <Image
-            src={cert.logo}
-            width={cert.logoWidth}
-            height={cert.logoHeight}
-            alt={cert.issuer}
-            style={{ objectFit: 'contain', maxWidth: '80px', maxHeight: '52px' }}
-          />
-        ) : (
-          <div
-            style={{
-              width: '52px',
-              height: '52px',
-              borderRadius: '50%',
-              background: `${cert.accentColor}18`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: cert.accentColor,
-              fontWeight: 700,
-              fontSize: '1.1rem',
-              fontFamily: 'var(--font-heading)',
-            }}
-          >
-            {cert.issuer
-              .split(' ')
-              .filter((w) => w.length > 2)
-              .map((w) => w[0])
-              .join('')
-              .slice(0, 2)}
-          </div>
-        )}
+      {/* Logo / icon */}
+      <div style={{ height: '40px', display: 'flex', alignItems: 'center' }}>
+        <CertLogo cert={cert} size="card" />
       </div>
 
-      {/* Right — content */}
-      <div
+      {/* Separator */}
+      <div style={{ height: '1px', background: 'rgba(0,0,0,0.06)' }} />
+
+      {/* Issuer */}
+      <p
         style={{
-          flex: 1,
-          padding: '24px 20px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '8px',
-          borderLeft: '1px solid #f0f0f0',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '0.58rem',
+          fontWeight: 500,
+          letterSpacing: '0.16em',
+          textTransform: 'uppercase',
+          color: cert.accentColor,
         }}
       >
-        <p
+        {cert.issuer}
+      </p>
+
+      {/* Cert name */}
+      <h3
+        style={{
+          fontFamily: 'var(--font-heading)',
+          fontWeight: 700,
+          fontSize: 'clamp(0.9rem, 1.1vw, 1.05rem)',
+          color: '#1d1d1f',
+          lineHeight: 1.3,
+          flex: 1,
+        }}
+      >
+        {cert.name}
+      </h3>
+
+      {/* Year + view link */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginTop: 'auto',
+        }}
+      >
+        <span
           style={{
             fontFamily: 'var(--font-mono)',
-            fontSize: '0.6rem',
-            letterSpacing: '0.12em',
-            color: cert.accentColor,
-            textTransform: 'uppercase',
-            fontWeight: 500,
+            fontSize: '0.75rem',
+            color: '#9b9b9b',
           }}
         >
-          {cert.issuer}
-        </p>
-
-        <h3
-          style={{
-            fontFamily: 'var(--font-heading)',
-            fontWeight: 700,
-            fontSize: '0.95rem',
-            color: '#0a0a0a',
-            lineHeight: 1.3,
-            flex: 1,
-          }}
-        >
-          {cert.name}
-        </h3>
-
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '4px' }}>
+          {cert.year}
+        </span>
+        {cert.url && (
           <span
             style={{
-              fontFamily: 'var(--font-mono)',
               fontSize: '0.75rem',
-              color: '#9b9b9b',
+              fontWeight: 500,
+              color: cert.accentColor,
             }}
           >
-            {cert.year}
+            View →
           </span>
-          {cert.url && (
-            <span
-              style={{
-                fontSize: '0.75rem',
-                fontWeight: 500,
-                color: cert.accentColor,
-              }}
-            >
-              View →
-            </span>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );
 }
 
-/* ─── Modal ────────────────────────────────────────────── */
-function CertModal({
-  cert,
-  onClose,
-}: {
-  cert: Certification;
-  onClose: () => void;
-}) {
-  const isMcKinsey = cert.issuer === 'MCKINSEY & COMPANY';
-
+/* ─── Detail modal — Framer Motion overlay ───────────────── */
+function CertModal({ cert, onClose }: { cert: Certification; onClose: () => void }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      onClick={onClose}
       style={{
         position: 'fixed',
         inset: 0,
@@ -193,7 +181,6 @@ function CertModal({
         justifyContent: 'center',
         padding: '24px',
       }}
-      onClick={onClose}
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.94, y: 24 }}
@@ -206,14 +193,13 @@ function CertModal({
           borderRadius: '24px',
           padding: '40px',
           width: '100%',
-          maxWidth: '480px',
+          maxWidth: '440px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '20px',
+          gap: '16px',
           position: 'relative',
         }}
       >
-        {/* Close */}
         <button
           onClick={onClose}
           style={{
@@ -235,30 +221,8 @@ function CertModal({
           <X size={16} />
         </button>
 
-        {/* Logo */}
-        <div style={{ height: '64px', display: 'flex', alignItems: 'center' }}>
-          {cert.isAward ? (
-            <span style={{ fontSize: '48px', lineHeight: 1 }}>{cert.awardIcon}</span>
-          ) : isMcKinsey ? (
-            <span
-              style={{
-                fontFamily: 'Georgia, serif',
-                fontSize: '1.1rem',
-                color: '#0C2340',
-                fontWeight: 600,
-              }}
-            >
-              McKinsey &amp; Company
-            </span>
-          ) : cert.logo ? (
-            <Image
-              src={cert.logo}
-              width={cert.logoWidth}
-              height={cert.logoHeight}
-              alt={cert.issuer}
-              style={{ objectFit: 'contain', objectPosition: 'left' }}
-            />
-          ) : null}
+        <div style={{ height: '48px', display: 'flex', alignItems: 'center' }}>
+          <CertLogo cert={cert} size="modal" />
         </div>
 
         <div style={{ height: '1px', background: '#f0f0f0' }} />
@@ -266,8 +230,8 @@ function CertModal({
         <p
           style={{
             fontFamily: 'var(--font-mono)',
-            fontSize: '0.68rem',
-            letterSpacing: '0.12em',
+            fontSize: '0.65rem',
+            letterSpacing: '0.14em',
             color: cert.accentColor,
             textTransform: 'uppercase',
             fontWeight: 500,
@@ -280,8 +244,8 @@ function CertModal({
           style={{
             fontFamily: 'var(--font-heading)',
             fontWeight: 700,
-            fontSize: '1.4rem',
-            color: '#0a0a0a',
+            fontSize: '1.3rem',
+            color: '#1d1d1f',
             lineHeight: 1.25,
           }}
         >
@@ -291,7 +255,7 @@ function CertModal({
         <p
           style={{
             fontFamily: 'var(--font-mono)',
-            fontSize: '0.85rem',
+            fontSize: '0.82rem',
             color: '#9b9b9b',
           }}
         >
@@ -309,7 +273,7 @@ function CertModal({
               gap: '8px',
               padding: '12px 24px',
               borderRadius: '99px',
-              background: '#0a0a0a',
+              background: '#1d1d1f',
               color: '#ffffff',
               fontWeight: 500,
               fontSize: '0.875rem',
@@ -322,13 +286,7 @@ function CertModal({
             View credential
           </a>
         ) : (
-          <p
-            style={{
-              color: '#9ca3af',
-              fontSize: '0.85rem',
-              fontStyle: 'italic',
-            }}
-          >
+          <p style={{ color: '#9ca3af', fontSize: '0.85rem', fontStyle: 'italic' }}>
             No public credential link available.
           </p>
         )}
@@ -337,165 +295,170 @@ function CertModal({
   );
 }
 
-/* ─── Main section ─────────────────────────────────────── */
+/* ─── Main section ────────────────────────────────────────── */
 export function Certifications() {
-  const headerRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(headerRef, { once: true, margin: '-15%' });
+  const sectionRef  = useRef<HTMLElement>(null);
+  const overlineRef = useRef<HTMLParagraphElement>(null);
+  const p1InnerRef  = useRef<HTMLSpanElement>(null);
+  const p2InnerRef  = useRef<HTMLSpanElement>(null);
+  const subRef      = useRef<HTMLParagraphElement>(null);
+  const cardRefs    = useRef<(HTMLDivElement | null)[]>([]);
   const [selected, setSelected] = useState<Certification | null>(null);
-  const [currentIdx, setCurrentIdx] = useState(0);
 
-  const CARD_WIDTH = 416; // 400px card + 16px gap
-  const VISIBLE_COUNT = 3;
-  const maxIdx = Math.max(0, certifications.length - VISIBLE_COUNT);
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      /* Overline */
+      gsap.fromTo(overlineRef.current,
+        { opacity: 0, y: 10 },
+        {
+          opacity: 1, y: 0, duration: 0.5, ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
 
-  const goPrev = () => setCurrentIdx((i) => Math.max(0, i - 1));
-  const goNext = () => setCurrentIdx((i) => Math.min(maxIdx, i + 1));
+      /* H2 clip reveal */
+      gsap.fromTo([p1InnerRef.current, p2InnerRef.current],
+        { yPercent: 110 },
+        {
+          yPercent: 0, duration: 0.85, ease: 'power4.out', stagger: 0.12,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
 
-  const canPrev = currentIdx > 0;
-  const canNext = currentIdx < maxIdx;
+      /* Sub */
+      gsap.fromTo(subRef.current,
+        { opacity: 0 },
+        {
+          opacity: 1, duration: 0.8, ease: 'power2.out', delay: 0.35,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
 
-  const BTN_BASE: React.CSSProperties = {
-    width: '44px',
-    height: '44px',
-    borderRadius: '50%',
-    border: '1px solid rgba(0,0,0,0.12)',
-    background: '#ffffff',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '1.1rem',
-    color: '#0a0a0a',
-    transition: 'background 0.2s, opacity 0.2s',
-    fontFamily: 'var(--font-body)',
-  };
+      /* Cards — stagger across the grid */
+      const cards = cardRefs.current.filter(Boolean);
+      gsap.fromTo(cards,
+        { opacity: 0, y: 32 },
+        {
+          opacity: 1, y: 0,
+          duration: 0.7,
+          ease: 'power3.out',
+          stagger: 0.08,
+          scrollTrigger: {
+            trigger: cards[0],
+            start: 'top 88%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section id="certifications" className="section-padding certs-bg" style={{ overflow: 'hidden' }}>
-      <div className="max-w-5xl mx-auto px-6">
-        {/* Header + nav row */}
-        <motion.div
-          ref={headerRef}
-          initial={{ opacity: 0, y: 40 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
-          style={{ marginBottom: '48px' }}
-        >
-          {/* Top row: header left, nav arrows right */}
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '24px' }}>
-            <div>
-              <p
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.82rem',
-                  fontWeight: 500,
-                  color: '#6e6e73',
-                  letterSpacing: '0.16em',
-                  textTransform: 'uppercase',
-                  marginBottom: '16px',
-                }}
-              >
-                Certifications
-              </p>
-              <h2
-                style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontWeight: 700,
-                  fontSize: 'clamp(3rem, 6vw, 6rem)',
-                  color: '#0a0a0a',
-                  lineHeight: 1.0,
-                  letterSpacing: '-0.025em',
-                  marginBottom: '16px',
-                }}
-              >
-                Continuous learning.
-              </h2>
-              <p
-                style={{
-                  color: '#6e6e73',
-                  fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
-                  lineHeight: 1.8,
-                  fontWeight: 400,
-                  maxWidth: '560px',
-                }}
-              >
-                Google, AWS, McKinsey, and more. Staying at the frontier of what&apos;s possible.
-              </p>
-            </div>
-
-            {/* Navigation arrows */}
-            <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
-              <button
-                onClick={goPrev}
-                disabled={!canPrev}
-                style={{ ...BTN_BASE, opacity: canPrev ? 1 : 0.3, cursor: canPrev ? 'pointer' : 'default' }}
-                aria-label="Previous"
-              >
-                ‹
-              </button>
-              <button
-                onClick={goNext}
-                disabled={!canNext}
-                style={{ ...BTN_BASE, opacity: canNext ? 1 : 0.3, cursor: canNext ? 'pointer' : 'default' }}
-                aria-label="Next"
-              >
-                ›
-              </button>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Carousel — full bleed */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-15%' }}
-        transition={{ duration: 0.7, delay: 0.15 }}
-        style={{ overflow: 'hidden', paddingLeft: 'clamp(16px, 4vw, 48px)' }}
-      >
-        <motion.div
-          animate={{ x: -currentIdx * CARD_WIDTH }}
-          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
-          style={{ display: 'flex', gap: '16px', width: 'max-content' }}
-        >
-          {certifications.map((cert) => (
-            <div key={cert.id} style={{ flexShrink: 0, width: '400px' }}>
-              <CertCard cert={cert} onClick={() => setSelected(cert)} />
-            </div>
-          ))}
-        </motion.div>
-      </motion.div>
-
-      {/* Dot indicators */}
+    <section
+      ref={sectionRef}
+      id="certifications"
+      style={{
+        background: '#f5f5f7',
+        paddingBlock: 'clamp(80px, 12vw, 120px)',
+        overflow: 'hidden',
+      }}
+    >
       <div
         style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '6px',
-          marginTop: '28px',
+          maxWidth: '960px',
+          margin: '0 auto',
+          padding: '0 clamp(24px, 5vw, 64px)',
         }}
       >
-        {certifications.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrentIdx(Math.min(i, maxIdx))}
+        {/* ── Header ─────────────────────────────────────── */}
+        <div style={{ marginBottom: 'clamp(40px, 6vw, 64px)' }}>
+          <p
+            ref={overlineRef}
             style={{
-              width: i === currentIdx ? '20px' : '6px',
-              height: '6px',
-              borderRadius: '3px',
-              background: i === currentIdx ? '#0a0a0a' : 'rgba(0,0,0,0.2)',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'width 0.3s ease, background 0.3s ease',
-              padding: 0,
+              opacity: 0,
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.65rem',
+              fontWeight: 500,
+              color: '#5AC8FA',
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              marginBottom: '20px',
             }}
-            aria-label={`Go to cert ${i + 1}`}
-          />
-        ))}
+          >
+            Certifications
+          </p>
+
+          <h2
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontWeight: 700,
+              fontSize: 'clamp(2.8rem, 6vw, 5.5rem)',
+              lineHeight: 1.0,
+              letterSpacing: '-0.02em',
+              marginBottom: '18px',
+            }}
+          >
+            <span style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
+              <span ref={p1InnerRef} style={{ display: 'inline-block', color: '#1d1d1f' }}>
+                Continuous&nbsp;
+              </span>
+            </span>
+            <span style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
+              <span ref={p2InnerRef} style={{ display: 'inline-block', color: '#1d1d1f' }}>
+                learning.
+              </span>
+            </span>
+          </h2>
+
+          <p
+            ref={subRef}
+            style={{
+              opacity: 0,
+              color: '#6e6e73',
+              fontSize: 'clamp(0.95rem, 1.1vw, 1.05rem)',
+              lineHeight: 1.8,
+              fontWeight: 400,
+              maxWidth: '480px',
+            }}
+          >
+            Google, AWS, McKinsey, and more. Staying at the frontier of what&apos;s possible.
+          </p>
+        </div>
+
+        {/* ── 3-column grid ──────────────────────────────── */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+            gap: 'clamp(12px, 2vw, 20px)',
+          }}
+        >
+          {certifications.map((cert, i) => (
+            <CertCard
+              key={cert.id}
+              cert={cert}
+              cardRef={(el) => { cardRefs.current[i] = el; }}
+              onClick={() => setSelected(cert)}
+            />
+          ))}
+        </div>
       </div>
 
-      {/* Modal */}
+      {/* ── Modal ──────────────────────────────────────── */}
       <AnimatePresence>
         {selected && (
           <CertModal cert={selected} onClose={() => setSelected(null)} />
