@@ -1,8 +1,9 @@
 'use client';
 
-import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef, useEffect } from 'react';
+import { gsap } from '@/lib/gsap';
 
+/* ─── Testimonial data — unchanged ───────────────────────── */
 const COLS = [
   {
     role: 'Product Manager',
@@ -14,7 +15,7 @@ const COLS = [
     role: 'Program Manager',
     company: 'Amazon',
     quote:
-      "Thomas consistently maintains high standards in his work by ensuring his solutions meet quality benchmarks and iterating on his outputs until they achieve the desired level of excellence. His curiosity-driven approach has resulted in improved automation processes and more effective business intelligence tools that benefit both the team's efficiency and our ability to serve customers better.",
+      'Thomas consistently maintains high standards in his work by ensuring his solutions meet quality benchmarks and iterating on his outputs until they achieve the desired level of excellence. His curiosity-driven approach has resulted in improved automation processes and more effective business intelligence tools that benefit both the team\'s efficiency and our ability to serve customers better.',
   },
   {
     role: 'Digital Manager',
@@ -24,172 +25,263 @@ const COLS = [
   },
 ];
 
-/* ─── Animated testimonial item ─────────────────────────── */
-function TestimonialItem({
+/* ─── Single testimonial card ────────────────────────────── */
+function TestimonialCard({
   role,
   company,
   quote,
-  index,
-  scrollYProgress,
+  cardRef,
 }: {
   role: string;
   company: string;
   quote: string;
-  index: number;
-  scrollYProgress: ReturnType<typeof useScroll>['scrollYProgress'];
+  cardRef: (el: HTMLDivElement | null) => void;
 }) {
-  const start = index * 0.18;
-  const end = start + 0.55;
-
-  const opacity = useTransform(scrollYProgress, [start, end], [0, 1]);
-  const y = useTransform(scrollYProgress, [start, end], [20, 0]);
-
   return (
-    <motion.div style={{ opacity, y }}>
-      {/* Label row */}
-      <div
+    <div
+      ref={cardRef}
+      style={{ opacity: 0, position: 'relative' }}
+    >
+      {/* Decorative quote mark — large serif, behind content */}
+      <span
+        aria-hidden="true"
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          paddingTop: index > 0 ? '40px' : '0',
-          paddingBottom: '16px',
+          position: 'absolute',
+          top: '-12px',
+          left: 'clamp(20px, 3vw, 36px)',
+          fontFamily: 'var(--font-serif)',
+          fontSize: 'clamp(8rem, 14vw, 13rem)',
+          lineHeight: 1,
+          color: '#ffffff',
+          opacity: 0.032,
+          userSelect: 'none',
+          pointerEvents: 'none',
+          zIndex: 0,
         }}
       >
-        <span
-          style={{
-            fontFamily: 'var(--font-heading)',
-            fontWeight: 700,
-            fontSize: '1.05rem',
-            color: '#f5f5f7',
-            letterSpacing: '-0.01em',
-          }}
-        >
-          {role}
-        </span>
-        <span
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.72rem',
-            fontWeight: 500,
-            color: '#86868b',
-            background: 'rgba(245,245,247,0.06)',
-            border: '1px solid rgba(245,245,247,0.12)',
-            padding: '3px 10px',
-            borderRadius: '99px',
-            letterSpacing: '0.04em',
-          }}
-        >
-          {company}
-        </span>
-        <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
-      </div>
+        &#8220;
+      </span>
 
-      {/* Quote card */}
+      {/* Card */}
       <div
         style={{
-          background: 'rgba(255,255,255,0.04)',
+          position: 'relative',
+          zIndex: 1,
+          background: 'rgba(255,255,255,0.03)',
           border: '1px solid rgba(255,255,255,0.08)',
-          borderRadius: '16px',
-          padding: 'clamp(24px, 3vw, 36px) clamp(24px, 3vw, 40px)',
+          borderRadius: '20px',
+          padding: 'clamp(28px, 3.5vw, 44px) clamp(28px, 3.5vw, 48px)',
         }}
       >
+        {/* Attribution */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            marginBottom: '24px',
+          }}
+        >
+          <span
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontWeight: 700,
+              fontSize: '0.9rem',
+              color: '#f5f5f7',
+              letterSpacing: '-0.01em',
+            }}
+          >
+            {role}
+          </span>
+          <span
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.68rem',
+              fontWeight: 500,
+              color: '#86868b',
+              background: 'rgba(245,245,247,0.06)',
+              border: '1px solid rgba(245,245,247,0.10)',
+              padding: '3px 10px',
+              borderRadius: '99px',
+              letterSpacing: '0.04em',
+            }}
+          >
+            {company}
+          </span>
+        </div>
+
+        {/* Quote */}
         <p
           style={{
-            fontFamily: 'var(--font-body)',
+            fontFamily: 'var(--font-serif)',
             fontWeight: 400,
-            fontSize: 'clamp(1.05rem, 1.3vw, 1.2rem)',
-            lineHeight: 1.8,
-            color: '#f5f5f7',
+            fontSize: 'clamp(1rem, 1.3vw, 1.15rem)',
+            lineHeight: 1.85,
+            color: 'rgba(245,245,247,0.78)',
             fontStyle: 'italic',
           }}
         >
-          &ldquo;{quote}&rdquo;
+          &#8220;{quote}&#8221;
         </p>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
+/* ─── Main section ────────────────────────────────────────── */
 export function Testimonials() {
-  const headerRef = useRef<HTMLDivElement>(null);
-  const listRef = useRef<HTMLDivElement>(null);
+  const sectionRef    = useRef<HTMLElement>(null);
+  const overlineRef   = useRef<HTMLParagraphElement>(null);
+  const p1Ref         = useRef<HTMLSpanElement>(null);
+  const p2Ref         = useRef<HTMLSpanElement>(null);
+  const p3Ref         = useRef<HTMLSpanElement>(null);
+  const subRef        = useRef<HTMLParagraphElement>(null);
+  const cardRefs      = useRef<(HTMLDivElement | null)[]>([]);
 
-  /* Header scroll reveal */
-  const { scrollYProgress: headerProgress } = useScroll({
-    target: headerRef,
-    offset: ['0 1', '0.3 0.65'] as any,
-  });
-  const headerOpacity = useTransform(headerProgress, [0, 1], [0, 1]);
-  const headerY = useTransform(headerProgress, [0, 1], [24, 0]);
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Overline
+      gsap.fromTo(overlineRef.current,
+        { opacity: 0, y: 10 },
+        {
+          opacity: 1, y: 0, duration: 0.5, ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
 
-  /* List scroll — shared progress for stagger */
-  const { scrollYProgress: listProgress } = useScroll({
-    target: listRef,
-    offset: ['0 1', '0.4 0.6'] as any,
-  });
+      // H2 — three-phrase clip reveal
+      gsap.fromTo([p1Ref.current, p2Ref.current, p3Ref.current],
+        { yPercent: 110 },
+        {
+          yPercent: 0, duration: 0.85, ease: 'power4.out', stagger: 0.1,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      // Sub
+      gsap.fromTo(subRef.current,
+        { opacity: 0 },
+        {
+          opacity: 1, duration: 0.8, ease: 'power2.out', delay: 0.4,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      // Cards — staggered fade in from bottom
+      const cards = cardRefs.current.filter(Boolean);
+      gsap.fromTo(cards,
+        { opacity: 0, y: 28 },
+        {
+          opacity: 1, y: 0, duration: 0.75, ease: 'power3.out', stagger: 0.15,
+          scrollTrigger: {
+            trigger: cards[0],
+            start: 'top 85%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section
+      ref={sectionRef}
       id="testimonials"
-      style={{ background: '#161617', paddingBlock: 'clamp(5rem,10vw,8rem)' }}
+      style={{
+        background: '#0a0a0a',
+        paddingBlock: 'clamp(80px, 12vw, 120px)',
+      }}
     >
-      <div className="max-w-5xl mx-auto px-6">
+      <div
+        style={{
+          maxWidth: '800px',
+          margin: '0 auto',
+          padding: '0 clamp(24px, 5vw, 64px)',
+        }}
+      >
         {/* Header */}
-        <motion.div
-          ref={headerRef}
-          style={{ opacity: headerOpacity, y: headerY, maxWidth: '680px', marginBottom: '72px' }}
-        >
+        <div style={{ marginBottom: '64px' }}>
           <p
+            ref={overlineRef}
             style={{
-              fontSize: '0.82rem',
+              opacity: 0,
               fontFamily: 'var(--font-mono)',
+              fontSize: '0.65rem',
               fontWeight: 500,
-              color: '#6e6e73',
-              letterSpacing: '0.16em',
+              color: '#5AC8FA',
+              letterSpacing: '0.22em',
               textTransform: 'uppercase',
               marginBottom: '20px',
             }}
           >
             Kind words
           </p>
-          <p
+
+          {/* H2 — three-phrase clip reveal */}
+          <h2
             style={{
-              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+              fontFamily: 'var(--font-serif)',
               fontWeight: 700,
-              fontSize: 'clamp(3rem, 6vw, 6rem)',
-              color: '#f5f5f7',
-              lineHeight: 1.0,
-              letterSpacing: '-0.002em',
+              fontSize: 'clamp(2.2rem, 5vw, 4.5rem)',
+              lineHeight: 1.08,
+              letterSpacing: '-0.02em',
               marginBottom: '20px',
             }}
           >
-            &ldquo;Product instinct.{' '}
-            <span style={{ color: '#2997ff' }}>Technical depth.</span>{' '}
-            Delivery.&rdquo;
-          </p>
+            <span style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
+              <span ref={p1Ref} style={{ display: 'inline-block', color: '#f5f5f7' }}>
+                Product instinct.&nbsp;
+              </span>
+            </span>
+            <span style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
+              <span ref={p2Ref} style={{ display: 'inline-block', color: '#5AC8FA' }}>
+                Technical depth.&nbsp;
+              </span>
+            </span>
+            <span style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
+              <span ref={p3Ref} style={{ display: 'inline-block', color: '#f5f5f7' }}>
+                Delivery.
+              </span>
+            </span>
+          </h2>
+
           <p
+            ref={subRef}
             style={{
+              opacity: 0,
               color: '#86868b',
-              fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
+              fontSize: 'clamp(0.95rem, 1.1vw, 1.05rem)',
               lineHeight: 1.8,
               fontWeight: 400,
             }}
           >
             From the people I&apos;ve delivered with.
           </p>
-        </motion.div>
+        </div>
 
-        {/* Testimonial list */}
-        <div ref={listRef} style={{ display: 'flex', flexDirection: 'column' }}>
+        {/* Testimonial cards */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           {COLS.map(({ role, company, quote }, i) => (
-            <TestimonialItem
+            <TestimonialCard
               key={role + company}
               role={role}
               company={company}
               quote={quote}
-              index={i}
-              scrollYProgress={listProgress}
+              cardRef={(el) => { cardRefs.current[i] = el; }}
             />
           ))}
         </div>
