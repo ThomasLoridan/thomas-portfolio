@@ -1,30 +1,13 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { useRef, useEffect } from 'react';
+import { gsap } from '@/lib/gsap';
 import Image from 'next/image';
 
-const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
-
-interface PassionImage {
-  src: string;
-  alt: string;
-}
-
-interface Passion {
-  id: string;
-  pattern: 'A' | 'B';
-  eyebrow: string;
-  title: string;
-  body: string;
-  accent: string;
-  images: PassionImage[];
-}
-
-const PASSIONS: Passion[] = [
+/* ─── Passion data — unchanged ───────────────────────────── */
+const PASSIONS = [
   {
     id: 'tennis',
-    pattern: 'A',
     eyebrow: 'SPORTS',
     title: '10 years of tennis. Rowing. Swimming.',
     body: 'Sport taught me discipline before I knew what discipline was. Tennis in particular — the mental game, the solo accountability, the split-second decisions — translates directly to how I perform under pressure.',
@@ -33,7 +16,6 @@ const PASSIONS: Passion[] = [
   },
   {
     id: 'asimov',
-    pattern: 'B',
     eyebrow: 'READING',
     title: 'Science fiction as a lens for the future.',
     body: "Isaac Asimov's Robot series and Foundation shaped how I think about systems, civilization, and the long arc of technology. Required reading for anyone building at scale.",
@@ -45,7 +27,6 @@ const PASSIONS: Passion[] = [
   },
   {
     id: 'dune',
-    pattern: 'A',
     eyebrow: 'SCIENCE FICTION',
     title: 'Dune.',
     body: 'Politics, ecology, religion, and power — all compressed into one universe. Dune taught me that the best strategies are the ones that account for a generation, not a quarter.',
@@ -54,7 +35,6 @@ const PASSIONS: Passion[] = [
   },
   {
     id: 'suits',
-    pattern: 'B',
     eyebrow: 'SERIES',
     title: 'Suits — negotiation as a craft.',
     body: "Harvey Specter's approach to preparation, framing, and leverage mirrors how I approach stakeholder management. Every conversation is a negotiation.",
@@ -63,7 +43,6 @@ const PASSIONS: Passion[] = [
   },
   {
     id: 'aktionnaire',
-    pattern: 'A',
     eyebrow: 'FINANCE',
     title: 'Markets as a feedback loop.',
     body: 'Aktionnaire keeps me sharp on macro trends and company fundamentals. Understanding how capital flows helps me build better business cases and prioritize with sharper ROI instincts.',
@@ -72,7 +51,6 @@ const PASSIONS: Passion[] = [
   },
   {
     id: 'diary-ceo',
-    pattern: 'B',
     eyebrow: 'PODCASTS',
     title: 'The Diary of a CEO.',
     body: "Steven Bartlett's interviews with founders and operators give me frameworks I apply directly to how I lead teams and manage uncertainty. Raw, honest, and consistently actionable.",
@@ -81,7 +59,6 @@ const PASSIONS: Passion[] = [
   },
   {
     id: 'claude',
-    pattern: 'A',
     eyebrow: 'TECH',
     title: 'AI as an amplifier.',
     body: "Claude is my thinking partner, my coding co-pilot, and the tool that lets me operate at 10x. I don't just use AI — I build with it, on it, and think critically about where it's going.",
@@ -90,6 +67,7 @@ const PASSIONS: Passion[] = [
   },
 ];
 
+/* ─── Inline accent highlight ─────────────────────────────── */
 function AccentText({ text, accent }: { text: string; accent: string }) {
   const idx = text.indexOf(accent);
   if (idx === -1) return <>{text}</>;
@@ -102,248 +80,296 @@ function AccentText({ text, accent }: { text: string; accent: string }) {
   );
 }
 
-function ImagePanel({ images }: { images: PassionImage[] }) {
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+/* ─── Single hobby block ─────────────────────────────────── */
+const PARALLAX_PX = 24;
 
-  if (images.length === 2) {
-    return (
-      <div style={{ display: 'flex', gap: '12px', height: 'clamp(260px, 42vw, 420px)' }}>
-        {images.map((img, idx) => {
-          const flexValue =
-            hoveredIdx === null ? 1 : hoveredIdx === idx ? 1.4 : 0.6;
-          return (
-            <div
-              key={img.src}
-              onMouseEnter={() => setHoveredIdx(idx)}
-              onMouseLeave={() => setHoveredIdx(null)}
-              style={{
-                flex: flexValue,
-                minWidth: 0,
-                position: 'relative',
-                borderRadius: '12px',
-                overflow: 'hidden',
-                transition: 'flex 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
-              }}
-            >
+function HobbyBlock({
+  passion,
+  blockRef,
+}: {
+  passion: (typeof PASSIONS)[number];
+  blockRef: (el: HTMLDivElement | null) => void;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const imgRef       = useRef<HTMLDivElement>(null);
+
+  /* Image parallax — scrub, no toggleActions (continuously linked to scroll) */
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        imgRef.current,
+        { y: -PARALLAX_PX },
+        {
+          y: PARALLAX_PX,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1.5,
+          },
+        }
+      );
+    });
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <div ref={blockRef} style={{ opacity: 0 }}>
+      {/* Image container — overflow:hidden clips the parallax movement */}
+      <div
+        ref={containerRef}
+        style={{
+          position: 'relative',
+          height: 'clamp(220px, 32vw, 320px)',
+          overflow: 'hidden',
+          borderRadius: '12px',
+          marginBottom: '20px',
+        }}
+      >
+        {/* Parallax wrapper — extends beyond container edges */}
+        <div
+          ref={imgRef}
+          style={{
+            position: 'absolute',
+            top: `-${PARALLAX_PX}px`,
+            left: 0,
+            right: 0,
+            height: `calc(100% + ${PARALLAX_PX * 2}px)`,
+          }}
+        >
+          {passion.images.length === 2 ? (
+            /* Two-image side-by-side (asimov) */
+            <div style={{ display: 'flex', height: '100%', gap: '4px' }}>
+              {passion.images.map((img) => (
+                <div key={img.src} style={{ flex: 1, position: 'relative' }}>
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ position: 'relative', width: '100%', height: '100%' }}>
               <Image
-                src={img.src}
-                alt={img.alt}
+                src={passion.images[0].src}
+                alt={passion.images[0].alt}
                 fill
-                unoptimized={false}
                 style={{ objectFit: 'cover' }}
               />
             </div>
-          );
-        })}
+          )}
+        </div>
       </div>
-    );
-  }
 
-  return (
-    <div
-      style={{
-        position: 'relative',
-        height: 'clamp(260px, 42vw, 420px)',
-        borderRadius: '16px',
-        overflow: 'hidden',
-      }}
-    >
-      <Image
-        src={images[0].src}
-        alt={images[0].alt}
-        fill
-        unoptimized={false}
-        style={{ objectFit: 'cover' }}
-      />
+      {/* Text */}
+      <p
+        style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: '0.6rem',
+          fontWeight: 500,
+          color: '#5AC8FA',
+          letterSpacing: '0.2em',
+          textTransform: 'uppercase',
+          marginBottom: '10px',
+        }}
+      >
+        {passion.eyebrow}
+      </p>
+
+      <h3
+        style={{
+          fontFamily: 'var(--font-serif)',
+          fontWeight: 700,
+          fontSize: 'clamp(1.2rem, 2vw, 1.65rem)',
+          color: '#f5f5f7',
+          lineHeight: 1.15,
+          letterSpacing: '-0.01em',
+          marginBottom: '12px',
+        }}
+      >
+        {passion.title}
+      </h3>
+
+      <p
+        style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 'clamp(0.9rem, 1vw, 1rem)',
+          color: '#86868b',
+          lineHeight: 1.75,
+        }}
+      >
+        <AccentText text={passion.body} accent={passion.accent} />
+      </p>
     </div>
   );
 }
 
-function PassionBloc({ passion }: { passion: Passion }) {
-  const isA = passion.pattern === 'A';
-  const [imageHovered, setImageHovered] = useState(false);
-  const isSingle = passion.images.length === 1;
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-20%' });
+/* ─── Main section ────────────────────────────────────────── */
+export function Hobbies() {
+  const sectionRef   = useRef<HTMLElement>(null);
+  const overlineRef  = useRef<HTMLParagraphElement>(null);
+  const p1InnerRef   = useRef<HTMLSpanElement>(null);
+  const p2InnerRef   = useRef<HTMLSpanElement>(null);
+  const subRef       = useRef<HTMLParagraphElement>(null);
+  const blockRefs    = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      /* Overline */
+      gsap.fromTo(overlineRef.current,
+        { opacity: 0, y: 10 },
+        {
+          opacity: 1, y: 0, duration: 0.5, ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      /* H2 clip reveal */
+      gsap.fromTo([p1InnerRef.current, p2InnerRef.current],
+        { yPercent: 110 },
+        {
+          yPercent: 0, duration: 0.85, ease: 'power4.out', stagger: 0.12,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      /* Sub */
+      gsap.fromTo(subRef.current,
+        { opacity: 0 },
+        {
+          opacity: 1, duration: 0.8, ease: 'power2.out', delay: 0.35,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      /* Grid blocks — each has its own trigger; right-col blocks get delay:0.15 */
+      blockRefs.current.filter(Boolean).forEach((block, i) => {
+        const isRightCol = i % 2 === 1;
+        gsap.fromTo(block,
+          { opacity: 0, y: 36 },
+          {
+            opacity: 1, y: 0,
+            duration: 0.75,
+            ease: 'power3.out',
+            delay: isRightCol ? 0.15 : 0,
+            scrollTrigger: {
+              trigger: block,
+              start: 'top 88%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <div
-      ref={ref}
+    <section
+      ref={sectionRef}
+      id="hobbies"
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        padding: 'clamp(48px, 8vh, 80px) 0',
-        overflow: 'hidden',
+        background: '#1d1d1f',
+        paddingBlock: 'clamp(80px, 12vw, 120px)',
       }}
     >
       <div
-        className={`flex flex-col gap-8 ${isA ? 'md:flex-row' : 'md:flex-row-reverse'}`}
         style={{
-          maxWidth: '1024px',
+          maxWidth: '1100px',
           margin: '0 auto',
-          padding: '0 clamp(24px, 6vw, 80px)',
-          width: '100%',
-          gap: 'clamp(32px, 5vw, 64px)',
-          alignItems: 'center',
-          position: 'relative',
+          padding: '0 clamp(24px, 5vw, 64px)',
         }}
       >
-        {/* Image side:
-            — single image: scale transform (image grows behind text, z-index 1)
-            — dual images: ImagePanel handles internal flex push */}
-        <div
-          className="w-full md:w-[55%] shrink-0"
-          onMouseEnter={() => isSingle && setImageHovered(true)}
-          onMouseLeave={() => isSingle && setImageHovered(false)}
-          style={{
-            position: 'relative',
-            zIndex: 1,
-            transform: isSingle && imageHovered ? 'scale(1.1)' : 'scale(1)',
-            transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
-            transformOrigin: isA ? 'center left' : 'center right',
-          }}
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 1.08 }}
-            animate={inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.08 }}
-            transition={{ duration: 0.6, ease: EASE }}
+        {/* ── Header — flush left ─────────────────────────── */}
+        <div style={{ marginBottom: 'clamp(48px, 7vw, 80px)' }}>
+          <p
+            ref={overlineRef}
+            style={{
+              opacity: 0,
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.65rem',
+              fontWeight: 500,
+              color: '#5AC8FA',
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              marginBottom: '20px',
+            }}
           >
-            <ImagePanel images={passion.images} />
-          </motion.div>
+            Beyond work
+          </p>
+
+          <h2
+            style={{
+              fontFamily: 'var(--font-serif)',
+              fontWeight: 700,
+              fontSize: 'clamp(3rem, 6vw, 5.5rem)',
+              lineHeight: 1.0,
+              letterSpacing: '-0.02em',
+              marginBottom: '18px',
+            }}
+          >
+            <span style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
+              <span ref={p1InnerRef} style={{ display: 'inline-block', color: '#f5f5f7' }}>
+                Beyond the&nbsp;
+              </span>
+            </span>
+            <span style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
+              <span ref={p2InnerRef} style={{ display: 'inline-block', color: '#5AC8FA' }}>
+                work.
+              </span>
+            </span>
+          </h2>
+
+          <p
+            ref={subRef}
+            style={{
+              opacity: 0,
+              color: '#86868b',
+              fontSize: 'clamp(0.95rem, 1.1vw, 1.05rem)',
+              lineHeight: 1.8,
+              fontWeight: 400,
+              maxWidth: '440px',
+            }}
+          >
+            The things I read, watch, and obsess over outside of work.
+          </p>
         </div>
 
-        {/* Text side — z-index 2 so it stays in front of scaled image */}
+        {/* ── 2-column staggered grid ─────────────────────── */}
         <div
-          className="w-full md:w-[45%] shrink-0"
           style={{
-            position: 'relative',
-            zIndex: 2,
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            columnGap: 'clamp(24px, 4vw, 56px)',
+            rowGap: 'clamp(48px, 7vw, 80px)',
           }}
         >
-          <motion.div
-            initial={{ opacity: 0, x: isA ? 40 : -40 }}
-            animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: isA ? 40 : -40 }}
-            transition={{ duration: 0.5, ease: EASE }}
-            style={{ padding: 'clamp(24px, 4vw, 60px)' }}
-          >
-            <p
-              style={{
-                color: 'rgba(245,245,247,0.5)',
-                fontSize: '0.82rem',
-                letterSpacing: '0.16em',
-                textTransform: 'uppercase',
-                marginBottom: '16px',
-                fontFamily: 'var(--font-mono)',
-                fontWeight: 500,
-              }}
-            >
-              {passion.eyebrow}
-            </p>
-            <h3
-              style={{
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 800,
-                fontSize: 'clamp(2.2rem, 4vw, 4rem)',
-                color: '#ffffff',
-                lineHeight: 1.1,
-                letterSpacing: '-0.02em',
-                marginBottom: '20px',
-              }}
-            >
-              {passion.title}
-            </h3>
-            <p
-              style={{
-                color: 'rgba(245,245,247,0.88)',
-                fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
-                lineHeight: 1.8,
-                fontWeight: 400,
-                maxWidth: '400px',
-              }}
-            >
-              <AccentText text={passion.body} accent={passion.accent} />
-            </p>
-          </motion.div>
+          {PASSIONS.map((passion, i) => (
+            <HobbyBlock
+              key={passion.id}
+              passion={passion}
+              blockRef={(el) => { blockRefs.current[i] = el; }}
+            />
+          ))}
         </div>
       </div>
-    </div>
-  );
-}
-
-export function Hobbies() {
-  return (
-    <section
-      id="hobbies"
-      style={{ backgroundColor: '#1d1d1f', paddingTop: '120px', paddingBottom: '120px' }}
-    >
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-15%' }}
-        transition={{ duration: 0.7, ease: EASE }}
-        style={{
-          textAlign: 'center',
-          marginBottom: '80px',
-          padding: '0 clamp(24px, 6vw, 80px)',
-        }}
-      >
-        <p
-          style={{
-            color: 'rgba(245,245,247,0.5)',
-            fontSize: '0.82rem',
-            letterSpacing: '0.16em',
-            textTransform: 'uppercase',
-            marginBottom: '16px',
-            fontWeight: 500,
-            fontFamily: 'var(--font-mono)',
-          }}
-        >
-          Beyond work
-        </p>
-        <h2
-          style={{
-            fontFamily: 'var(--font-heading)',
-            fontWeight: 700,
-            fontSize: 'clamp(3rem, 6vw, 6rem)',
-            color: '#ffffff',
-            lineHeight: 1.0,
-            letterSpacing: '-0.025em',
-            marginBottom: '20px',
-          }}
-        >
-          Beyond the work.
-        </h2>
-        <p
-          style={{
-            color: 'rgba(245,245,247,0.72)',
-            fontWeight: 400,
-            fontSize: 'clamp(1rem, 1.2vw, 1.15rem)',
-            maxWidth: '500px',
-            margin: '0 auto',
-            lineHeight: 1.8,
-          }}
-        >
-          The things I read, watch, and obsess over outside of work.
-        </p>
-      </motion.div>
-
-      {/* Passion blocs */}
-      {PASSIONS.map((passion, i) => (
-        <div key={passion.id}>
-          <PassionBloc passion={passion} />
-          {i < PASSIONS.length - 1 && (
-            <div
-              style={{
-                maxWidth: '80%',
-                margin: '0 auto',
-                height: '1px',
-                background: 'rgba(255,255,255,0.08)',
-              }}
-            />
-          )}
-        </div>
-      ))}
     </section>
   );
 }
