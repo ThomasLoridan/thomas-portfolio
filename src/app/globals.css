@@ -2,8 +2,8 @@
 
 @theme inline {
   /* ─── Fonts ──────────────────────────────────────── */
-  --font-heading: var(--font-jakarta), sans-serif;
-  --font-body: var(--font-inter), sans-serif;
+  --font-heading: var(--font-inter), system-ui, sans-serif;
+  --font-body: var(--font-inter), system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), 'JetBrains Mono', monospace;
 
   /* ─── Light theme palette ─────────────────────────── */
@@ -27,6 +27,14 @@
   --radius-sm: 0.5rem;
   --radius-lg: 1rem;
   --radius-xl: 1.5rem;
+}
+
+/* ─── Force Inter for all font roles ─────────────────── */
+/* Overrides Next.js font class variables so var(--font-serif) etc. all resolve to Inter */
+:root {
+  --font-serif: var(--font-inter), system-ui, sans-serif !important;
+  --font-heading: var(--font-inter), system-ui, sans-serif !important;
+  --font-body: var(--font-inter), system-ui, sans-serif !important;
 }
 
 /* ─── Keyframes ───────────────────────────────────────── */
@@ -90,13 +98,13 @@
   body {
     background-color: #ffffff;
     color: #0a0a0a;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", var(--font-body), "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
     overflow-x: hidden;
     max-width: 100%;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", var(--font-heading), "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
   }
 
   ::selection {

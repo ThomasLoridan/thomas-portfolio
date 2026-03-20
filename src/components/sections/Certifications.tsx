@@ -302,30 +302,15 @@ function CertModal({ cert, onClose }: { cert: Certification; onClose: () => void
 /* ─── Main section ────────────────────────────────────────── */
 export function Certifications() {
   const sectionRef  = useRef<HTMLElement>(null);
-  const overlineRef = useRef<HTMLParagraphElement>(null);
   const p1InnerRef  = useRef<HTMLSpanElement>(null);
-  const p2InnerRef  = useRef<HTMLSpanElement>(null);
   const subRef      = useRef<HTMLParagraphElement>(null);
   const cardRefs    = useRef<(HTMLDivElement | null)[]>([]);
   const [selected, setSelected] = useState<Certification | null>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      /* Overline */
-      gsap.fromTo(overlineRef.current,
-        { opacity: 0, y: 10 },
-        {
-          opacity: 1, y: 0, duration: 0.5, ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 85%',
-            toggleActions: 'play none none reverse',
-          },
-        }
-      );
-
       /* H2 clip reveal */
-      gsap.fromTo([p1InnerRef.current, p2InnerRef.current],
+      gsap.fromTo([p1InnerRef.current],
         { yPercent: 110 },
         {
           yPercent: 0, duration: 0.85, ease: 'power4.out', stagger: 0.12,
@@ -390,27 +375,11 @@ export function Certifications() {
       >
         {/* ── Header ─────────────────────────────────────── */}
         <div style={{ marginBottom: 'clamp(40px, 6vw, 64px)' }}>
-          <p
-            ref={overlineRef}
-            style={{
-              opacity: 0,
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.65rem',
-              fontWeight: 500,
-              color: '#5AC8FA',
-              letterSpacing: '0.22em',
-              textTransform: 'uppercase',
-              marginBottom: '20px',
-            }}
-          >
-            Certifications
-          </p>
-
           <h2
             style={{
-              fontFamily: 'var(--font-serif)',
-              fontWeight: 700,
-              fontSize: 'clamp(2.8rem, 6vw, 5.5rem)',
+              fontFamily: 'var(--font-inter)',
+              fontWeight: 800,
+              fontSize: 'clamp(2.25rem, 4vw, 3.75rem)',
               lineHeight: 1.0,
               letterSpacing: '-0.02em',
               marginBottom: '18px',
@@ -418,12 +387,7 @@ export function Certifications() {
           >
             <span style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
               <span ref={p1InnerRef} style={{ display: 'inline-block', color: '#1d1d1f' }}>
-                Continuous&nbsp;
-              </span>
-            </span>
-            <span style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
-              <span ref={p2InnerRef} style={{ display: 'inline-block', color: '#1d1d1f' }}>
-                learning.
+                Credentials.
               </span>
             </span>
           </h2>

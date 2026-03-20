@@ -6,12 +6,12 @@ import { gsap, ScrollTrigger } from '@/lib/gsap';
 import { profile } from '@/data/profile';
 
 const WORDS = ['Builder.', 'Strategist.', 'Executor.'];
+const ABOUT_WORDS = ['Systems thinker.', 'Human first.'];
 
 // Word reveal timing constants
-const WORD_DELAY   = 0.3;   // first word starts at 0.3s
-const WORD_STAGGER = 0.12;  // 120ms between each word
-const WORD_DUR     = 0.75;  // each word animates for 750ms
-// last word settles at: WORD_DELAY + (n-1)*STAGGER + WORD_DUR
+const WORD_DELAY   = 0.3;
+const WORD_STAGGER = 0.12;
+const WORD_DUR     = 0.75;
 const LAST_WORD_END = WORD_DELAY + (WORDS.length - 1) * WORD_STAGGER + WORD_DUR;
 
 export function HeroAbout() {
@@ -19,22 +19,15 @@ export function HeroAbout() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
   // ── Hero GSAP refs ──────────────────────────────────────────
-  const heroRef     = useRef<HTMLElement>(null);
-  const eyebrowRef  = useRef<HTMLParagraphElement>(null);
-  const lineRefs    = useRef<(HTMLSpanElement | null)[]>([]);
-  const subRef      = useRef<HTMLParagraphElement>(null);
-  const ctaRef      = useRef<HTMLDivElement>(null);
-  const shimmerRef  = useRef<HTMLSpanElement>(null);
+  const heroRef    = useRef<HTMLElement>(null);
+  const lineRefs   = useRef<(HTMLSpanElement | null)[]>([]);
+  const subRef     = useRef<HTMLParagraphElement>(null);
+  const ctaRef     = useRef<HTMLDivElement>(null);
+  const shimmerRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Eyebrow fades in with first word
-      gsap.fromTo(eyebrowRef.current,
-        { opacity: 0, y: 8 },
-        { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: WORD_DELAY }
-      );
-
-      // Word-by-word clip reveal (each word slides up from overflow:hidden container)
+      // Word-by-word clip reveal
       const lines = lineRefs.current.filter(Boolean);
       gsap.fromTo(lines,
         { yPercent: 110 },
@@ -47,13 +40,13 @@ export function HeroAbout() {
         }
       );
 
-      // Sub-headline: 300ms after last word settles
+      // Sub-headline
       gsap.fromTo(subRef.current,
         { opacity: 0, y: 12 },
         { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', delay: LAST_WORD_END + 0.3 }
       );
 
-      // CTA: 400ms after sub-headline starts
+      // CTA
       gsap.fromTo(ctaRef.current,
         { opacity: 0, y: 8 },
         { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: LAST_WORD_END + 0.7 }
@@ -73,7 +66,6 @@ export function HeroAbout() {
 
   // ── About section refs ──────────────────────────────────────
   const aboutSectionRef = useRef<HTMLElement>(null);
-  const aboutEyebrowRef = useRef<HTMLParagraphElement>(null);
   const h2WordRefs      = useRef<(HTMLSpanElement | null)[]>([]);
   const blockRefs       = useRef<(HTMLParagraphElement | null)[]>([]);
 
@@ -81,28 +73,32 @@ export function HeroAbout() {
     const ctx = gsap.context(() => {
       const trigger = aboutSectionRef.current;
 
-      // Eyebrow
-      gsap.fromTo(aboutEyebrowRef.current,
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out',
-          scrollTrigger: { trigger, start: 'top 80%' } }
-      );
-
       // H2 word-by-word clip reveal on scroll
       const words = h2WordRefs.current.filter(Boolean);
       gsap.fromTo(words,
         { yPercent: 110 },
         { yPercent: 0, duration: 0.8, ease: 'power4.out', stagger: 0.12,
-          scrollTrigger: { trigger, start: 'top 75%' } }
+          scrollTrigger: { trigger, start: 'top 75%', toggleActions: 'play none none reverse' } }
       );
 
-      // 3 content blocks — staggered 100ms each
+      // 3 content blocks — staggered
       const blocks = blockRefs.current.filter(Boolean);
       gsap.fromTo(blocks,
         { opacity: 0, y: 24 },
         { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', stagger: 0.1,
-          scrollTrigger: { trigger, start: 'top 62%' } }
+          scrollTrigger: { trigger, start: 'top 62%', toggleActions: 'play none none reverse' } }
       );
+
+      // Exit animations — fade blocks out as they leave the top
+      blocks.forEach((block) => {
+        ScrollTrigger.create({
+          trigger: block,
+          start: 'bottom 18%',
+          toggleActions: 'play none none reverse',
+          onEnter: () => gsap.to(block, { opacity: 0, y: -20, duration: 0.5, ease: 'power2.in', overwrite: 'auto' }),
+          onLeaveBack: () => gsap.to(block, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', overwrite: 'auto' }),
+        });
+      });
     }, aboutSectionRef);
 
     return () => ctx.revert();
@@ -135,7 +131,7 @@ export function HeroAbout() {
           background: '#080808',
         }}
       >
-        {/* Stage light — subtle top-right radial glow */}
+        {/* Stage light — subtle radial glow */}
         <div
           aria-hidden="true"
           style={{
@@ -149,7 +145,7 @@ export function HeroAbout() {
           }}
         />
 
-        {/* Profile photo — dominant, center-right, bottom-anchored */}
+        {/* Profile photo — fully visible, no mask */}
         <div
           className="hero-photo-wrap"
           style={{
@@ -160,15 +156,6 @@ export function HeroAbout() {
             height: '94vh',
             width: 'clamp(300px, 48vw, 760px)',
             zIndex: 1,
-            // Bottom fade + left-edge feather for dark stage treatment
-            maskImage:
-              'linear-gradient(to right, rgba(8,8,8,1) 0%, rgba(8,8,8,0.55) 25%, transparent 55%),' +
-              'linear-gradient(to top, #080808 0%, rgba(8,8,8,0.55) 45%, transparent 85%)',
-            WebkitMaskImage:
-              'linear-gradient(to right, rgba(8,8,8,1) 0%, rgba(8,8,8,0.55) 25%, transparent 55%),' +
-              'linear-gradient(to top, #080808 0%, rgba(8,8,8,0.55) 45%, transparent 85%)',
-            maskComposite: 'intersect',
-            WebkitMaskComposite: 'destination-in',
           }}
         >
           <Image
@@ -192,37 +179,19 @@ export function HeroAbout() {
             maxWidth: 'clamp(340px, 42vw, 600px)',
           }}
         >
-          {/* Eyebrow */}
-          <p
-            ref={eyebrowRef}
-            style={{
-              opacity: 0,
-              color: 'rgba(255,255,255,0.38)',
-              fontSize: '0.78rem',
-              fontFamily: 'var(--font-mono)',
-              fontWeight: 500,
-              letterSpacing: '0.18em',
-              textTransform: 'uppercase',
-              marginBottom: '18px',
-            }}
-          >
-            Thomas Loridan
-          </p>
-
-          {/* H1 — serif, word-by-word clip reveal */}
+          {/* H1 — Inter bold, word-by-word clip reveal */}
           <h1
             className="hero-h1"
             style={{
-              fontFamily: 'var(--font-serif)',
+              fontFamily: 'var(--font-inter)',
               fontWeight: 800,
               lineHeight: 1.0,
-              letterSpacing: '-0.02em',
+              letterSpacing: '-0.03em',
               fontSize: 'clamp(3.8rem, 7.5vw, 8rem)',
               marginBottom: '28px',
             }}
           >
             {WORDS.map((word, i) => (
-              /* Clip container — overflow hidden hides the word until it rises */
               <span
                 key={word}
                 style={{ display: 'block', overflow: 'hidden', lineHeight: 1.06 }}
@@ -244,7 +213,7 @@ export function HeroAbout() {
               opacity: 0,
               color: 'rgba(255,255,255,0.52)',
               fontSize: 'clamp(0.95rem, 1.1vw, 1.1rem)',
-              fontFamily: 'var(--font-body)',
+              fontFamily: 'var(--font-inter)',
               lineHeight: 1.65,
               marginBottom: '36px',
               maxWidth: '400px',
@@ -253,7 +222,7 @@ export function HeroAbout() {
             TPM at Amazon EU Transportation — €16M+ delivered, 26 countries, systems that stay.
           </p>
 
-          {/* CTA — white pill, black text, GSAP shimmer on hover */}
+          {/* CTA */}
           <div ref={ctaRef} style={{ opacity: 0 }}>
             <button
               onClick={() => scrollTo('projects')}
@@ -267,13 +236,12 @@ export function HeroAbout() {
                 color: '#080808',
                 fontSize: '0.9rem',
                 fontWeight: 600,
-                fontFamily: 'var(--font-body)',
+                fontFamily: 'var(--font-inter)',
                 letterSpacing: '0.01em',
                 border: 'none',
                 cursor: 'pointer',
               }}
             >
-              {/* Shimmer layer — slides right on hover */}
               <span
                 ref={shimmerRef}
                 aria-hidden="true"
@@ -313,41 +281,26 @@ export function HeroAbout() {
         style={{ background: '#1d1d1f', paddingTop: 'clamp(48px, 7vw, 80px)', paddingBottom: 'clamp(64px, 9vw, 96px)' }}
       >
         <div style={{ maxWidth: '860px', margin: '0 auto', padding: '0 clamp(24px, 5vw, 48px)' }}>
-          {/* Eyebrow */}
-          <p
-            ref={aboutEyebrowRef}
-            style={{
-              opacity: 0,
-              fontSize: '12px',
-              fontWeight: 600,
-              color: '#6e6e73',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              marginBottom: '24px',
-            }}
-          >
-            About
-          </p>
 
-          {/* H2 — serif, word-by-word clip reveal on scroll */}
+          {/* H2 — Inter bold, two-phrase clip reveal on scroll */}
           <h2
             style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+              fontFamily: 'var(--font-inter)',
+              fontSize: 'clamp(2.25rem, 4vw, 3.75rem)',
               fontWeight: 700,
               letterSpacing: '-0.02em',
               lineHeight: 1.08,
               marginBottom: '32px',
             }}
           >
-            {WORDS.map((word, i) => (
+            {ABOUT_WORDS.map((word, i) => (
               <span
                 key={word}
                 style={{
                   display: 'inline-block',
                   overflow: 'hidden',
                   verticalAlign: 'bottom',
-                  marginRight: i < WORDS.length - 1 ? '0.28em' : 0,
+                  marginRight: i < ABOUT_WORDS.length - 1 ? '0.28em' : 0,
                   lineHeight: 1.15,
                 }}
               >

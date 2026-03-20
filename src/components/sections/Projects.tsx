@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { gsap } from '@/lib/gsap';
+import { gsap, ScrollTrigger } from '@/lib/gsap';
 import { profile } from '@/data/profile';
 import { ProjectVisualSONAR } from '@/components/visuals/ProjectVisualSONAR';
 import { ProjectVisualORACLE } from '@/components/visuals/ProjectVisualORACLE';
@@ -26,7 +26,7 @@ const PROJECTS: ProjectDetail[] = [
     tag: 'AMAZON · INTERNAL TOOL',
     headline: 'The audit that never sleeps.',
     description:
-      'Post-scheduling automation for 500+ EU Intermodal routes. Cut cycle time from 4 hours to 5 minutes — zero human intervention.',
+      'Post-scheduling audit system for all shipments scheduled on Friday for the week ahead — preventing delivery delays across Europe before they happen. Replaced 8 hours of manual weekly work with a fully automated 5-minute process.',
     visual: <ProjectVisualSONAR />,
     metrics: [
       { value: '€13.3M', label: 'ARR impact' },
@@ -109,7 +109,7 @@ const PROJECTS: ProjectDetail[] = [
     tag: 'AMAZON · ANALYTICS PLATFORM',
     headline: 'One source. 35 countries.',
     description:
-      'Unified 80+ fragmented KPIs into a single source of truth for L7+ leadership across 35 countries. Eliminated 6 hours of weekly manual consolidation.',
+      'Single source of truth for all BI & Analytics across the team — powering every DBR, WBR and MBR business review. Includes trend analysis tools and AI-assisted deep dive capabilities. Replaced 80+ fragmented data sources with one unified platform.',
     visual: <ProjectVisualExecAnalytics />,
     metrics: [
       { value: '80+', label: 'KPIs unified' },
@@ -159,7 +159,7 @@ function ProjectCard({
   const hoverRef   = useRef<HTMLDivElement>(null);
   const visualRef  = useRef<HTMLDivElement>(null);
 
-  // Scroll reveal
+  // Scroll reveal + exit
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
@@ -177,6 +177,15 @@ function ProjectCard({
           },
         }
       );
+
+      // Exit animation — fades card out as it scrolls off top
+      ScrollTrigger.create({
+        trigger: revealRef.current,
+        start: 'bottom 18%',
+        toggleActions: 'play none none reverse',
+        onEnter: () => gsap.to(revealRef.current, { opacity: 0, y: -20, duration: 0.5, ease: 'power2.in', overwrite: 'auto' }),
+        onLeaveBack: () => gsap.to(revealRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', overwrite: 'auto' }),
+      });
     });
     return () => ctx.revert();
   }, []);
@@ -399,10 +408,9 @@ function ProjectCard({
   );
 }
 
-/* ─── Section header — GSAP serif clip reveal ───────────── */
+/* ─── Section header — GSAP clip reveal ─────────────────── */
 function ProjectsHeader() {
   const sectionRef      = useRef<HTMLDivElement>(null);
-  const overlineRef     = useRef<HTMLParagraphElement>(null);
   const phrase1InnerRef = useRef<HTMLSpanElement>(null);
   const phrase2InnerRef = useRef<HTMLSpanElement>(null);
   const subRef          = useRef<HTMLParagraphElement>(null);
@@ -410,20 +418,6 @@ function ProjectsHeader() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Overline
-      gsap.fromTo(
-        overlineRef.current,
-        { opacity: 0, y: 10 },
-        {
-          opacity: 1, y: 0, duration: 0.5, ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 85%',
-            toggleActions: 'play none none reverse',
-          },
-        }
-      );
-
       // H2 phrase clip reveal
       gsap.fromTo(
         [phrase1InnerRef.current, phrase2InnerRef.current],
@@ -460,22 +454,6 @@ function ProjectsHeader() {
       ref={sectionRef}
       style={{ paddingTop: 'clamp(64px, 10vh, 112px)', paddingBottom: '72px' }}
     >
-      <p
-        ref={overlineRef}
-        style={{
-          opacity: 0,
-          fontFamily: 'var(--font-mono)',
-          fontSize: '0.65rem',
-          fontWeight: 500,
-          color: '#5AC8FA',
-          letterSpacing: '0.22em',
-          textTransform: 'uppercase',
-          marginBottom: '24px',
-        }}
-      >
-        Projects
-      </p>
-
       <div
         style={{
           display: 'flex',
@@ -486,12 +464,12 @@ function ProjectsHeader() {
         }}
       >
         <div>
-          {/* H2 — serif, two-phrase clip reveal */}
+          {/* H2 — Inter bold, two-phrase clip reveal */}
           <h2
             style={{
-              fontFamily: 'var(--font-serif)',
-              fontWeight: 700,
-              fontSize: 'clamp(3rem, 6vw, 6rem)',
+              fontFamily: 'var(--font-inter)',
+              fontWeight: 800,
+              fontSize: 'clamp(2.25rem, 4vw, 3.75rem)',
               lineHeight: 1.0,
               letterSpacing: '-0.02em',
               marginBottom: '14px',

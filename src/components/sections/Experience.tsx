@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, ReactNode } from 'react';
 import Image from 'next/image';
-import { gsap } from '@/lib/gsap';
+import { gsap, ScrollTrigger } from '@/lib/gsap';
 
 /* ─── Types ─────────────────────────────────────────────────── */
 type MediaConfig =
@@ -38,7 +38,7 @@ function Highlight({ text, color }: { text: string; color: string }): ReactNode 
   );
 }
 
-/* ─── Block data (unchanged) ────────────────────────────────── */
+/* ─── Block data ────────────────────────────────────────────── */
 const BLOCKS: Block[] = [
   {
     id: 'amazon-tpm-innovation', pattern: 'A',
@@ -142,63 +142,10 @@ const GROUPS: CompanyGroup[] = [
 
 const BLOCK_MAP = Object.fromEntries(BLOCKS.map(b => [b.id, b]));
 
-/* ─── KPI value parser ───────────────────────────────────────── */
-function parseKPI(value: string): { prefix: string; target: number; suffix: string; decimals: number } | null {
-  const prefixMatch = value.match(/^([^0-9]*)/);
-  const prefix = prefixMatch ? prefixMatch[1] : '';
-  const rest = value.slice(prefix.length);
-  const numMatch = rest.match(/^([0-9][0-9,.]*)/);
-  if (!numMatch) return null; // e.g. "Station F", "MVP"
-  const rawNum = numMatch[1].replace(/,/g, '');
-  const target = parseFloat(rawNum);
-  const suffix = rest.slice(numMatch[1].length);
-  const decimals = rawNum.includes('.') ? rawNum.split('.')[1].length : 0;
-  return { prefix, target, suffix, decimals };
-}
-
-/* ─── KPICounter — per-metric count-up via GSAP ScrollTrigger ── */
-function KPICounter({ kpi, borderRight }: { kpi: KPI; borderRight: boolean }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const valueRef     = useRef<HTMLParagraphElement>(null);
-
-  useEffect(() => {
-    const parsed = parseKPI(kpi.value);
-    if (!parsed || !valueRef.current) return; // non-numeric — keep as-is
-
-    const el = valueRef.current;
-    // Set initial display to zero
-    el.textContent = `${parsed.prefix}0${parsed.suffix}`;
-
-    const ctx = gsap.context(() => {
-      const counter = { value: 0 };
-      gsap.to(counter, {
-        value: parsed.target,
-        duration: 1.6,
-        ease: 'power3.out',
-        onUpdate() {
-          if (!el) return;
-          const v = parsed.decimals > 0
-            ? counter.value.toFixed(parsed.decimals)
-            : Math.round(counter.value).toLocaleString('en-US');
-          el.textContent = `${parsed.prefix}${v}${parsed.suffix}`;
-        },
-        onReverseComplete() {
-          if (el) el.textContent = `${parsed.prefix}0${parsed.suffix}`;
-        },
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top 88%',
-          toggleActions: 'play none none reverse',
-        },
-      });
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
+/* ─── KPIDisplay — static (no count-up) ─────────────────────── */
+function KPIDisplay({ kpi, borderRight }: { kpi: KPI; borderRight: boolean }) {
   return (
     <div
-      ref={containerRef}
       style={{
         flex: 1,
         paddingRight: borderRight ? '20px' : 0,
@@ -210,11 +157,10 @@ function KPICounter({ kpi, borderRight }: { kpi: KPI; borderRight: boolean }) {
       }}
     >
       <p
-        ref={valueRef}
         style={{
-          fontFamily: 'var(--font-heading)',
+          fontFamily: 'var(--font-inter)',
           fontWeight: 700,
-          fontSize: 'clamp(1.4rem, 2vw, 1.9rem)',
+          fontSize: 'clamp(1.2rem, 1.8vw, 1.65rem)',
           color: '#5AC8FA',
           lineHeight: 1.05,
         }}
@@ -249,13 +195,13 @@ function KPIStats({ kpis }: { kpis: KPI[] }) {
       }}
     >
       {kpis.map((kpi, i) => (
-        <KPICounter key={i} kpi={kpi} borderRight={i < kpis.length - 1} />
+        <KPIDisplay key={i} kpi={kpi} borderRight={i < kpis.length - 1} />
       ))}
     </div>
   );
 }
 
-/* ─── MediaPanel (unchanged) ─────────────────────────────────── */
+/* ─── MediaPanel ─────────────────────────────────────────────── */
 function MediaPanel({ media }: { media: MediaConfig }) {
   if (media.type === 'orbs') {
     return (
@@ -269,7 +215,7 @@ function MediaPanel({ media }: { media: MediaConfig }) {
         <div className="animate-pulse-glow" style={{ position: 'absolute', width: '260px', height: '260px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,255,255,0.16) 0%, transparent 70%)', top: '-50px', right: '-50px' }} />
         <div className="animate-pulse-glow" style={{ position: 'absolute', width: '180px', height: '180px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)', bottom: '-30px', left: '-30px', animationDelay: '1s' }} />
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '1.4rem', color: 'rgba(255,255,255,0.65)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Familyad</span>
+          <span style={{ fontFamily: 'var(--font-inter)', fontWeight: 800, fontSize: '1.4rem', color: 'rgba(255,255,255,0.65)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>Familyad</span>
         </div>
       </div>
     );
@@ -287,7 +233,7 @@ function MediaPanel({ media }: { media: MediaConfig }) {
   );
 }
 
-/* ─── RoleBlock — pure render (animation handled by parent) ──── */
+/* ─── RoleBlock ──────────────────────────────────────────────── */
 function RoleBlock({ block, accentColor }: { block: Block; accentColor: string }) {
   const isA = block.pattern === 'A';
   return (
@@ -305,7 +251,7 @@ function RoleBlock({ block, accentColor }: { block: Block; accentColor: string }
           <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: accentColor, fontWeight: 500 }}>
             {block.label}
           </p>
-          <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.3rem, 2vw, 1.9rem)', color: '#ffffff', lineHeight: 1.2, letterSpacing: '-0.01em' }}>
+          <h3 style={{ fontFamily: 'var(--font-inter)', fontWeight: 700, fontSize: 'clamp(1.2rem, 1.8vw, 1.65rem)', color: '#ffffff', lineHeight: 1.2, letterSpacing: '-0.01em' }}>
             <Highlight text={block.role} color="#5AC8FA" />
           </h3>
           <p style={{ color: 'rgba(245,245,247,0.72)', fontSize: 'clamp(0.9rem, 1.1vw, 1rem)', lineHeight: 1.8 }}>
@@ -318,7 +264,7 @@ function RoleBlock({ block, accentColor }: { block: Block; accentColor: string }
   );
 }
 
-/* ─── CompanySection — pure render, ref passed from parent ───── */
+/* ─── CompanySection ─────────────────────────────────────────── */
 function CompanySection({
   group,
   onRef,
@@ -346,7 +292,7 @@ function CompanySection({
           <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: group.accentColor, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500 }}>
             {group.period}
           </span>
-          <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.5rem, 2.2vw, 2rem)', color: '#ffffff', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+          <span style={{ fontFamily: 'var(--font-inter)', fontWeight: 700, fontSize: 'clamp(1.5rem, 2.2vw, 2rem)', color: '#ffffff', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
             {group.company}
           </span>
         </div>
@@ -369,20 +315,12 @@ function CompanySection({
 export function Experience() {
   const sectionRef   = useRef<HTMLElement>(null);
   const headerRef    = useRef<HTMLDivElement>(null);
-  const eyebrowRef   = useRef<HTMLParagraphElement>(null);
   const phraseRefs   = useRef<(HTMLSpanElement | null)[]>([]);
   const subtitleRef  = useRef<HTMLParagraphElement>(null);
   const cardRefs     = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Eyebrow
-      gsap.fromTo(eyebrowRef.current,
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out',
-          scrollTrigger: { trigger: headerRef.current, start: 'top 85%', toggleActions: 'play none none reverse' } }
-      );
-
       // H2 phrase-by-phrase clip reveal
       const phrases = phraseRefs.current.filter(Boolean);
       gsap.fromTo(phrases,
@@ -391,20 +329,31 @@ export function Experience() {
           scrollTrigger: { trigger: headerRef.current, start: 'top 78%', toggleActions: 'play none none reverse' } }
       );
 
-      // Subtitle fades in after phrases
+      // Subtitle
       gsap.fromTo(subtitleRef.current,
         { opacity: 0, y: 16 },
         { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', delay: 0.35,
           scrollTrigger: { trigger: headerRef.current, start: 'top 78%', toggleActions: 'play none none reverse' } }
       );
 
-      // 4 company cards — stagger 120ms, trigger when header bottom clears viewport
+      // Company cards — stagger 120ms
       const cards = cardRefs.current.filter(Boolean);
       gsap.fromTo(cards,
         { opacity: 0, y: 40 },
         { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out', stagger: 0.12,
           scrollTrigger: { trigger: headerRef.current, start: 'bottom 80%', toggleActions: 'play none none reverse' } }
       );
+
+      // Exit animations — cards fade out as they leave the top
+      cards.forEach((card) => {
+        ScrollTrigger.create({
+          trigger: card,
+          start: 'bottom 18%',
+          toggleActions: 'play none none reverse',
+          onEnter: () => gsap.to(card, { opacity: 0, y: -20, duration: 0.5, ease: 'power2.in', overwrite: 'auto' }),
+          onLeaveBack: () => gsap.to(card, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', overwrite: 'auto' }),
+        });
+      });
     }, sectionRef);
 
     return () => ctx.revert();
@@ -416,29 +365,12 @@ export function Experience() {
 
         {/* Section header */}
         <div ref={headerRef} style={{ paddingTop: 'clamp(64px, 10vh, 112px)', paddingBottom: '48px' }}>
-          {/* Eyebrow */}
-          <p
-            ref={eyebrowRef}
-            style={{
-              opacity: 0,
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.82rem',
-              fontWeight: 500,
-              color: 'rgba(245,245,247,0.5)',
-              letterSpacing: '0.16em',
-              textTransform: 'uppercase',
-              marginBottom: '20px',
-            }}
-          >
-            Experience
-          </p>
-
-          {/* H2 — serif, phrase-by-phrase clip reveal */}
+          {/* H2 — Inter bold, phrase-by-phrase clip reveal */}
           <h2
             style={{
-              fontFamily: 'var(--font-serif)',
+              fontFamily: 'var(--font-inter)',
               fontWeight: 800,
-              fontSize: 'clamp(3rem, 6vw, 6rem)',
+              fontSize: 'clamp(2.25rem, 4vw, 3.75rem)',
               lineHeight: 1.0,
               letterSpacing: '-0.025em',
               marginBottom: '20px',
@@ -474,7 +406,7 @@ export function Experience() {
           </p>
         </div>
 
-        {/* Company cards — refs collected for parent-owned stagger */}
+        {/* Company cards */}
         {GROUPS.map((group, i) => (
           <CompanySection
             key={group.company}

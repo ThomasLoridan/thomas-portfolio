@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { gsap } from '@/lib/gsap';
+import { gsap, ScrollTrigger } from '@/lib/gsap';
 import { Code2, Lightbulb, Network, Target, Shield, Zap } from 'lucide-react';
 
 /* ─── Skill card data — unchanged ────────────────────────── */
@@ -79,7 +79,6 @@ export function Skills() {
 
   /* Refs for GSAP */
   const headerRef       = useRef<HTMLDivElement>(null);
-  const overlineRef     = useRef<HTMLParagraphElement>(null);
   const p1InnerRef      = useRef<HTMLSpanElement>(null);
   const p2InnerRef      = useRef<HTMLSpanElement>(null);
   const subRef          = useRef<HTMLParagraphElement>(null);
@@ -105,19 +104,6 @@ export function Skills() {
   /* ── GSAP scroll reveals ───────────────────────────── */
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Overline
-      gsap.fromTo(overlineRef.current,
-        { opacity: 0, y: 10 },
-        {
-          opacity: 1, y: 0, duration: 0.5, ease: 'power3.out',
-          scrollTrigger: {
-            trigger: headerRef.current,
-            start: 'top 85%',
-            toggleActions: 'play none none reverse',
-          },
-        }
-      );
-
       // H2 clip reveal
       gsap.fromTo([p1InnerRef.current, p2InnerRef.current],
         { yPercent: 110 },
@@ -170,6 +156,17 @@ export function Skills() {
           },
         }
       );
+
+      // Exit animations — value cards fade out as they leave the top
+      cards.forEach((card) => {
+        ScrollTrigger.create({
+          trigger: card,
+          start: 'bottom 18%',
+          toggleActions: 'play none none reverse',
+          onEnter: () => gsap.to(card, { opacity: 0, y: -20, duration: 0.5, ease: 'power2.in', overwrite: 'auto' }),
+          onLeaveBack: () => gsap.to(card, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', overwrite: 'auto' }),
+        });
+      });
     });
     return () => ctx.revert();
   }, []);
@@ -186,27 +183,11 @@ export function Skills() {
           padding: 'clamp(64px, 10vh, 96px) clamp(24px, 5vw, 64px) 48px',
         }}
       >
-        <p
-          ref={overlineRef}
-          style={{
-            opacity: 0,
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.65rem',
-            fontWeight: 500,
-            color: '#5AC8FA',
-            letterSpacing: '0.22em',
-            textTransform: 'uppercase',
-            marginBottom: '20px',
-          }}
-        >
-          Skills
-        </p>
-
         <h2
           style={{
-            fontFamily: 'var(--font-serif)',
-            fontWeight: 700,
-            fontSize: 'clamp(3rem, 6vw, 5.5rem)',
+            fontFamily: 'var(--font-inter)',
+            fontWeight: 800,
+            fontSize: 'clamp(2.25rem, 4vw, 3.75rem)',
             lineHeight: 1.0,
             letterSpacing: '-0.02em',
             marginBottom: '20px',
@@ -214,12 +195,12 @@ export function Skills() {
         >
           <span style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
             <span ref={p1InnerRef} style={{ display: 'inline-block', color: '#f5f5f7' }}>
-              What I build&nbsp;
+              Three strengths.&nbsp;
             </span>
           </span>
           <span style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
             <span ref={p2InnerRef} style={{ display: 'inline-block', color: '#5AC8FA' }}>
-              with.
+              One output.
             </span>
           </span>
         </h2>

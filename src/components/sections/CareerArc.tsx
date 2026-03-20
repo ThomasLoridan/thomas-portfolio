@@ -17,23 +17,10 @@ const PAIRS: ArcPair[] = [
 
 export function CareerArc() {
   const sectionRef = useRef<HTMLElement>(null);
-  const eyebrowRef = useRef<HTMLParagraphElement>(null);
   const cellRefs   = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Eyebrow fades in first
-      gsap.fromTo(eyebrowRef.current,
-        { opacity: 0, y: 12 },
-        { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 82%',
-            toggleActions: 'play none none reverse',
-          },
-        }
-      );
-
       // 3 cells — stagger 100ms, reverse on scroll up
       const cells = cellRefs.current.filter(Boolean);
       gsap.fromTo(cells,
@@ -67,23 +54,6 @@ export function CareerArc() {
       }}
     >
       <div style={{ maxWidth: '960px', margin: '0 auto', padding: '0 clamp(24px, 5vw, 48px)' }}>
-
-        {/* Eyebrow — flush left, accent */}
-        <p
-          ref={eyebrowRef}
-          style={{
-            opacity: 0,
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.65rem',
-            fontWeight: 500,
-            color: '#5AC8FA',
-            letterSpacing: '0.22em',
-            textTransform: 'uppercase',
-            marginBottom: '36px',
-          }}
-        >
-          Career Arc · 2022 → 2025
-        </p>
 
         {/* 3-column grid, 1px separator lines */}
         <div

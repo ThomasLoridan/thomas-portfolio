@@ -34,14 +34,6 @@ const PASSIONS = [
     images: [{ src: '/images/hobbies/dune.jpg', alt: 'Dune' }],
   },
   {
-    id: 'suits',
-    eyebrow: 'SERIES',
-    title: 'Suits — negotiation as a craft.',
-    body: "Harvey Specter's approach to preparation, framing, and leverage mirrors how I approach stakeholder management. Every conversation is a negotiation.",
-    accent: 'negotiation',
-    images: [{ src: '/images/hobbies/suits.avif', alt: 'Suits' }],
-  },
-  {
     id: 'aktionnaire',
     eyebrow: 'FINANCE',
     title: 'Markets as a feedback loop.',
@@ -182,9 +174,9 @@ function HobbyBlock({
 
       <h3
         style={{
-          fontFamily: 'var(--font-serif)',
+          fontFamily: 'var(--font-inter)',
           fontWeight: 700,
-          fontSize: 'clamp(1.2rem, 2vw, 1.65rem)',
+          fontSize: 'clamp(1.2rem, 2vw, 1.5rem)',
           color: '#f5f5f7',
           lineHeight: 1.15,
           letterSpacing: '-0.01em',
@@ -211,7 +203,6 @@ function HobbyBlock({
 /* ─── Main section ────────────────────────────────────────── */
 export function Hobbies() {
   const sectionRef   = useRef<HTMLElement>(null);
-  const overlineRef  = useRef<HTMLParagraphElement>(null);
   const p1InnerRef   = useRef<HTMLSpanElement>(null);
   const p2InnerRef   = useRef<HTMLSpanElement>(null);
   const subRef       = useRef<HTMLParagraphElement>(null);
@@ -219,19 +210,6 @@ export function Hobbies() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      /* Overline */
-      gsap.fromTo(overlineRef.current,
-        { opacity: 0, y: 10 },
-        {
-          opacity: 1, y: 0, duration: 0.5, ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 85%',
-            toggleActions: 'play none none reverse',
-          },
-        }
-      );
-
       /* H2 clip reveal */
       gsap.fromTo([p1InnerRef.current, p2InnerRef.current],
         { yPercent: 110 },
@@ -299,27 +277,11 @@ export function Hobbies() {
       >
         {/* ── Header — flush left ─────────────────────────── */}
         <div style={{ marginBottom: 'clamp(48px, 7vw, 80px)' }}>
-          <p
-            ref={overlineRef}
-            style={{
-              opacity: 0,
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.65rem',
-              fontWeight: 500,
-              color: '#5AC8FA',
-              letterSpacing: '0.22em',
-              textTransform: 'uppercase',
-              marginBottom: '20px',
-            }}
-          >
-            Beyond work
-          </p>
-
           <h2
             style={{
-              fontFamily: 'var(--font-serif)',
-              fontWeight: 700,
-              fontSize: 'clamp(3rem, 6vw, 5.5rem)',
+              fontFamily: 'var(--font-inter)',
+              fontWeight: 800,
+              fontSize: 'clamp(2.25rem, 4vw, 3.75rem)',
               lineHeight: 1.0,
               letterSpacing: '-0.02em',
               marginBottom: '18px',

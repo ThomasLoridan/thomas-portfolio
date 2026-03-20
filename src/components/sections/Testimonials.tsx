@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
-import { gsap } from '@/lib/gsap';
+import { gsap, ScrollTrigger } from '@/lib/gsap';
 
 /* ─── Testimonial data — unchanged ───────────────────────── */
 const COLS = [
@@ -131,7 +131,6 @@ function TestimonialCard({
 /* ─── Main section ────────────────────────────────────────── */
 export function Testimonials() {
   const sectionRef    = useRef<HTMLElement>(null);
-  const overlineRef   = useRef<HTMLParagraphElement>(null);
   const p1Ref         = useRef<HTMLSpanElement>(null);
   const p2Ref         = useRef<HTMLSpanElement>(null);
   const p3Ref         = useRef<HTMLSpanElement>(null);
@@ -140,19 +139,6 @@ export function Testimonials() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Overline
-      gsap.fromTo(overlineRef.current,
-        { opacity: 0, y: 10 },
-        {
-          opacity: 1, y: 0, duration: 0.5, ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 85%',
-            toggleActions: 'play none none reverse',
-          },
-        }
-      );
-
       // H2 — three-phrase clip reveal
       gsap.fromTo([p1Ref.current, p2Ref.current, p3Ref.current],
         { yPercent: 110 },
@@ -192,6 +178,17 @@ export function Testimonials() {
           },
         }
       );
+
+      // Exit animations — cards fade out as they scroll off the top
+      cards.forEach((card) => {
+        ScrollTrigger.create({
+          trigger: card,
+          start: 'bottom 18%',
+          toggleActions: 'play none none reverse',
+          onEnter: () => gsap.to(card, { opacity: 0, y: -20, duration: 0.5, ease: 'power2.in', overwrite: 'auto' }),
+          onLeaveBack: () => gsap.to(card, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', overwrite: 'auto' }),
+        });
+      });
     }, sectionRef);
 
     return () => ctx.revert();
@@ -215,28 +212,12 @@ export function Testimonials() {
       >
         {/* Header */}
         <div style={{ marginBottom: '64px' }}>
-          <p
-            ref={overlineRef}
-            style={{
-              opacity: 0,
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.65rem',
-              fontWeight: 500,
-              color: '#5AC8FA',
-              letterSpacing: '0.22em',
-              textTransform: 'uppercase',
-              marginBottom: '20px',
-            }}
-          >
-            Kind words
-          </p>
-
           {/* H2 — three-phrase clip reveal */}
           <h2
             style={{
-              fontFamily: 'var(--font-serif)',
-              fontWeight: 700,
-              fontSize: 'clamp(2.2rem, 5vw, 4.5rem)',
+              fontFamily: 'var(--font-inter)',
+              fontWeight: 800,
+              fontSize: 'clamp(2.25rem, 4vw, 3.75rem)',
               lineHeight: 1.08,
               letterSpacing: '-0.02em',
               marginBottom: '20px',
