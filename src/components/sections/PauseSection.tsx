@@ -44,14 +44,17 @@ function parseMetric(metric: string): {
 
 export function PauseSection({ metric, label, variant = 'dark' }: PauseSectionProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-15%' });
+  const isInView = useInView(ref, { once: false, margin: '-15%' });
   const isDark = variant === 'dark';
 
   const { prefix, target, suffix, formatFn } = parseMetric(metric);
   const [display, setDisplay] = useState(`${prefix}0${suffix}`);
 
   useEffect(() => {
-    if (!isInView) return;
+    if (!isInView) {
+      setDisplay(`${prefix}0${suffix}`);
+      return;
+    }
     const controls = animate(0, target, {
       duration: 1.8,
       ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
@@ -90,7 +93,7 @@ export function PauseSection({ metric, label, variant = 'dark' }: PauseSectionPr
         {/* Label */}
         <motion.p
           initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
+          animate={isInView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
           style={{
             marginTop: '20px',

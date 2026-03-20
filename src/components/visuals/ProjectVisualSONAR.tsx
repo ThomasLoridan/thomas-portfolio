@@ -76,7 +76,7 @@ export function ProjectVisualSONAR() {
         {/* Nodes */}
         {NODES.map(node => {
           const fill =
-            node.state === 'blue'  ? '#2997ff' :
+            node.state === 'blue'  ? '#5AC8FA' :
             node.state === 'amber' ? '#ff9f0a' :
                                      '#424245';
           const r = node.state === 'dim' ? 2 : 2.8;
@@ -108,7 +108,7 @@ export function ProjectVisualSONAR() {
             cx={node.cx}
             cy={node.cy}
             r={7}
-            fill={node.state === 'blue' ? '#2997ff' : '#ff9f0a'}
+            fill={node.state === 'blue' ? '#5AC8FA' : '#ff9f0a'}
             opacity={0}
             style={{
               animationName: 'pulse-node',

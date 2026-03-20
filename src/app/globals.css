@@ -14,8 +14,10 @@
   --color-secondary: #4b5563;
   --color-muted: #9ca3af;
 
-  --color-accent-blue: #0075eb;
-  --color-accent-blue-dark: #0060c7;
+  --accent: #5AC8FA;
+  --cta: #0071E3;
+  --color-accent-blue: #0071E3;
+  --color-accent-blue-dark: #005BBB;
   --color-amazon: #FF9900;
   --color-loreal: #C8A951;
   --color-startup: #6366f1;
@@ -98,12 +100,12 @@
   }
 
   ::selection {
-    background-color: rgba(0, 117, 235, 0.15);
+    background-color: rgba(90, 200, 250, 0.15);
     color: #0a0a0a;
   }
 
   :focus-visible {
-    outline: 2px solid #0075eb;
+    outline: 2px solid #5AC8FA;
     outline-offset: 2px;
   }
 }
@@ -185,7 +187,7 @@
   /* Hero: stays dark */
   .hero-gradient-bg {
     background:
-      radial-gradient(ellipse at 20% 50%, rgba(0, 117, 235, 0.18) 0%, transparent 55%),
+      radial-gradient(ellipse at 20% 50%, rgba(90, 200, 250, 0.1) 0%, transparent 55%),
       radial-gradient(ellipse at 80% 15%, rgba(139, 92, 246, 0.14) 0%, transparent 55%),
       radial-gradient(ellipse at 55% 90%, rgba(52, 211, 153, 0.08) 0%, transparent 55%),
       #0a0a0a;
@@ -224,7 +226,7 @@
   .section-label {
     font-size: 0.7rem;
     font-family: var(--font-mono);
-    color: #0075eb;
+    color: #5AC8FA;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     font-weight: 500;
@@ -280,20 +282,20 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background: #0075eb;
+    background: #0071E3;
     color: #ffffff;
     font-weight: 500;
     font-size: 0.875rem;
     border-radius: 9999px;
-    border: 1px solid #0075eb;
+    border: 1px solid #0071E3;
     transition: all 0.2s ease;
     cursor: pointer;
   }
 
   .btn-blue:hover {
-    background: #0060c7;
+    background: #005BBB;
     transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(0, 117, 235, 0.3);
+    box-shadow: 0 8px 24px rgba(0, 113, 227, 0.3);
   }
 
   /* Animations */
@@ -316,7 +318,7 @@
   /* Gradient border (for photo in dark hero) */
   .gradient-border {
     background: linear-gradient(#0a0a0a, #0a0a0a) padding-box,
-                linear-gradient(135deg, #0075eb, #8b5cf6) border-box;
+                linear-gradient(135deg, #5AC8FA, #8b5cf6) border-box;
     border: 2px solid transparent;
   }
 

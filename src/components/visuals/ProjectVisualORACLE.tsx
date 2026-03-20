@@ -54,7 +54,7 @@ export function ProjectVisualORACLE() {
             <line
               key={i}
               x1={ax} y1={ay} x2={bx} y2={by}
-              stroke="#2997ff"
+              stroke="#5AC8FA"
               strokeWidth="0.8"
               opacity="0.18"
             />
@@ -65,7 +65,7 @@ export function ProjectVisualORACLE() {
         {CAPITALS.map(([code, cx, cy]) => (
           <g key={code}>
             {/* Outer glow ring */}
-            <circle cx={cx} cy={cy} r={10} fill="#2997ff" opacity="0.05" />
+            <circle cx={cx} cy={cy} r={10} fill="#5AC8FA" opacity="0.05" />
             {/* Dot */}
             <circle cx={cx} cy={cy} r={3.5} fill="#f5f5f7" opacity="0.72" />
             {/* Inner bright core */}
@@ -76,7 +76,7 @@ export function ProjectVisualORACLE() {
         {/* Scan line — horizontal, sweeps top → bottom */}
         <line
           x1="60" y1="30" x2="530" y2="30"
-          stroke="#2997ff"
+          stroke="#5AC8FA"
           strokeWidth="1.5"
           opacity="0.7"
           style={{
@@ -89,7 +89,7 @@ export function ProjectVisualORACLE() {
         {/* Scan line soft glow */}
         <line
           x1="60" y1="30" x2="530" y2="30"
-          stroke="#2997ff"
+          stroke="#5AC8FA"
           strokeWidth="6"
           opacity="0.12"
           style={{

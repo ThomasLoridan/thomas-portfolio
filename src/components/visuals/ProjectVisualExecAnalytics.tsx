@@ -62,7 +62,7 @@ export function ProjectVisualExecAnalytics() {
         {/* Unifier — soft glow */}
         <line
           x1={UNIFIER_X} y1="30" x2={UNIFIER_X} y2="410"
-          stroke="#2997ff"
+          stroke="#5AC8FA"
           strokeWidth="10"
           opacity="0.1"
         />

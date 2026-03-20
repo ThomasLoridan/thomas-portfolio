@@ -5,7 +5,7 @@ import { motion, useInView } from 'framer-motion';
 
 export function ProofQuote() {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-10%' });
+  const inView = useInView(ref, { once: false, margin: '-10%' });
 
   return (
     <section
@@ -18,7 +18,7 @@ export function ProofQuote() {
         {/* Left border — draws from top */}
         <motion.div
           initial={{ scaleY: 0 }}
-          animate={inView ? { scaleY: 1 } : {}}
+          animate={inView ? { scaleY: 1 } : { scaleY: 0 }}
           transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
           style={{
             position: 'absolute',
@@ -26,7 +26,7 @@ export function ProofQuote() {
             top: 0,
             bottom: 0,
             width: '3px',
-            background: '#2997ff',
+            background: '#5AC8FA',
             transformOrigin: 'top',
           }}
         />

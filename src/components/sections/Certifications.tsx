@@ -66,11 +66,12 @@ function CertCard({
   onClick: () => void;
 }) {
   return (
+    /* Outer div: GSAP animation target (opacity + y). Never touched by hover. */
+    <div ref={cardRef} style={{ opacity: 0 }}>
+    {/* Inner div: hover target only. GSAP never writes transform here. */}
     <div
-      ref={cardRef}
       onClick={onClick}
       style={{
-        opacity: 0,
         background: '#ffffff',
         border: '1px solid rgba(0,0,0,0.06)',
         borderRadius: '16px',
@@ -79,6 +80,8 @@ function CertCard({
         display: 'flex',
         flexDirection: 'column',
         gap: '14px',
+        height: '100%',
+        boxSizing: 'border-box',
         transition: 'box-shadow 0.3s ease, transform 0.3s ease',
       }}
       onMouseEnter={(e) => {
@@ -159,6 +162,7 @@ function CertCard({
         )}
       </div>
     </div>
+  </div>
   );
 }
 

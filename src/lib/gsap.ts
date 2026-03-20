@@ -12,6 +12,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
+  // Respect prefers-reduced-motion at the global level —
+  // rush all GSAP timelines through instantly for users who opt out.
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    gsap.globalTimeline.timeScale(10);
+  }
 }
 
 export { gsap, ScrollTrigger };

@@ -356,7 +356,7 @@ export function Hobbies() {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
             columnGap: 'clamp(24px, 4vw, 56px)',
             rowGap: 'clamp(48px, 7vw, 80px)',
           }}
