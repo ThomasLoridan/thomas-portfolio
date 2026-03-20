@@ -1,14 +1,23 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import { gsap } from '@/lib/gsap';
 import { profile } from '@/data/profile';
 import { ProjectVisualSONAR } from '@/components/visuals/ProjectVisualSONAR';
 import { ProjectVisualORACLE } from '@/components/visuals/ProjectVisualORACLE';
 import { ProjectVisualExecAnalytics } from '@/components/visuals/ProjectVisualExecAnalytics';
 import { ProjectModal } from '@/components/projects/ProjectModal';
 import type { ProjectDetail } from '@/components/projects/ProjectModal';
-import { GithubIcon, ExternalLink } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
+
+function GitHubMark({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 98 96" fill="currentColor" aria-hidden="true">
+      <path d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z" />
+    </svg>
+  );
+}
 
 /* ─── Project data (card + modal) ────────────────────────── */
 const PROJECTS: ProjectDetail[] = [
@@ -138,7 +147,7 @@ const PROJECTS: ProjectDetail[] = [
   },
 ];
 
-/* ─── Project card — Apple iPhone 17 Pro vertical layout ──── */
+/* ─── Project card — hover lift + mouse-move parallax ───── */
 function ProjectCard({
   project,
   onViewProject,
@@ -146,223 +155,327 @@ function ProjectCard({
   project: ProjectDetail;
   onViewProject: (id: string) => void;
 }) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: cardRef,
-    offset: ['0 0.95', '0.35 0.6'] as any,
-  });
-  const opacity = useTransform(scrollYProgress, [0, 1], [0, 1]);
-  const y = useTransform(scrollYProgress, [0, 1], [40, 0]);
+  const revealRef  = useRef<HTMLDivElement>(null);
+  const hoverRef   = useRef<HTMLDivElement>(null);
+  const visualRef  = useRef<HTMLDivElement>(null);
+
+  // Scroll reveal
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        revealRef.current,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.85,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: revealRef.current,
+            start: 'top 88%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+    });
+    return () => ctx.revert();
+  }, []);
+
+  // Hover lift
+  const handleMouseEnter = useCallback(() => {
+    gsap.to(hoverRef.current, { y: -8, duration: 0.4, ease: 'power3.out', overwrite: 'auto' });
+  }, []);
+
+  // Reset lift + parallax on leave
+  const handleMouseLeave = useCallback(() => {
+    gsap.to(hoverRef.current,  { y: 0, duration: 0.6, ease: 'power3.out', overwrite: 'auto' });
+    gsap.to(visualRef.current, { x: 0, y: 0, duration: 0.8, ease: 'power3.out', overwrite: 'auto' });
+  }, []);
+
+  // Image parallax on mouse move
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!visualRef.current || !hoverRef.current) return;
+    const rect = hoverRef.current.getBoundingClientRect();
+    const dx = (e.clientX - (rect.left + rect.width  / 2)) / (rect.width  / 2);
+    const dy = (e.clientY - (rect.top  + rect.height / 2)) / (rect.height / 2);
+    gsap.to(visualRef.current, {
+      x: dx * 14,
+      y: dy * 8,
+      duration: 0.6,
+      ease: 'power2.out',
+      overwrite: 'auto',
+    });
+  }, []);
 
   return (
-    <motion.div
-      ref={cardRef}
-      style={{ opacity, y, marginBottom: 'clamp(80px, 10vw, 120px)' }}
-    >
-      {/* 1. Category tag */}
-      <p
-        style={{
-          fontSize: '12px',
-          fontWeight: 600,
-          letterSpacing: '0.1em',
-          textTransform: 'uppercase',
-          color: '#6e6e73',
-          marginBottom: '20px',
-        }}
-      >
-        {project.tag}
-      </p>
-
-      {/* 2. Headline — before the visual, creates anticipation */}
-      <h3
-        style={{
-          fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-          fontWeight: 700,
-          letterSpacing: '-0.002em',
-          lineHeight: 1.08,
-          color: '#f5f5f7',
-          marginBottom: '32px',
-          maxWidth: '800px',
-        }}
-      >
-        {project.headline}
-      </h3>
-
-      {/* 3. Full-bleed visual — 16/7 ratio, zero border-radius */}
+    <div ref={revealRef} style={{ opacity: 0, marginBottom: 'clamp(80px, 10vw, 120px)' }}>
       <div
-        style={{
-          position: 'relative',
-          width: '100%',
-          aspectRatio: '16 / 7',
-          overflow: 'hidden',
-          borderRadius: 0,
-          marginBottom: '40px',
-        }}
+        ref={hoverRef}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onMouseMove={handleMouseMove}
+        style={{ willChange: 'transform' }}
       >
-        {project.visual}
-        {/* Bottom gradient — blends visual into page background */}
-        <div
+        {/* 1. Category tag */}
+        <p
           style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: '40%',
-            background: 'linear-gradient(to bottom, transparent, #1d1d1f)',
-            pointerEvents: 'none',
-          }}
-        />
-      </div>
-
-      {/* 4. Description */}
-      <p
-        style={{
-          fontSize: '17px',
-          lineHeight: 1.75,
-          color: '#86868b',
-          maxWidth: '640px',
-          marginBottom: '40px',
-        }}
-      >
-        {project.description}
-      </p>
-
-      {/* 5. Metrics — no card, no border, no background */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '48px',
-          marginBottom: '28px',
-          flexWrap: 'wrap',
-        }}
-      >
-        {project.metrics.map((m) => (
-          <div key={m.label}>
-            <p
-              style={{
-                fontSize: '12px',
-                fontWeight: 400,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                color: '#6e6e73',
-                marginBottom: '6px',
-              }}
-            >
-              {m.label}
-            </p>
-            <p
-              style={{
-                fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
-                fontWeight: 700,
-                letterSpacing: '-0.01em',
-                color: '#f5f5f7',
-                lineHeight: 1,
-              }}
-            >
-              {m.value}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {/* 6. Stack line */}
-      <p
-        style={{
-          fontSize: '13px',
-          color: '#424245',
-          lineHeight: 1.6,
-          marginBottom: '40px',
-          fontFamily: 'var(--font-mono)',
-        }}
-      >
-        {project.stackLine}
-      </p>
-
-      {/* 7. View project bar — Apple "Comparer" style */}
-      <button
-        onClick={() => onViewProject(project.id)}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          width: '100%',
-          padding: '16px 20px',
-          background: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          borderRadius: '14px',
-          cursor: 'pointer',
-          transition: 'background 0.2s ease, border-color 0.2s ease',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
-          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
-        }}
-      >
-        <span
-          style={{
-            fontSize: '15px',
-            fontWeight: 400,
-            color: '#f5f5f7',
-            letterSpacing: '-0.01em',
+            fontSize: '12px',
+            fontWeight: 600,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            color: '#6e6e73',
+            marginBottom: '20px',
           }}
         >
-          View project details
-        </span>
-        <span
+          {project.tag}
+        </p>
+
+        {/* 2. Headline — serif, before the visual */}
+        <h3
+          style={{
+            fontFamily: 'var(--font-serif)',
+            fontWeight: 700,
+            fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+            letterSpacing: '-0.01em',
+            lineHeight: 1.08,
+            color: '#f5f5f7',
+            marginBottom: '32px',
+            maxWidth: '800px',
+          }}
+        >
+          {project.headline}
+        </h3>
+
+        {/* 3. Full-bleed visual — parallax wrapper inside overflow:hidden */}
+        <div
+          style={{
+            position: 'relative',
+            width: '100%',
+            aspectRatio: '16 / 7',
+            overflow: 'hidden',
+            borderRadius: 0,
+            marginBottom: '40px',
+          }}
+        >
+          <div
+            ref={visualRef}
+            style={{ width: '100%', height: '100%', willChange: 'transform' }}
+          >
+            {project.visual}
+          </div>
+          {/* Bottom gradient — blends into page background */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: '40%',
+              background: 'linear-gradient(to bottom, transparent, #1d1d1f)',
+              pointerEvents: 'none',
+            }}
+          />
+        </div>
+
+        {/* 4. Description */}
+        <p
+          style={{
+            fontSize: '17px',
+            lineHeight: 1.75,
+            color: '#86868b',
+            maxWidth: '640px',
+            marginBottom: '40px',
+          }}
+        >
+          {project.description}
+        </p>
+
+        {/* 5. Metrics — no card, no border */}
+        <div
+          style={{
+            display: 'flex',
+            gap: '48px',
+            marginBottom: '28px',
+            flexWrap: 'wrap',
+          }}
+        >
+          {project.metrics.map((m) => (
+            <div key={m.label}>
+              <p
+                style={{
+                  fontSize: '12px',
+                  fontWeight: 400,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: '#6e6e73',
+                  marginBottom: '6px',
+                }}
+              >
+                {m.label}
+              </p>
+              <p
+                style={{
+                  fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
+                  fontWeight: 700,
+                  letterSpacing: '-0.01em',
+                  color: '#f5f5f7',
+                  lineHeight: 1,
+                }}
+              >
+                {m.value}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* 6. Stack line */}
+        <p
+          style={{
+            fontSize: '13px',
+            color: '#424245',
+            lineHeight: 1.6,
+            marginBottom: '40px',
+            fontFamily: 'var(--font-mono)',
+          }}
+        >
+          {project.stackLine}
+        </p>
+
+        {/* 7. View project bar */}
+        <button
+          onClick={() => onViewProject(project.id)}
           style={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            width: '32px',
-            height: '32px',
-            borderRadius: '50%',
-            background: '#2997ff',
-            color: '#fff',
-            fontSize: '20px',
-            fontWeight: 300,
-            lineHeight: 1,
-            flexShrink: 0,
+            justifyContent: 'space-between',
+            width: '100%',
+            padding: '16px 20px',
+            background: 'rgba(255,255,255,0.05)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '14px',
+            cursor: 'pointer',
+            transition: 'background 0.2s ease, border-color 0.2s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
           }}
         >
-          +
-        </span>
-      </button>
-    </motion.div>
+          <span
+            style={{
+              fontSize: '15px',
+              fontWeight: 400,
+              color: '#f5f5f7',
+              letterSpacing: '-0.01em',
+            }}
+          >
+            View project details
+          </span>
+          <span
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              background: '#5AC8FA',
+              color: '#000000',
+              fontSize: '20px',
+              fontWeight: 300,
+              lineHeight: 1,
+              flexShrink: 0,
+            }}
+          >
+            +
+          </span>
+        </button>
+      </div>
+    </div>
   );
 }
 
-/* ─── Section header with scroll reveal ─────────────────── */
+/* ─── Section header — GSAP serif clip reveal ───────────── */
 function ProjectsHeader() {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['0 1', '0.3 0.65'] as any,
-  });
-  const opacity = useTransform(scrollYProgress, [0, 1], [0, 1]);
-  const y = useTransform(scrollYProgress, [0, 1], [32, 0]);
+  const sectionRef      = useRef<HTMLDivElement>(null);
+  const overlineRef     = useRef<HTMLParagraphElement>(null);
+  const phrase1InnerRef = useRef<HTMLSpanElement>(null);
+  const phrase2InnerRef = useRef<HTMLSpanElement>(null);
+  const subRef          = useRef<HTMLParagraphElement>(null);
+  const githubRef       = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Overline
+      gsap.fromTo(
+        overlineRef.current,
+        { opacity: 0, y: 10 },
+        {
+          opacity: 1, y: 0, duration: 0.5, ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      // H2 phrase clip reveal
+      gsap.fromTo(
+        [phrase1InnerRef.current, phrase2InnerRef.current],
+        { yPercent: 110 },
+        {
+          yPercent: 0, duration: 0.85, ease: 'power4.out', stagger: 0.12,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+
+      // Sub + github fade
+      gsap.fromTo(
+        [subRef.current, githubRef.current],
+        { opacity: 0 },
+        {
+          opacity: 1, duration: 0.8, ease: 'power2.out', stagger: 0.1, delay: 0.35,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <motion.div
-      ref={ref}
-      style={{ opacity, y, paddingTop: 'clamp(64px, 10vh, 112px)', paddingBottom: '72px' }}
+    <div
+      ref={sectionRef}
+      style={{ paddingTop: 'clamp(64px, 10vh, 112px)', paddingBottom: '72px' }}
     >
       <p
+        ref={overlineRef}
         style={{
+          opacity: 0,
           fontFamily: 'var(--font-mono)',
-          fontSize: '0.7rem',
+          fontSize: '0.65rem',
           fontWeight: 500,
-          color: '#6e6e73',
+          color: '#5AC8FA',
           letterSpacing: '0.22em',
           textTransform: 'uppercase',
-          marginBottom: '16px',
+          marginBottom: '24px',
         }}
       >
         Projects
       </p>
+
       <div
         style={{
           display: 'flex',
@@ -373,22 +486,43 @@ function ProjectsHeader() {
         }}
       >
         <div>
+          {/* H2 — serif, two-phrase clip reveal */}
           <h2
             style={{
-              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+              fontFamily: 'var(--font-serif)',
               fontWeight: 700,
               fontSize: 'clamp(3rem, 6vw, 6rem)',
-              color: '#f5f5f7',
               lineHeight: 1.0,
-              letterSpacing: '-0.002em',
+              letterSpacing: '-0.02em',
               marginBottom: '14px',
             }}
           >
-            Systems{' '}
-            <span style={{ color: '#2997ff' }}>in production.</span>
+            <span
+              style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}
+            >
+              <span
+                ref={phrase1InnerRef}
+                style={{ display: 'inline-block', color: '#f5f5f7' }}
+              >
+                The&nbsp;
+              </span>
+            </span>
+            <span
+              style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}
+            >
+              <span
+                ref={phrase2InnerRef}
+                style={{ display: 'inline-block', color: '#5AC8FA' }}
+              >
+                systems.
+              </span>
+            </span>
           </h2>
+
           <p
+            ref={subRef}
             style={{
+              opacity: 0,
               color: '#86868b',
               fontSize: 'clamp(0.95rem, 1.1vw, 1.05rem)',
               lineHeight: 1.8,
@@ -399,11 +533,14 @@ function ProjectsHeader() {
             Three automation systems. €16.3M+ ARR impact. Built end-to-end.
           </p>
         </div>
+
         <a
+          ref={githubRef}
           href={profile.github}
           target="_blank"
           rel="noopener noreferrer"
           style={{
+            opacity: 0,
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
@@ -430,19 +567,18 @@ function ProjectsHeader() {
             el.style.color = '#86868b';
           }}
         >
-          <GithubIcon size={14} />
+          <GitHubMark size={14} />
           All projects
           <ExternalLink size={11} />
         </a>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
 /* ─── Main section ───────────────────────────────────────── */
 export function Projects() {
   const [activeProject, setActiveProject] = useState<string | null>(null);
-
   const activeProjectData = PROJECTS.find((p) => p.id === activeProject) ?? null;
 
   return (
@@ -450,7 +586,6 @@ export function Projects() {
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 clamp(24px, 5vw, 64px)' }}>
         <ProjectsHeader />
 
-        {/* Project cards — vertical stack, Apple product page style */}
         <div>
           {PROJECTS.map((project) => (
             <ProjectCard
@@ -464,7 +599,6 @@ export function Projects() {
         <div style={{ height: 'clamp(40px, 6vh, 64px)' }} />
       </div>
 
-      {/* Project detail modal */}
       <AnimatePresence>
         {activeProjectData && (
           <ProjectModal
