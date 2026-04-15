@@ -10,10 +10,9 @@ type MediaConfig =
   | { type: 'gif';   src: string; fit?: 'contain' | 'cover'; bg?: string }
   | { type: 'orbs';  gradient: string };
 
-interface KPI   { value: string; label: string }
 interface Block {
   id: string; pattern: 'A' | 'B'; label: string;
-  role: string; description: string; kpis: KPI[]; media: MediaConfig;
+  role: string; description: string; media: MediaConfig;
 }
 interface CompanyGroup {
   company: string; period: string; blockIds: string[]; accentColor: string;
@@ -45,11 +44,6 @@ const BLOCKS: Block[] = [
     label: 'AUG 2025–PRESENT · LUXEMBOURG',
     role: 'Technical Program Manager — **Tech & Innovation Portfolio**',
     description: 'Own product strategy for the Tech & Innovation portfolio supporting 30-country EU Intermodal and Expansion. Drive the €30M ARR roadmap across analytics platforms and automation systems.',
-    kpis: [
-      { value: '€13.3M', label: 'SONAR automation' },
-      { value: '50+',    label: 'Stakeholders'      },
-      { value: '€30M',   label: 'Portfolio ARR'      },
-    ],
     media: { type: 'gif', src: '/images/companies/amazon-arrow.gif', fit: 'contain', bg: '#0a0a0a' },
   },
   {
@@ -57,11 +51,6 @@ const BLOCKS: Block[] = [
     label: 'DEC 2024–AUG 2025 · LUXEMBOURG',
     role: '**Performance** Business Analyst — **Transportation EMEA**',
     description: 'Built real-time monitoring and AI-assisted audit workflows for 30+ L5–L7 leaders. Consolidated fragmented reporting across 35 countries into a single source of truth.',
-    kpis: [
-      { value: '80+',     label: 'ETL pipelines'    },
-      { value: '€1.5M/q', label: 'Capacity savings' },
-      { value: '45%',     label: 'Volume growth'    },
-    ],
     media: { type: 'gif', src: '/images/companies/amazon-light.gif', fit: 'contain', bg: '#ffffff' },
   },
   {
@@ -69,11 +58,6 @@ const BLOCKS: Block[] = [
     label: 'APR 2024–DEC 2024 · BARCELONA',
     role: 'Technical Program Manager — **Global Strategic Reliability**',
     description: 'Drove product development for operational analytics platforms across 2,300 global fulfillment sites. Built 3 strategic data platforms with senior engineers.',
-    kpis: [
-      { value: '25%',  label: 'Downtime cut'  },
-      { value: '10K+', label: 'Daily users'   },
-      { value: '€8.9M',label: 'Costs mapped'  },
-    ],
     media: { type: 'image', src: '/images/companies/amazon-dark.jpg', fit: 'contain', bg: '#0a0a0a' },
   },
   {
@@ -81,10 +65,6 @@ const BLOCKS: Block[] = [
     label: 'SEP 2023–MAR 2024 · LILLE',
     role: '**Strategy Consultant** — DSI',
     description: 'Analyzed €250M IT portfolio and led strategic benchmarking across major retail groups. Delivered risk-adjusted roadmap prioritization for executive leadership.',
-    kpis: [
-      { value: '€250M', label: 'IT portfolio'         },
-      { value: '4',     label: 'Retailers benchmarked'},
-    ],
     media: { type: 'image', src: '/images/auchan/auchan-logo-full.png', fit: 'contain', bg: '#1a0000' },
   },
   {
@@ -92,10 +72,6 @@ const BLOCKS: Block[] = [
     label: 'MAR 2023–MAR 2024 · PARIS',
     role: 'Business Analyst — **Global CDMO, Consumer Product Division**',
     description: 'Led global data governance engagement across 50+ countries. Standardized reporting and designed bi-weekly COMEX dashboards for C-suite product roadmap alignment.',
-    kpis: [
-      { value: '50+', label: 'Countries covered' },
-      { value: '20%', label: 'Data quality'       },
-    ],
     media: { type: 'image', src: '/images/loreal/loreal-water.webp', fit: 'cover', bg: '#1a1300' },
   },
   {
@@ -103,10 +79,6 @@ const BLOCKS: Block[] = [
     label: 'SEP 2022–MAR 2023 · PARIS',
     role: 'Technical Delivery Manager — **Global Data Team**',
     description: 'Built global B2B analytics platform supporting billion-euro product decisions across Europe, China, and the US. Re-engineered IT delivery workflows.',
-    kpis: [
-      { value: '3',   label: 'Global markets'  },
-      { value: '25%', label: 'Lead time saved' },
-    ],
     media: { type: 'image', src: '/images/loreal/loreal-pro.webp', fit: 'cover', bg: '#111' },
   },
   {
@@ -114,10 +86,6 @@ const BLOCKS: Block[] = [
     label: 'FEB 2022–SEP 2022 · PARIS',
     role: 'Technical Project Manager — **Digital EMEA**',
     description: 'Delivered 12 automated customer journeys across 3 UK divisions. Scaled web stack across 120 websites, unlocking €100M ARR opportunity.',
-    kpis: [
-      { value: '€1.75M', label: 'UK journeys ARR'     },
-      { value: '€100M',  label: 'Web stack opportunity'},
-    ],
     media: { type: 'gif', src: '/images/loreal/loreal-luxe-portrait.gif', fit: 'cover', bg: '#111' },
   },
   {
@@ -125,10 +93,6 @@ const BLOCKS: Block[] = [
     label: 'SEP 2021–MAR 2022 · PARIS',
     role: 'Co-Founder, **CEO & CFO**',
     description: 'Launched ad-tech platform from zero to pre-Series A engagement. Led product design, customer discovery, and financial modeling. Pitched at Station F.',
-    kpis: [
-      { value: 'Station F', label: 'Finalist' },
-      { value: 'MVP',       label: 'Launched'  },
-    ],
     media: { type: 'orbs', gradient: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #3730a3 100%)' },
   },
 ];
@@ -141,65 +105,6 @@ const GROUPS: CompanyGroup[] = [
 ];
 
 const BLOCK_MAP = Object.fromEntries(BLOCKS.map(b => [b.id, b]));
-
-/* ─── KPIDisplay — static (no count-up) ─────────────────────── */
-function KPIDisplay({ kpi, borderRight }: { kpi: KPI; borderRight: boolean }) {
-  return (
-    <div
-      style={{
-        flex: 1,
-        paddingRight: borderRight ? '20px' : 0,
-        paddingLeft: borderRight ? 0 : '20px',
-        borderRight: borderRight ? '1px solid rgba(255,255,255,0.1)' : 'none',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '4px',
-      }}
-    >
-      <p
-        style={{
-          fontFamily: 'var(--font-inter)',
-          fontWeight: 700,
-          fontSize: 'clamp(1.2rem, 1.8vw, 1.65rem)',
-          color: '#5AC8FA',
-          lineHeight: 1.05,
-        }}
-      >
-        {kpi.value}
-      </p>
-      <p
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: '0.65rem',
-          letterSpacing: '0.1em',
-          textTransform: 'uppercase',
-          color: 'rgba(255,255,255,0.38)',
-          lineHeight: 1.3,
-        }}
-      >
-        {kpi.label}
-      </p>
-    </div>
-  );
-}
-
-/* ─── KPIStats row ───────────────────────────────────────────── */
-function KPIStats({ kpis }: { kpis: KPI[] }) {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        borderTop: '1px solid rgba(255,255,255,0.1)',
-        paddingTop: '20px',
-        marginTop: '4px',
-      }}
-    >
-      {kpis.map((kpi, i) => (
-        <KPIDisplay key={i} kpi={kpi} borderRight={i < kpis.length - 1} />
-      ))}
-    </div>
-  );
-}
 
 /* ─── MediaPanel ─────────────────────────────────────────────── */
 function MediaPanel({ media }: { media: MediaConfig }) {
@@ -257,7 +162,6 @@ function RoleBlock({ block, accentColor }: { block: Block; accentColor: string }
           <p style={{ color: 'rgba(245,245,247,0.72)', fontSize: 'clamp(0.9rem, 1.1vw, 1rem)', lineHeight: 1.8 }}>
             {block.description}
           </p>
-          <KPIStats kpis={block.kpis} />
         </div>
       </div>
     </div>
