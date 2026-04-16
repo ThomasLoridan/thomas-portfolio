@@ -409,6 +409,7 @@ export function Certifications() {
 
         {/* ── 3-column grid ──────────────────────────────── */}
         <div
+          className="certs-grid"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',

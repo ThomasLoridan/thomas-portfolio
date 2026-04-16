@@ -113,12 +113,11 @@ function TestimonialCard({
         {/* Quote */}
         <p
           style={{
-            fontFamily: 'var(--font-serif)',
+            fontFamily: 'var(--font-body)',
             fontWeight: 400,
-            fontSize: 'clamp(1rem, 1.3vw, 1.15rem)',
-            lineHeight: 1.85,
-            color: 'rgba(245,245,247,0.78)',
-            fontStyle: 'italic',
+            fontSize: 'clamp(1.05rem, 1.3vw, 1.15rem)',
+            lineHeight: 1.9,
+            color: 'rgba(245,245,247,0.90)',
           }}
         >
           &#8220;{quote}&#8221;

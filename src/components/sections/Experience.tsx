@@ -145,7 +145,7 @@ const BLOCK_MAP = Object.fromEntries(BLOCKS.map(b => [b.id, b]));
 /* ─── KPIDisplay — static ────────────────────────────────────── */
 function KPIDisplay({ kpi, borderRight }: { kpi: KPI; borderRight: boolean }) {
   return (
-    <div style={{ flex: 1, paddingRight: borderRight ? '20px' : 0, paddingLeft: borderRight ? 0 : '20px', borderRight: borderRight ? '1px solid rgba(255,255,255,0.1)' : 'none', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+    <div className="experience-kpi-item" style={{ flex: 1, paddingRight: borderRight ? '20px' : 0, paddingLeft: borderRight ? 0 : '20px', borderRight: borderRight ? '1px solid rgba(255,255,255,0.1)' : 'none', display: 'flex', flexDirection: 'column', gap: '4px' }}>
       <p style={{ fontFamily: 'var(--font-inter)', fontWeight: 700, fontSize: 'clamp(1.2rem, 1.8vw, 1.65rem)', color: '#5AC8FA', lineHeight: 1.05 }}>
         {kpi.value}
       </p>
@@ -158,7 +158,7 @@ function KPIDisplay({ kpi, borderRight }: { kpi: KPI; borderRight: boolean }) {
 
 function KPIStats({ kpis }: { kpis: KPI[] }) {
   return (
-    <div style={{ display: 'flex', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '20px', marginTop: '4px' }}>
+    <div className="experience-kpi-row" style={{ display: 'flex', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '20px', marginTop: '4px' }}>
       {kpis.map((kpi, i) => (
         <KPIDisplay key={i} kpi={kpi} borderRight={i < kpis.length - 1} />
       ))}

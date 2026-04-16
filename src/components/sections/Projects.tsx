@@ -257,6 +257,7 @@ function ProjectCard({
 
         {/* 3. Full-bleed visual — parallax wrapper inside overflow:hidden */}
         <div
+          className="project-visual"
           style={{
             position: 'relative',
             width: '100%',

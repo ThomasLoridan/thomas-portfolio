@@ -344,6 +344,41 @@
   }
 }
 
+/* ─── Mobile ──────────────────────────────────────────── */
+@media (max-width: 767px) {
+
+  /* Projects — taller aspect ratio so visuals aren't a sliver */
+  .project-visual {
+    aspect-ratio: 4 / 3 !important;
+  }
+
+  /* Experience — KPI row wraps on narrow screens */
+  .experience-kpi-row {
+    flex-wrap: wrap !important;
+    gap: 20px !important;
+  }
+  .experience-kpi-item {
+    border-right: none !important;
+    padding-left: 0 !important;
+    flex: 0 0 auto !important;
+  }
+
+  /* Skills — value cards single column, no overflow */
+  .skills-value-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Certifications — single column on small phones */
+  .certs-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ImpactPause — prevent number overflow */
+  .impact-number {
+    font-size: clamp(3.5rem, 18vw, 7rem) !important;
+  }
+}
+
 /* ─── Reduced motion ──────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

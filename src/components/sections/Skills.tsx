@@ -353,6 +353,7 @@ export function Skills() {
         </h2>
 
         <div
+          className="skills-value-grid"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',

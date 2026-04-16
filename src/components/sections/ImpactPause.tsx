@@ -92,6 +92,7 @@ export function ImpactPause() {
         {/* Count-up metric */}
         <p
           ref={metricRef}
+          className="impact-number"
           style={{
             opacity: 0,
             fontFamily: 'var(--font-heading)',
