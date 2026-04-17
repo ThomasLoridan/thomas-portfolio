@@ -161,7 +161,7 @@ function HobbyBlock({
       <p
         style={{
           fontFamily: 'var(--font-mono)',
-          fontSize: '0.6rem',
+          fontSize: '0.68rem',
           fontWeight: 500,
           color: '#5AC8FA',
           letterSpacing: '0.2em',
@@ -316,6 +316,7 @@ export function Hobbies() {
 
         {/* ── 2-column staggered grid ─────────────────────── */}
         <div
+          className="hobbies-grid"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',

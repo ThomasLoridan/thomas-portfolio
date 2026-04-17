@@ -312,17 +312,25 @@ export function Skills() {
               key={i}
               onClick={() => { setActiveIdx(i); startInterval(); }}
               aria-label={`Go to skill ${i + 1}`}
+              className="nav-dot-btn"
               style={{
+                padding: '12px 4px',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <span style={{
+                display: 'block',
                 width: i === activeIdx ? '24px' : '8px',
                 height: '8px',
                 borderRadius: '99px',
                 background: i === activeIdx ? '#5AC8FA' : 'rgba(255,255,255,0.2)',
-                border: 'none',
-                cursor: 'pointer',
-                padding: 0,
                 transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
-              }}
-            />
+              }} />
+            </button>
           ))}
         </div>
       </div>

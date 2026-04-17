@@ -289,8 +289,9 @@ function ProjectCard({
 
         {/* 4. Description */}
         <p
+          className="project-description"
           style={{
-            fontSize: '17px',
+            fontSize: 'clamp(0.95rem, 1.3vw, 1.0625rem)',
             lineHeight: 1.75,
             color: '#86868b',
             maxWidth: '640px',
@@ -302,6 +303,7 @@ function ProjectCard({
 
         {/* 5. Metrics — no card, no border */}
         <div
+          className="project-metrics"
           style={{
             display: 'flex',
             gap: '48px',

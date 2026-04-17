@@ -347,25 +347,46 @@
 /* ─── Mobile ──────────────────────────────────────────── */
 @media (max-width: 767px) {
 
+  /* Prevent any section from causing horizontal scroll */
+  section, main { overflow-x: hidden; }
+
   /* Projects — taller aspect ratio so visuals aren't a sliver */
   .project-visual {
     aspect-ratio: 4 / 3 !important;
+    margin-bottom: 28px !important;
+  }
+
+  /* Projects — description and metrics */
+  .project-description {
+    font-size: clamp(0.9rem, 3.8vw, 1rem) !important;
+    margin-bottom: 28px !important;
+  }
+  .project-metrics {
+    gap: 24px !important;
   }
 
   /* Experience — KPI row wraps on narrow screens */
   .experience-kpi-row {
     flex-wrap: wrap !important;
-    gap: 20px !important;
+    gap: 16px !important;
   }
   .experience-kpi-item {
     border-right: none !important;
     padding-left: 0 !important;
+    padding-right: 0 !important;
     flex: 0 0 auto !important;
   }
 
-  /* Skills — value cards single column, no overflow */
+  /* Skills — value cards single column */
   .skills-value-grid {
     grid-template-columns: 1fr !important;
+  }
+
+  /* Skills / Testimonials — dot nav touch targets */
+  .nav-dot-btn {
+    padding: 12px 6px !important;
+    background: transparent !important;
+    border: none !important;
   }
 
   /* Certifications — single column on small phones */
@@ -373,9 +394,20 @@
     grid-template-columns: 1fr !important;
   }
 
+  /* Hobbies — ensure single column, reduce row gap */
+  .hobbies-grid {
+    grid-template-columns: 1fr !important;
+    row-gap: clamp(36px, 8vw, 56px) !important;
+  }
+
   /* ImpactPause — prevent number overflow */
   .impact-number {
     font-size: clamp(3.5rem, 18vw, 7rem) !important;
+  }
+
+  /* Testimonials — card padding reduction on very small screens */
+  .testimonial-card-inner {
+    padding: clamp(24px, 6vw, 40px) !important;
   }
 }
 

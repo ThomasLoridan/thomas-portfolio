@@ -126,6 +126,7 @@ export function Testimonials() {
           {TESTIMONIALS.map((t, i) => (
             <div
               key={i}
+              className="testimonial-card-inner"
               style={{
                 gridRow: 1,
                 gridColumn: 1,
@@ -175,16 +176,17 @@ export function Testimonials() {
                   marginBottom: '24px',
                 }}
               >
-                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                  <circle cx="14" cy="10" r="5" fill="white" />
-                  <path d="M4 26c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
+                {/* Filled SF-symbol-style person silhouette */}
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="white">
+                  <circle cx="14" cy="10" r="5" />
+                  <path d="M4 28c0-5.523 4.477-10 10-10s10 4.477 10 10H4z" />
                 </svg>
               </div>
 
               {/* Quote — gray sub-section */}
               <div
                 style={{
-                  background: 'rgba(0,0,0,0.04)',
+                  background: '#eeeeee',
                   borderRadius: '12px',
                   padding: 'clamp(18px, 2.5vw, 24px)',
                 }}
@@ -195,7 +197,7 @@ export function Testimonials() {
                     fontWeight: 400,
                     fontSize: 'clamp(0.95rem, 1.15vw, 1.05rem)',
                     lineHeight: 1.9,
-                    color: '#424245',
+                    color: '#3a3a3c',
                     margin: 0,
                   }}
                 >
@@ -210,23 +212,31 @@ export function Testimonials() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
           {/* Pill dots */}
-          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '2px', alignItems: 'center' }}>
             {TESTIMONIALS.map((_, i) => (
               <button
                 key={i}
                 onClick={() => goTo(i)}
                 aria-label={`Go to testimonial ${i + 1}`}
+                className="nav-dot-btn"
                 style={{
+                  padding: '12px 4px',
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <span style={{
+                  display: 'block',
                   width: i === active ? '22px' : '8px',
                   height: '8px',
                   borderRadius: '4px',
                   background: i === active ? '#1d1d1f' : 'rgba(0,0,0,0.18)',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: 0,
                   transition: 'width 0.3s ease, background 0.3s ease',
-                }}
-              />
+                }} />
+              </button>
             ))}
           </div>
 
