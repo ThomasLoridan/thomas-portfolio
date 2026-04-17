@@ -183,27 +183,19 @@ export function Testimonials() {
                 </svg>
               </div>
 
-              {/* Quote — gray sub-section */}
-              <div
+              {/* Quote */}
+              <p
                 style={{
-                  background: '#eeeeee',
-                  borderRadius: '12px',
-                  padding: 'clamp(18px, 2.5vw, 24px)',
+                  fontFamily: 'var(--font-body)',
+                  fontWeight: 400,
+                  fontSize: 'clamp(0.95rem, 1.15vw, 1.05rem)',
+                  lineHeight: 1.9,
+                  color: '#3a3a3c',
+                  margin: 0,
                 }}
               >
-                <p
-                  style={{
-                    fontFamily: 'var(--font-body)',
-                    fontWeight: 400,
-                    fontSize: 'clamp(0.95rem, 1.15vw, 1.05rem)',
-                    lineHeight: 1.9,
-                    color: '#3a3a3c',
-                    margin: 0,
-                  }}
-                >
-                  &ldquo;{t.quote}&rdquo;
-                </p>
-              </div>
+                &ldquo;{t.quote}&rdquo;
+              </p>
             </div>
           ))}
         </div>
