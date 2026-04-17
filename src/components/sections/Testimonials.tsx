@@ -1,7 +1,7 @@
 'use client';
 
-import { useRef, useEffect, useState, useCallback } from 'react';
-import { gsap, ScrollTrigger } from '@/lib/gsap';
+import { useRef, useEffect, useState } from 'react';
+import { gsap } from '@/lib/gsap';
 
 /* ─── Data ────────────────────────────────────────────────── */
 const TESTIMONIALS = [
@@ -31,7 +31,7 @@ const TESTIMONIALS = [
   },
 ];
 
-/* ─── Arrow icon ──────────────────────────────────────────── */
+/* ─── Arrow icons ─────────────────────────────────────────── */
 function ChevronLeft() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -49,17 +49,16 @@ function ChevronRight() {
 
 /* ─── Main section ────────────────────────────────────────── */
 export function Testimonials() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headerRef  = useRef<HTMLDivElement>(null);
-  const cardRef    = useRef<HTMLDivElement>(null);
-  const [active, setActive]   = useState(0);
-  const [animating, setAnimating] = useState(false);
+  const sectionRef       = useRef<HTMLElement>(null);
+  const headerRef        = useRef<HTMLDivElement>(null);
+  const cardContainerRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
 
-  /* Section entry */
+  /* Section entry — header + card container fade in */
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
-        [headerRef.current, cardRef.current],
+        [headerRef.current, cardContainerRef.current],
         { opacity: 0, y: 28 },
         {
           opacity: 1, y: 0, duration: 0.75, ease: 'power3.out', stagger: 0.12,
@@ -74,28 +73,11 @@ export function Testimonials() {
     return () => ctx.revert();
   }, []);
 
-  /* Card slide transition */
-  const goTo = useCallback((nextIdx: number) => {
-    if (nextIdx === active || animating || !cardRef.current) return;
-    const dir = nextIdx > active ? 1 : -1;
-    setAnimating(true);
-    gsap.to(cardRef.current, {
-      opacity: 0, x: -24 * dir, duration: 0.22, ease: 'power2.in',
-      onComplete: () => {
-        setActive(nextIdx);
-        gsap.fromTo(
-          cardRef.current,
-          { opacity: 0, x: 24 * dir },
-          {
-            opacity: 1, x: 0, duration: 0.3, ease: 'power2.out',
-            onComplete: () => setAnimating(false),
-          }
-        );
-      },
-    });
-  }, [active, animating]);
+  const goTo = (nextIdx: number) => {
+    if (nextIdx === active) return;
+    setActive(nextIdx);
+  };
 
-  const t = TESTIMONIALS[active];
   const canPrev = active > 0;
   const canNext = active < TESTIMONIALS.length - 1;
 
@@ -105,7 +87,7 @@ export function Testimonials() {
       id="testimonials"
       style={{ background: '#f5f5f7', paddingBlock: 'clamp(80px, 12vw, 120px)' }}
     >
-      <div style={{ maxWidth: '760px', margin: '0 auto', padding: '0 clamp(24px, 5vw, 48px)' }}>
+      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 clamp(24px, 5vw, 48px)' }}>
 
         {/* Header */}
         <div ref={headerRef} style={{ opacity: 0, marginBottom: '48px' }}>
@@ -129,87 +111,104 @@ export function Testimonials() {
           </p>
         </div>
 
-        {/* Card */}
+        {/* Card container — sized by the tallest card via CSS grid stacking */}
         <div
-          ref={cardRef}
+          ref={cardContainerRef}
           style={{
             opacity: 0,
             background: '#ffffff',
             borderRadius: '20px',
-            padding: 'clamp(28px, 4vw, 48px)',
-            boxShadow: '0 2px 24px rgba(0,0,0,0.07)',
+            boxShadow: '0 2px 28px rgba(0,0,0,0.08)',
             marginBottom: '28px',
+            /* All children share this grid cell so the box is always
+               as tall as the tallest card — navigation never jumps. */
+            display: 'grid',
+            overflow: 'hidden',
           }}
         >
-          {/* Attribution — role + company */}
-          <div style={{ marginBottom: '24px' }}>
-            <p
+          {TESTIMONIALS.map((t, i) => (
+            <div
+              key={i}
               style={{
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 700,
-                fontSize: 'clamp(1.05rem, 1.4vw, 1.25rem)',
-                color: '#1d1d1f',
-                lineHeight: 1.2,
-                marginBottom: '8px',
+                gridRow: 1,
+                gridColumn: 1,
+                padding: 'clamp(36px, 5vw, 56px)',
+                opacity: i === active ? 1 : 0,
+                transition: 'opacity 0.3s ease',
+                pointerEvents: i === active ? 'auto' : 'none',
               }}
             >
-              {t.role}
-            </p>
-            <span
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.68rem',
-                fontWeight: 500,
-                color: '#86868b',
-                background: 'rgba(0,0,0,0.05)',
-                border: '1px solid rgba(0,0,0,0.08)',
-                padding: '3px 10px',
-                borderRadius: '99px',
-                letterSpacing: '0.04em',
-              }}
-            >
-              {t.company}
-            </span>
-          </div>
+              {/* Attribution — role + company */}
+              <div style={{ marginBottom: '28px' }}>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-heading)',
+                    fontWeight: 700,
+                    fontSize: 'clamp(1.1rem, 1.5vw, 1.3rem)',
+                    color: '#1d1d1f',
+                    lineHeight: 1.2,
+                    marginBottom: '10px',
+                  }}
+                >
+                  {t.role}
+                </p>
+                <span
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.68rem',
+                    fontWeight: 500,
+                    color: '#86868b',
+                    background: 'rgba(0,0,0,0.05)',
+                    border: '1px solid rgba(0,0,0,0.08)',
+                    padding: '3px 10px',
+                    borderRadius: '99px',
+                    letterSpacing: '0.04em',
+                  }}
+                >
+                  {t.company}
+                </span>
+              </div>
 
-          {/* Avatar circle */}
-          <div
-            style={{
-              width: '52px',
-              height: '52px',
-              borderRadius: '50%',
-              background: t.accentColor,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: '24px',
-            }}
-          >
-            <span
-              style={{
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 800,
-                fontSize: '0.82rem',
-                color: '#ffffff',
-                letterSpacing: '0.05em',
-              }}
-            >
-              {t.initials}
-            </span>
-          </div>
+              {/* Avatar circle */}
+              <div
+                style={{
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '50%',
+                  background: t.accentColor,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '28px',
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: 'var(--font-heading)',
+                    fontWeight: 800,
+                    fontSize: '0.85rem',
+                    color: '#ffffff',
+                    letterSpacing: '0.05em',
+                  }}
+                >
+                  {t.initials}
+                </span>
+              </div>
 
-          {/* Quote */}
-          <p
-            style={{
-              fontFamily: 'var(--font-body)',
-              fontWeight: 400,
-              fontSize: 'clamp(1rem, 1.2vw, 1.08rem)',
-              lineHeight: 1.9,
-              color: '#424245',
-            }}
-          >
-            &ldquo;{t.quote}&rdquo;
-          </p>
+              {/* Quote */}
+              <p
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontWeight: 400,
+                  fontSize: 'clamp(1rem, 1.2vw, 1.1rem)',
+                  lineHeight: 1.9,
+                  color: '#424245',
+                }}
+              >
+                &ldquo;{t.quote}&rdquo;
+              </p>
+            </div>
+          ))}
         </div>
 
         {/* Navigation — dots left, arrows right */}
@@ -238,13 +237,13 @@ export function Testimonials() {
 
           {/* Arrow buttons */}
           <div style={{ display: 'flex', gap: '8px' }}>
-            {[
-              { label: 'Previous', enabled: canPrev, onClick: () => goTo(active - 1), icon: <ChevronLeft /> },
-              { label: 'Next',     enabled: canNext, onClick: () => goTo(active + 1), icon: <ChevronRight /> },
-            ].map(({ label, enabled, onClick, icon }) => (
+            {([
+              { label: 'Previous', enabled: canPrev, handler: () => goTo(active - 1), icon: <ChevronLeft /> },
+              { label: 'Next',     enabled: canNext, handler: () => goTo(active + 1), icon: <ChevronRight /> },
+            ] as const).map(({ label, enabled, handler, icon }) => (
               <button
                 key={label}
-                onClick={onClick}
+                onClick={handler}
                 aria-label={label}
                 style={{
                   width: '44px',
@@ -257,7 +256,7 @@ export function Testimonials() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: enabled ? '#1d1d1f' : 'rgba(0,0,0,0.22)',
-                  transition: 'background 0.2s ease, box-shadow 0.2s ease',
+                  transition: 'box-shadow 0.2s ease',
                 }}
                 onMouseEnter={e => { if (enabled) e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.10)'; }}
                 onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; }}
