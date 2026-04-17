@@ -2,7 +2,6 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { SocialSidebar } from '@/components/layout/SocialSidebar';
 import { HeroAbout } from '@/components/sections/HeroAbout';
-import { CareerArc } from '@/components/sections/CareerArc';
 import { Skills } from '@/components/sections/Skills';
 import { Experience } from '@/components/sections/Experience';
 import { PauseSection } from '@/components/sections/PauseSection';
@@ -21,9 +20,6 @@ export default function HomePage() {
         {/* Hero (dark) + About (white) */}
         <HeroAbout />
 
-        {/* Career arc progression — dark bg */}
-        <CareerArc />
-
         {/* Skills — light gray bg */}
         <Skills />
 
@@ -38,7 +34,7 @@ export default function HomePage() {
 
         {/* Pause 2 — after Projects */}
         <PauseSection
-          metric="7,000+"
+          metric="8,500+"
           label="Lines of production Python. Not a side project — operational infrastructure."
           variant="dark"
         />
