@@ -345,18 +345,6 @@ export function HeroAbout() {
             across 26 countries, and doesn&apos;t stop at the spec — this is what you get.
           </p>
 
-          {/* Block 3 */}
-          <p
-            ref={el => { blockRefs.current[2] = el; }}
-            style={{
-              opacity: 0,
-              fontSize: '13px',
-              color: '#6e6e73',
-              lineHeight: 1.5,
-            }}
-          >
-            MSc École Centrale Lille&nbsp;·&nbsp;Co-founder Familyad (Station F finalist)&nbsp;·&nbsp;Open to relocation.
-          </p>
         </div>
       </section>
     </>

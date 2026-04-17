@@ -2,7 +2,6 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { SocialSidebar } from '@/components/layout/SocialSidebar';
 import { HeroAbout } from '@/components/sections/HeroAbout';
-import { ProofQuote } from '@/components/sections/ProofQuote';
 import { CareerArc } from '@/components/sections/CareerArc';
 import { Skills } from '@/components/sections/Skills';
 import { Experience } from '@/components/sections/Experience';
@@ -21,9 +20,6 @@ export default function HomePage() {
       <main>
         {/* Hero (dark) + About (white) */}
         <HeroAbout />
-
-        {/* Proof quote — white bg, after About */}
-        <ProofQuote />
 
         {/* Career arc progression — dark bg */}
         <CareerArc />

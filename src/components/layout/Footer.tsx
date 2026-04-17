@@ -43,7 +43,6 @@ export function Footer() {
               lineHeight: 1.7,
             }}
           >
-            Luxembourg · Paris · Barcelona · Open to relocation · French &amp; English
           </p>
 
           {/* CTAs */}
