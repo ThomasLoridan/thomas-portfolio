@@ -9,7 +9,6 @@ const TESTIMONIALS = [
     role: 'Product Manager',
     company: 'Amazon',
     accentColor: '#FF9900',
-    initials: 'PM',
     quote:
       "Any business needs to use available technology to improve its efficiency, and any tech team needs to understand how the business works to apply that tech in the most useful way. During '25, Thomas became the bridge between those 2 worlds, increasing his business knowledge while actively engaging with the team to propose improvements to the existing mechanisms. He is organized and clean, which makes it easy to non-tech contributors to learn and even reuse his deliveries.",
   },
@@ -17,7 +16,6 @@ const TESTIMONIALS = [
     role: 'Program Manager',
     company: 'Amazon',
     accentColor: '#FF9900',
-    initials: 'PM',
     quote:
       "Thomas consistently maintains high standards in his work by ensuring his solutions meet quality benchmarks and iterating on his outputs until they achieve the desired level of excellence. His curiosity-driven approach has resulted in improved automation processes and more effective business intelligence tools that benefit both the team's efficiency and our ability to serve customers better.",
   },
@@ -25,7 +23,6 @@ const TESTIMONIALS = [
     role: 'Digital Manager',
     company: "L'Oréal",
     accentColor: '#C8A951',
-    initials: 'DM',
     quote:
       "Thomas has been a key element in my team. He is a fast learner and very volunteer for new challenges. Definitely a great added value to lead projects.",
   },
@@ -139,7 +136,7 @@ export function Testimonials() {
               }}
             >
               {/* Attribution — role + company */}
-              <div style={{ marginBottom: '28px' }}>
+              <div style={{ marginBottom: '24px' }}>
                 <p
                   style={{
                     fontFamily: 'var(--font-heading)',
@@ -147,29 +144,25 @@ export function Testimonials() {
                     fontSize: 'clamp(1.1rem, 1.5vw, 1.3rem)',
                     color: '#1d1d1f',
                     lineHeight: 1.2,
-                    marginBottom: '10px',
+                    marginBottom: '4px',
                   }}
                 >
                   {t.role}
                 </p>
-                <span
+                <p
                   style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '0.68rem',
-                    fontWeight: 500,
-                    color: '#86868b',
-                    background: 'rgba(0,0,0,0.05)',
-                    border: '1px solid rgba(0,0,0,0.08)',
-                    padding: '3px 10px',
-                    borderRadius: '99px',
-                    letterSpacing: '0.04em',
+                    fontFamily: 'var(--font-heading)',
+                    fontWeight: 700,
+                    fontSize: 'clamp(1.1rem, 1.5vw, 1.3rem)',
+                    color: t.accentColor,
+                    lineHeight: 1.2,
                   }}
                 >
                   {t.company}
-                </span>
+                </p>
               </div>
 
-              {/* Avatar circle */}
+              {/* Avatar — Apple person pictogram */}
               <div
                 style={{
                   width: '56px',
@@ -179,34 +172,36 @@ export function Testimonials() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  marginBottom: '28px',
+                  marginBottom: '24px',
                 }}
               >
-                <span
-                  style={{
-                    fontFamily: 'var(--font-heading)',
-                    fontWeight: 800,
-                    fontSize: '0.85rem',
-                    color: '#ffffff',
-                    letterSpacing: '0.05em',
-                  }}
-                >
-                  {t.initials}
-                </span>
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                  <circle cx="14" cy="10" r="5" fill="white" />
+                  <path d="M4 26c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
+                </svg>
               </div>
 
-              {/* Quote */}
-              <p
+              {/* Quote — gray sub-section */}
+              <div
                 style={{
-                  fontFamily: 'var(--font-body)',
-                  fontWeight: 400,
-                  fontSize: 'clamp(1rem, 1.2vw, 1.1rem)',
-                  lineHeight: 1.9,
-                  color: '#424245',
+                  background: 'rgba(0,0,0,0.04)',
+                  borderRadius: '12px',
+                  padding: 'clamp(18px, 2.5vw, 24px)',
                 }}
               >
-                &ldquo;{t.quote}&rdquo;
-              </p>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-body)',
+                    fontWeight: 400,
+                    fontSize: 'clamp(0.95rem, 1.15vw, 1.05rem)',
+                    lineHeight: 1.9,
+                    color: '#424245',
+                    margin: 0,
+                  }}
+                >
+                  &ldquo;{t.quote}&rdquo;
+                </p>
+              </div>
             </div>
           ))}
         </div>
