@@ -10,17 +10,18 @@ type MediaConfig =
   | { type: 'gif';   src: string; fit?: 'contain' | 'cover'; bg?: string }
   | { type: 'orbs';  gradient: string };
 
-interface KPI   { value: string; label: string }
-interface Block {
-  id: string; pattern: 'A' | 'B'; label: string;
-  role: string; description: string; kpis: KPI[]; media: MediaConfig;
-}
-interface CompanyGroup {
-  company: string; period: string; blockIds: string[]; accentColor: string;
-}
+interface KPI { value: string; label: string }
 
-/* ─── H2 phrases ─────────────────────────────────────────────── */
-const H2_PHRASES = ['Three companies.', 'Four years.', 'One standard.'];
+interface ExperienceItem {
+  number: string;
+  company: string;
+  accentColor: string;
+  period: string;
+  role: string;
+  description: string;
+  kpis: KPI[];
+  media: MediaConfig;
+}
 
 /* ─── Highlight parser ───────────────────────────────────────── */
 function Highlight({ text, color }: { text: string; color: string }): ReactNode {
@@ -38,11 +39,13 @@ function Highlight({ text, color }: { text: string; color: string }): ReactNode 
   );
 }
 
-/* ─── Block data ────────────────────────────────────────────── */
-const BLOCKS: Block[] = [
+/* ─── Experience items — sequential numbered blocks ──────────── */
+const ITEMS: ExperienceItem[] = [
   {
-    id: 'amazon-tpm-innovation', pattern: 'A',
-    label: 'AUG 2025–PRESENT · LUXEMBOURG',
+    number: '01',
+    company: 'Amazon',
+    accentColor: '#FF9900',
+    period: 'AUG 2025 – PRESENT · LUXEMBOURG',
     role: 'Technical Program Manager — **Tech & Innovation Portfolio**',
     description: 'Own product strategy for the Tech & Innovation portfolio supporting 30-country EU Intermodal and Expansion. Drive the €30M ARR roadmap across analytics platforms and automation systems.',
     kpis: [
@@ -53,8 +56,10 @@ const BLOCKS: Block[] = [
     media: { type: 'gif', src: '/images/companies/amazon-arrow.gif', fit: 'contain', bg: '#0a0a0a' },
   },
   {
-    id: 'amazon-ba-emea', pattern: 'B',
-    label: 'DEC 2024–AUG 2025 · LUXEMBOURG',
+    number: '02',
+    company: 'Amazon',
+    accentColor: '#FF9900',
+    period: 'DEC 2024 – AUG 2025 · LUXEMBOURG',
     role: '**Performance** Business Analyst — **Transportation EMEA**',
     description: 'Built real-time monitoring and AI-assisted audit workflows for 30+ L5–L7 leaders. Consolidated fragmented reporting across 35 countries into a single source of truth.',
     kpis: [
@@ -65,8 +70,10 @@ const BLOCKS: Block[] = [
     media: { type: 'gif', src: '/images/companies/amazon-light.gif', fit: 'contain', bg: '#ffffff' },
   },
   {
-    id: 'amazon-tpm-reliability', pattern: 'A',
-    label: 'APR 2024–DEC 2024 · BARCELONA',
+    number: '03',
+    company: 'Amazon',
+    accentColor: '#FF9900',
+    period: 'APR 2024 – DEC 2024 · BARCELONA',
     role: 'Technical Program Manager — **Global Strategic Reliability**',
     description: 'Drove product development for operational analytics platforms across 2,300 global fulfillment sites. Built 3 strategic data platforms with senior engineers.',
     kpis: [
@@ -77,8 +84,10 @@ const BLOCKS: Block[] = [
     media: { type: 'image', src: '/images/companies/amazon-dark.jpg', fit: 'contain', bg: '#0a0a0a' },
   },
   {
-    id: 'auchan', pattern: 'A',
-    label: 'SEP 2023–MAR 2024 · LILLE',
+    number: '04',
+    company: 'Auchan Retail',
+    accentColor: '#E2001A',
+    period: 'SEP 2023 – MAR 2024 · LILLE',
     role: '**Strategy Consultant** — DSI',
     description: 'Analyzed €250M IT portfolio and led strategic benchmarking across major retail groups. Delivered risk-adjusted roadmap prioritization for executive leadership.',
     kpis: [
@@ -88,8 +97,10 @@ const BLOCKS: Block[] = [
     media: { type: 'image', src: '/images/auchan/auchan-logo-full.png', fit: 'contain', bg: '#1a0000' },
   },
   {
-    id: 'loreal-freelance', pattern: 'A',
-    label: 'MAR 2023–MAR 2024 · PARIS',
+    number: '05',
+    company: "L'Oréal",
+    accentColor: '#C8A951',
+    period: 'MAR 2023 – MAR 2024 · PARIS',
     role: 'Business Analyst — **Global CDMO, Consumer Product Division**',
     description: 'Led global data governance engagement across 50+ countries. Standardized reporting and designed bi-weekly COMEX dashboards for C-suite product roadmap alignment.',
     kpis: [
@@ -99,8 +110,10 @@ const BLOCKS: Block[] = [
     media: { type: 'image', src: '/images/loreal/loreal-water.webp', fit: 'cover', bg: '#1a1300' },
   },
   {
-    id: 'loreal-delivery', pattern: 'B',
-    label: 'SEP 2022–MAR 2023 · PARIS',
+    number: '06',
+    company: "L'Oréal",
+    accentColor: '#C8A951',
+    period: 'SEP 2022 – MAR 2023 · PARIS',
     role: 'Technical Delivery Manager — **Global Data Team**',
     description: 'Built global B2B analytics platform supporting billion-euro product decisions across Europe, China, and the US. Re-engineered IT delivery workflows.',
     kpis: [
@@ -110,8 +123,10 @@ const BLOCKS: Block[] = [
     media: { type: 'image', src: '/images/loreal/loreal-pro.webp', fit: 'cover', bg: '#111' },
   },
   {
-    id: 'loreal-pm', pattern: 'A',
-    label: 'FEB 2022–SEP 2022 · PARIS',
+    number: '07',
+    company: "L'Oréal",
+    accentColor: '#C8A951',
+    period: 'FEB 2022 – SEP 2022 · PARIS',
     role: 'Technical Project Manager — **Digital EMEA**',
     description: 'Delivered 12 automated customer journeys across 3 UK divisions. Scaled web stack across 120 websites, unlocking €100M ARR opportunity.',
     kpis: [
@@ -121,8 +136,10 @@ const BLOCKS: Block[] = [
     media: { type: 'gif', src: '/images/loreal/loreal-luxe-portrait.gif', fit: 'cover', bg: '#111' },
   },
   {
-    id: 'familyad', pattern: 'A',
-    label: 'SEP 2021–MAR 2022 · PARIS',
+    number: '08',
+    company: 'Familyad',
+    accentColor: '#6366f1',
+    period: 'SEP 2021 – MAR 2022 · PARIS',
     role: 'Co-Founder, **CEO & CFO**',
     description: 'Launched ad-tech platform from zero to pre-Series A engagement. Led product design, customer discovery, and financial modeling. Pitched at Station F.',
     kpis: [
@@ -133,39 +150,6 @@ const BLOCKS: Block[] = [
   },
 ];
 
-const GROUPS: CompanyGroup[] = [
-  { company: 'Amazon',      period: 'April 2024 – Present',    accentColor: '#FF9900', blockIds: ['amazon-tpm-innovation', 'amazon-ba-emea', 'amazon-tpm-reliability'] },
-  { company: 'Auchan Retail', period: 'Sep 2023 – Mar 2024',   accentColor: '#E2001A', blockIds: ['auchan'] },
-  { company: "L'Oréal",    period: 'Feb 2022 – Mar 2024',      accentColor: '#C8A951', blockIds: ['loreal-freelance', 'loreal-delivery', 'loreal-pm'] },
-  { company: 'Familyad',   period: 'Sep 2021 – Mar 2022',      accentColor: '#6366f1', blockIds: ['familyad'] },
-];
-
-const BLOCK_MAP = Object.fromEntries(BLOCKS.map(b => [b.id, b]));
-
-/* ─── KPIDisplay — static ────────────────────────────────────── */
-function KPIDisplay({ kpi, borderRight }: { kpi: KPI; borderRight: boolean }) {
-  return (
-    <div className="experience-kpi-item" style={{ flex: 1, paddingRight: borderRight ? '20px' : 0, paddingLeft: borderRight ? 0 : '20px', borderRight: borderRight ? '1px solid rgba(255,255,255,0.1)' : 'none', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-      <p style={{ fontFamily: 'var(--font-inter)', fontWeight: 700, fontSize: 'clamp(1.2rem, 1.8vw, 1.65rem)', color: '#5AC8FA', lineHeight: 1.05 }}>
-        {kpi.value}
-      </p>
-      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', lineHeight: 1.3 }}>
-        {kpi.label}
-      </p>
-    </div>
-  );
-}
-
-function KPIStats({ kpis }: { kpis: KPI[] }) {
-  return (
-    <div className="experience-kpi-row" style={{ display: 'flex', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '20px', marginTop: '4px' }}>
-      {kpis.map((kpi, i) => (
-        <KPIDisplay key={i} kpi={kpi} borderRight={i < kpis.length - 1} />
-      ))}
-    </div>
-  );
-}
-
 /* ─── MediaPanel ─────────────────────────────────────────────── */
 function MediaPanel({ media }: { media: MediaConfig }) {
   if (media.type === 'orbs') {
@@ -173,8 +157,8 @@ function MediaPanel({ media }: { media: MediaConfig }) {
       <div
         style={{
           position: 'relative', width: '100%', height: '100%',
-          minHeight: '340px', background: media.gradient,
-          borderRadius: '14px', overflow: 'hidden',
+          minHeight: '400px', background: media.gradient,
+          overflow: 'hidden',
         }}
       >
         <div className="animate-pulse-glow" style={{ position: 'absolute', width: '260px', height: '260px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,255,255,0.16) 0%, transparent 70%)', top: '-50px', right: '-50px' }} />
@@ -189,89 +173,171 @@ function MediaPanel({ media }: { media: MediaConfig }) {
     <div
       style={{
         position: 'relative', width: '100%', height: '100%',
-        minHeight: 'clamp(200px, 28vw, 380px)',
-        background: media.bg ?? '#111', borderRadius: '14px', overflow: 'hidden',
+        minHeight: 'clamp(280px, 40vw, 500px)',
+        background: media.bg ?? '#111', overflow: 'hidden',
       }}
     >
-      <Image src={media.src} alt="" fill style={{ objectFit: media.fit ?? 'cover' }} unoptimized={media.type === 'gif'} loading="lazy" sizes="(max-width: 768px) 100vw, 55vw" />
+      <Image
+        src={media.src}
+        alt=""
+        fill
+        style={{ objectFit: media.fit ?? 'cover' }}
+        unoptimized={media.type === 'gif'}
+        loading="lazy"
+        sizes="100vw"
+      />
     </div>
   );
 }
 
-/* ─── RoleBlock ──────────────────────────────────────────────── */
-function RoleBlock({ block, accentColor }: { block: Block; accentColor: string }) {
-  const isA = block.pattern === 'A';
-  return (
-    <div style={{ padding: 'clamp(28px, 4vh, 48px) 0' }}>
-      <div
-        className={`grid grid-cols-1 items-center gap-6 md:gap-10 ${
-          isA ? 'md:grid-cols-[58fr_42fr]'
-              : 'md:grid-cols-[42fr_58fr] md:[&>*:first-child]:order-2 md:[&>*:last-child]:order-1'
-        }`}
-      >
-        <div style={{ borderRadius: '14px', overflow: 'hidden' }}>
-          <MediaPanel media={block.media} />
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', padding: 'clamp(16px, 2.5vw, 36px)' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: accentColor, fontWeight: 500 }}>
-            {block.label}
-          </p>
-          <h3 style={{ fontFamily: 'var(--font-inter)', fontWeight: 700, fontSize: 'clamp(1.2rem, 1.8vw, 1.65rem)', color: '#ffffff', lineHeight: 1.2, letterSpacing: '-0.01em' }}>
-            <Highlight text={block.role} color="#5AC8FA" />
-          </h3>
-          <p style={{ color: 'rgba(245,245,247,0.72)', fontSize: 'clamp(0.9rem, 1.1vw, 1rem)', lineHeight: 1.8 }}>
-            {block.description}
-          </p>
-          <KPIStats kpis={block.kpis} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ─── CompanySection ─────────────────────────────────────────── */
-function CompanySection({
-  group,
-  onRef,
+/* ─── ExperienceBlock — Joby-style numbered vertical block ───── */
+function ExperienceBlock({
+  item,
+  blockRef,
 }: {
-  group: CompanyGroup;
-  onRef: (el: HTMLDivElement | null) => void;
+  item: ExperienceItem;
+  blockRef: (el: HTMLDivElement | null) => void;
 }) {
-  const blocks = group.blockIds.map(id => BLOCK_MAP[id]);
   return (
     <div
-      ref={onRef}
-      style={{
-        opacity: 0,
-        background: 'rgba(255,255,255,0.02)',
-        border: '1px solid rgba(255,255,255,0.06)',
-        borderRadius: '24px',
-        padding: 'clamp(24px, 3vw, 36px)',
-        marginBottom: '20px',
-      }}
+      ref={blockRef}
+      className="experience-block"
+      style={{ opacity: 0 }}
     >
-      {/* Company header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '4px' }}>
-        <div style={{ width: '3px', height: '44px', borderRadius: '2px', background: group.accentColor, flexShrink: 0 }} />
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: group.accentColor, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 500 }}>
-            {group.period}
-          </span>
-          <span style={{ fontFamily: 'var(--font-inter)', fontWeight: 700, fontSize: 'clamp(1.5rem, 2.2vw, 2rem)', color: '#ffffff', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
-            {group.company}
-          </span>
-        </div>
+      {/* Full-width image */}
+      <div
+        style={{
+          width: '100%',
+          borderRadius: '16px',
+          overflow: 'hidden',
+          marginBottom: 'clamp(28px, 4vw, 48px)',
+        }}
+      >
+        <MediaPanel media={item.media} />
       </div>
 
-      {/* Role blocks with hairline dividers */}
-      {blocks.map((block, i) => (
-        <div key={block.id}>
-          <RoleBlock block={block} accentColor={group.accentColor} />
-          {i < blocks.length - 1 && (
-            <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)' }} />
-          )}
+      {/* Content row: number + text */}
+      <div
+        className="experience-content-row"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '80px 1fr',
+          gap: 'clamp(16px, 3vw, 40px)',
+          alignItems: 'start',
+        }}
+      >
+        {/* Number */}
+        <span
+          style={{
+            fontFamily: 'var(--font-inter)',
+            fontWeight: 800,
+            fontSize: 'clamp(2.5rem, 4vw, 4rem)',
+            color: item.accentColor,
+            lineHeight: 1,
+            letterSpacing: '-0.03em',
+            opacity: 0.5,
+          }}
+        >
+          {item.number}
+        </span>
+
+        {/* Text content */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {/* Company + period */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <span
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.7rem',
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                color: item.accentColor,
+                fontWeight: 500,
+              }}
+            >
+              {item.company} · {item.period}
+            </span>
+          </div>
+
+          {/* Role title */}
+          <h3
+            style={{
+              fontFamily: 'var(--font-inter)',
+              fontWeight: 700,
+              fontSize: 'clamp(1.4rem, 2.2vw, 2rem)',
+              color: '#ffffff',
+              lineHeight: 1.15,
+              letterSpacing: '-0.015em',
+            }}
+          >
+            <Highlight text={item.role} color="#5AC8FA" />
+          </h3>
+
+          {/* Description */}
+          <p
+            style={{
+              color: 'rgba(245,245,247,0.72)',
+              fontSize: 'clamp(0.95rem, 1.15vw, 1.05rem)',
+              lineHeight: 1.85,
+              maxWidth: '600px',
+            }}
+          >
+            {item.description}
+          </p>
+
+          {/* KPIs */}
+          <div
+            className="experience-kpi-row"
+            style={{
+              display: 'flex',
+              gap: '0',
+              borderTop: '1px solid rgba(255,255,255,0.08)',
+              paddingTop: '20px',
+              marginTop: '8px',
+            }}
+          >
+            {item.kpis.map((kpi, i) => (
+              <div
+                key={i}
+                className="experience-kpi-item"
+                style={{
+                  flex: 1,
+                  paddingRight: i < item.kpis.length - 1 ? '20px' : 0,
+                  paddingLeft: i > 0 ? '20px' : 0,
+                  borderRight: i < item.kpis.length - 1 ? '1px solid rgba(255,255,255,0.08)' : 'none',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px',
+                }}
+              >
+                <p
+                  style={{
+                    fontFamily: 'var(--font-inter)',
+                    fontWeight: 700,
+                    fontSize: 'clamp(1.2rem, 1.8vw, 1.65rem)',
+                    color: '#5AC8FA',
+                    lineHeight: 1.05,
+                  }}
+                >
+                  {kpi.value}
+                </p>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.65rem',
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    color: 'rgba(255,255,255,0.38)',
+                    lineHeight: 1.3,
+                  }}
+                >
+                  {kpi.label}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
-      ))}
+      </div>
     </div>
   );
 }
@@ -282,7 +348,9 @@ export function Experience() {
   const headerRef    = useRef<HTMLDivElement>(null);
   const phraseRefs   = useRef<(HTMLSpanElement | null)[]>([]);
   const subtitleRef  = useRef<HTMLParagraphElement>(null);
-  const cardRefs     = useRef<(HTMLDivElement | null)[]>([]);
+  const blockRefs    = useRef<(HTMLDivElement | null)[]>([]);
+
+  const H2_PHRASES = ['Three companies.', 'Four years.', 'One standard.'];
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -301,22 +369,32 @@ export function Experience() {
           scrollTrigger: { trigger: headerRef.current, start: 'top 78%', toggleActions: 'play none none reverse' } }
       );
 
-      // Company cards — stagger 120ms
-      const cards = cardRefs.current.filter(Boolean);
-      gsap.fromTo(cards,
-        { opacity: 0, y: 40 },
-        { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out', stagger: 0.12,
-          scrollTrigger: { trigger: headerRef.current, start: 'bottom 80%', toggleActions: 'play none none reverse' } }
-      );
+      // Experience blocks — each has its own scroll trigger
+      const blocks = blockRefs.current.filter(Boolean);
+      blocks.forEach((block) => {
+        gsap.fromTo(block,
+          { opacity: 0, y: 60 },
+          {
+            opacity: 1, y: 0,
+            duration: 0.9,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: block,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      });
 
-      // Exit animations — cards fade out as they leave the top
-      cards.forEach((card) => {
+      // Exit animations
+      blocks.forEach((block) => {
         ScrollTrigger.create({
-          trigger: card,
-          start: 'bottom 18%',
+          trigger: block,
+          start: 'bottom 15%',
           toggleActions: 'play none none reverse',
-          onEnter: () => gsap.to(card, { opacity: 0, y: -20, duration: 0.5, ease: 'power2.in', overwrite: 'auto' }),
-          onLeaveBack: () => gsap.to(card, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', overwrite: 'auto' }),
+          onEnter: () => gsap.to(block, { opacity: 0, y: -30, duration: 0.5, ease: 'power2.in', overwrite: 'auto' }),
+          onLeaveBack: () => gsap.to(block, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', overwrite: 'auto' }),
         });
       });
     }, sectionRef);
@@ -325,12 +403,22 @@ export function Experience() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="experience" className="experience-bg">
-      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 clamp(20px, 4vw, 48px)' }}>
-
+    <section ref={sectionRef} id="experience" style={{ background: '#000000' }}>
+      <div
+        style={{
+          maxWidth: '960px',
+          margin: '0 auto',
+          padding: '0 clamp(20px, 4vw, 48px)',
+        }}
+      >
         {/* Section header */}
-        <div ref={headerRef} style={{ paddingTop: 'clamp(64px, 10vh, 112px)', paddingBottom: '48px' }}>
-          {/* H2 — Inter bold, phrase-by-phrase clip reveal */}
+        <div
+          ref={headerRef}
+          style={{
+            paddingTop: 'clamp(80px, 14vh, 140px)',
+            paddingBottom: 'clamp(48px, 8vw, 80px)',
+          }}
+        >
           <h2
             style={{
               fontFamily: 'var(--font-inter)',
@@ -356,7 +444,6 @@ export function Experience() {
             ))}
           </h2>
 
-          {/* Subtitle */}
           <p
             ref={subtitleRef}
             style={{
@@ -371,16 +458,24 @@ export function Experience() {
           </p>
         </div>
 
-        {/* Company cards */}
-        {GROUPS.map((group, i) => (
-          <CompanySection
-            key={group.company}
-            group={group}
-            onRef={el => { cardRefs.current[i] = el; }}
-          />
-        ))}
+        {/* Sequential numbered blocks */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 'clamp(64px, 10vw, 120px)',
+          }}
+        >
+          {ITEMS.map((item, i) => (
+            <ExperienceBlock
+              key={item.number}
+              item={item}
+              blockRef={(el) => { blockRefs.current[i] = el; }}
+            />
+          ))}
+        </div>
 
-        <div style={{ height: 'clamp(40px, 6vh, 64px)' }} />
+        <div style={{ height: 'clamp(64px, 10vh, 120px)' }} />
       </div>
     </section>
   );

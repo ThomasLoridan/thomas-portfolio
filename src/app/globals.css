@@ -365,6 +365,12 @@
     gap: 24px !important;
   }
 
+  /* Experience — number + text stacks vertically on mobile */
+  .experience-content-row {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
   /* Experience — KPI row wraps on narrow screens */
   .experience-kpi-row {
     flex-wrap: wrap !important;
